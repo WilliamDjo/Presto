@@ -2,11 +2,13 @@ import { CssBaseline, ThemeProvider, Box, Paper, Button, TextField, Typography, 
 import theme from '../../Themes/themes';
 import fetchRequest from '../../HelperFiles/helper';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const SignUpPage = () => {
     const [email, setEmail] = useState('');
     const [name, setName] = useState('');
     const [password, setPassword] = useState('');
+    const navigate = useNavigate();
 
     const handleSignUpClick = () => {
         const res = fetchRequest('/admin/auth/register', 'post', { email, password, name }, null, null)
@@ -59,7 +61,7 @@ const SignUpPage = () => {
 
                             <Typography variant="body2" align="center" sx={{ mt: 2 }}>
                                 Already have an account?
-                                <Link to="/login" underline="hover" hover='pointer' color="primary" ml={1}>
+                                <Link onClick={() => navigate('/login')} underline="hover" hover='pointer' color="primary" ml={1}>
                                     Sign in
                                 </Link>
                             </Typography>

@@ -3,7 +3,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Navigate } from 'react-router-dom';
 import Login from './Pages/SignIn/Login'; // Assume you have a SignIn component
 import LandingPage from './Pages/LandingPage/LandingPage';
-import SignUp from './Pages/SignUp/SignUp';
+import SignUp from './Pages/SignUpPage/SignUp';
 
 
 
