@@ -1,8 +1,9 @@
 // Import necessary modules
 import { useState } from 'react';
-import { TextField, Button, Typography, Container, Box, Alert, Paper, Avatar } from '@mui/material';
+import { TextField, Typography, Container, Box, Alert, Paper, Avatar, IconButton, Link } from '@mui/material';
 import { LockOutlined } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
+import CustomButton from '../../components/CustomButton';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -32,9 +33,12 @@ const Login = () => {
           textAlign="center"
           mb={2}
         >
-          <Avatar sx={{ m: 1, bgcolor: 'primary.main' }}>
-            <LockOutlined />
-          </Avatar>
+          <IconButton onClick={() => navigate('/')}>
+            <Avatar sx={{ m: 1, bgcolor: 'primary.main' }}>
+              <LockOutlined  />
+            </Avatar>
+          </IconButton>
+
           <Typography variant="h5" component="h1" fontWeight="bold">
             Welcome Back!
           </Typography>
@@ -66,24 +70,16 @@ const Login = () => {
             required
             variant="outlined"
           />
-          <Button
-            type="submit"
-            variant="contained"
-            fullWidth
-            sx={{
-              mt: 2,
-              py: 1.2,
-              fontSize: '1rem',
-              backgroundColor: 'primary.main',
-              '&:hover': { backgroundColor: 'primary.dark' },
-            }}
-          >
-            Login
-          </Button>
+          <CustomButton
+            text="Login"
+            onClick={handleSubmit}
+            color="primary"
+            sx={{ mt: 2 }}
+          />
         </Box>
         
         <Typography variant="body2" color="textSecondary" sx={{ mt: 3, textAlign: 'center' }}>
-          Don’t have an account? <a href="/signup" style={{ color: '#1976d2', textDecoration: 'none' }}>Sign Up</a>
+          Don’t have an account? <Link href="/signup" style={{ color: '#1976d2', textDecoration: 'none' }}>Sign Up</Link>
         </Typography>
       </Paper>
     </Container>
