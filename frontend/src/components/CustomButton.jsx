@@ -1,7 +1,7 @@
 // CustomButton.js
 import { Button } from '@mui/material';
 
-const CustomButton = ({ text, onClick, variant = 'contained', color = 'primary', size = 'large',fullWidth = true, sx = {} }) => {
+const CustomButton = ({ text, onClick, variant = 'contained', color = 'primary', size = 'large', fullWidth = true, sx = {} }) => {
   return (
     <Button
       variant={variant}
@@ -9,7 +9,7 @@ const CustomButton = ({ text, onClick, variant = 'contained', color = 'primary',
       size={size}
       onClick={onClick}
       fullWidth={fullWidth}
-      sx={ {...sx} }
+      sx={{ ...sx }}
     >
       {text}
     </Button>
