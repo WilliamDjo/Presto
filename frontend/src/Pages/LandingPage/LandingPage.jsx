@@ -24,7 +24,7 @@ const LandingPage = () => {
             variant='contained'
             onClick={() => navigate('/login')}
             color="primary"
-            fullWidth="false"
+            fullWidth={false}
             sx={{ py: 1.5, px: 4 }}
           />
 
@@ -33,7 +33,7 @@ const LandingPage = () => {
             variant='outlined'
             onClick={() => navigate('/register')}
             color="primary"
-            fullWidth="false"
+            fullWidth={false}
             sx={{ py: 1.5, px: 4 }}
           />
         </Box>

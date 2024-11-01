@@ -79,7 +79,7 @@ const Login = () => {
         </Box>
 
         <Typography variant="body2" color="textSecondary" sx={{ mt: 3, textAlign: 'center' }}>
-          Don’t have an account? <Link href="/register" style={{ color: '#1976d2', textDecoration: 'none' }}>Sign Up</Link>
+          Don't have an account? <Link onClick={() => navigate('/register')} style={{ color: '#1976d2', textDecoration: 'none' }}>Sign Up</Link>
         </Typography>
       </Paper>
     </Container>

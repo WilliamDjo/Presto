@@ -1,7 +1,7 @@
 
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Navigate } from 'react-router-dom';
-import Login from './Pages/SignIn/Login'; // Assume you have a SignIn component
+import Login from './Pages/SignInPage/Login'; // Assume you have a SignIn component
 import LandingPage from './Pages/LandingPage/LandingPage';
 import SignUp from './Pages/SignUpPage/SignUp';
 
@@ -10,20 +10,13 @@ import SignUp from './Pages/SignUpPage/SignUp';
 function App() {
   return (
     <BrowserRouter>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/login" element={<Login />} />
-          {/* <Route path="/register" element={<Register />} /> */}
-          <Route path="*" element={<Navigate to="/" />} /> {/* Redirect unknown routes to landing page */}
-          <Route path="/register" element={<SignUp />} />
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/login" element={<Login />} />
-          {/* <Route path="/register" element={<Register />} /> */}
-          <Route path="*" element={<Navigate to="/" />} /> {/* Redirect unknown routes to landing page */}
-          <Route path="/register" element={<SignUp />} />
-        </Routes>
-      </BrowserRouter>
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/login" element={<Login />} />
+        {/* <Route path="/register" element={<Register />} /> */}
+        <Route path="*" element={<Navigate to="/" />} /> {/* Redirect unknown routes to landing page */}
+        <Route path="/register" element={<SignUp />} />
+      </Routes>
     </BrowserRouter>
   );
 }
