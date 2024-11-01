@@ -10,13 +10,20 @@ import SignUp from './Pages/SignUpPage/SignUp';
 function App() {
   return (
     <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/login" element={<Login />} />
-        {/* <Route path="/register" element={<Register />} /> */}
-        <Route path="*" element={<Navigate to="/" />} /> {/* Redirect unknown routes to landing page */}
-        <Route path="/register" element={<SignUp />} />
-      </Routes>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/login" element={<Login />} />
+          {/* <Route path="/register" element={<Register />} /> */}
+          <Route path="*" element={<Navigate to="/" />} /> {/* Redirect unknown routes to landing page */}
+          <Route path="/register" element={<SignUp />} />
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/login" element={<Login />} />
+          {/* <Route path="/register" element={<Register />} /> */}
+          <Route path="*" element={<Navigate to="/" />} /> {/* Redirect unknown routes to landing page */}
+          <Route path="/register" element={<SignUp />} />
+        </Routes>
+      </BrowserRouter>
     </BrowserRouter>
   );
 }
