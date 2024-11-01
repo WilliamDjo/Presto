@@ -15,7 +15,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         {/* <Route path="/register" element={<Register />} /> */}
         <Route path="*" element={<Navigate to="/" />} /> {/* Redirect unknown routes to landing page */}
-        <Route path="/SignUp" element={<SignUp />} />
+        <Route path="/register" element={<SignUp />} />
       </Routes>
     </BrowserRouter>
   );
