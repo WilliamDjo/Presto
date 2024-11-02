@@ -1,11 +1,9 @@
 
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Navigate } from 'react-router-dom';
-import Login from './Pages/SignInPage/Login'; // Assume you have a SignIn component
-import LandingPage from './Pages/LandingPage/LandingPage';
-import SignUp from './Pages/SignUpPage/SignUp';
-
-
+import Login from './Pages/LoginPage/Login';
+import LandingPage from './Pages/LandingPage/Landing';
+import SignUp from './Pages/RegisterPage/Register';
 
 function App() {
   return (
@@ -13,8 +11,7 @@ function App() {
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<Login />} />
-        {/* <Route path="/register" element={<Register />} /> */}
-        <Route path="*" element={<Navigate to="/" />} /> {/* Redirect unknown routes to landing page */}
+        <Route path="*" element={<Navigate to="/" />} />
         <Route path="/register" element={<SignUp />} />
       </Routes>
     </BrowserRouter>
