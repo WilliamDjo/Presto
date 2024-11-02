@@ -6,7 +6,7 @@ const genQueryString = (queryJSON) => {
         queryString += `&${attribute}=${queryJSON[attribute]}`;
     }
     return queryString.slice(1);
-}
+};
 
 const fetchRequest = async (path, method, body, token, queryJSON) => {
     const url = `http://localhost:${config.BACKEND_PORT}${path}` + (queryJSON ? ('?' + genQueryString(queryJSON)) : '');
@@ -30,4 +30,24 @@ const fetchRequest = async (path, method, body, token, queryJSON) => {
     }
 };
 
-export default fetchRequest;
+const isValidEmail = (email) => {
+    const emailRegex = /^[a-zA-Z0-9._]+@[a-zA-Z]+\.[a-zA-Z]{2,}$/;
+
+    return emailRegex.test(email);
+};
+
+const isValidPassword = (password) => {
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
+
+    return passwordRegex.test(password);
+};
+
+const isValidName = (name) => {
+    return name.length > 0;
+};
+
+const isValidConfirmPassword = (password, confirmPassword) => {
+    return password === confirmPassword;
+};
+
+export default {fetchRequest, isValidEmail, isValidName, isValidPassword, isValidConfirmPassword};

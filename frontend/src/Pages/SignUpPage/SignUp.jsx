@@ -12,7 +12,10 @@ const SignUpPage = () => {
 
     const handleSignUpClick = () => {
         const res = fetchRequest('/admin/auth/register', 'post', { email, password, name }, null, null)
-        console.log(res);
+
+        if (res.ok) {
+            navigate('/dashboard');
+        }
     };
 
     return (
@@ -54,7 +57,7 @@ const SignUpPage = () => {
                             />
 
                             <Button variant="contained" fullWidth sx={{ mt: 2 }} onClick={() => {
-                                console.log(fetchRequest('/admin/auth/register', 'post', { email, password, name }, null, null));
+                                handleSignUpClick();
                             }}>
                                 Sign Up
                             </Button>
