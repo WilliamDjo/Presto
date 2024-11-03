@@ -12,7 +12,8 @@ const SignUpPage = () => {
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  const handleSignUpClick = async () => {  // make this async
+  const handleSignUpClick = async (e) => {  // make this async
+    e.preventDefault();
     try {
       const res = await authFetch({ email, name, password }, '/admin/auth/register');  // await here
       
@@ -39,7 +40,7 @@ const SignUpPage = () => {
         >
           <Paper component="section" sx={{ p: 3, width: 300 }}>
 
-            <Box display="flex" flexDirection="column" gap={2}>
+            <Box display="flex" flexDirection="column" gap={2} component="form" onSubmit={handleSignUpClick}>
               <Typography variant="h5" align="center">
                                 Sign Up
               </Typography>
@@ -64,9 +65,7 @@ const SignUpPage = () => {
                 onChange={(e) => setPassword(e.target.value)}
               />
 
-              <Button variant="contained" fullWidth sx={{ mt: 2 }} onClick={() => {
-                handleSignUpClick();
-              }}>
+              <Button variant="contained" fullWidth sx={{ mt: 2 }} type='submit'>
                                 Sign Up
               </Button>
 

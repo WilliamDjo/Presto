@@ -14,7 +14,9 @@ const Login = () => {
   const navigate = useNavigate();
 
   // Handle form submission
-  const handleSubmit = async () => {  // make this async
+  const handleSubmit = async (e) => {  // make this async
+    e.preventDefault();
+    setError('');
     try {
       const res = await authFetch({ email, password }, '/admin/auth/login');  // await here
       
@@ -79,7 +81,7 @@ const Login = () => {
           />
           <CustomButton
             text="Login"
-            onClick={handleSubmit}
+            // onClick={handleSubmit}
             color="primary"
             sx={{ mt: 2 }}
           />
