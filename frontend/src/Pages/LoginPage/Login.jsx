@@ -16,7 +16,7 @@ const Login = () => {
   // Handle form submission
   const handleSubmit = async () => {  // make this async
     try {
-      const res = await authFetch({ email, name, password }, '/admin/auth/register');  // await here
+      const res = await authFetch({ email, password }, '/admin/auth/login');  // await here
       
       if (res.success) {
         localStorage.setItem('token', res.data.token);

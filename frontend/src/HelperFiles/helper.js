@@ -50,7 +50,7 @@ const isValidConfirmPassword = (password, confirmPassword) => {
   return password === confirmPassword;
 };
 
-// Registration function
+// Authentication function
 export async function authFetch(userData, path) {
   // Only validate name for registration
   if (path.includes('register')) {
@@ -60,21 +60,19 @@ export async function authFetch(userData, path) {
         error: 'Please enter a valid name'
       };
     }
-  }
-
-
-  if (!isValidEmail(userData.email)) {
-    return {
-      success: false,
-      error: 'Please enter a valid email address'
-    };
-  }
-
-  if (!isValidPassword(userData.password)) {
-    return {
-      success: false,
-      error: 'Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character'
-    };
+    if (!isValidEmail(userData.email)) {
+      return {
+        success: false,
+        error: 'Please enter a valid email address'
+      };
+    }
+  
+    if (!isValidPassword(userData.password)) {
+      return {
+        success: false,
+        error: 'Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character'
+      };
+    }
   }
 
   try {
@@ -87,7 +85,7 @@ export async function authFetch(userData, path) {
     );
 
     if (!response) {
-      throw new Error('Network response was not ok');
+      throw new Error('Registration failed. Please try again.');
     }
 
     return {
@@ -102,6 +100,44 @@ export async function authFetch(userData, path) {
     };
   }
 
+}
+
+// Logout function 
+export async function logoutFetch(path) {
+  try {
+    const token = localStorage.getItem('token');
+    
+    if (!token) {
+      throw new Error('No authentication token found');
+    }
+
+    const response = await fetchRequest(
+      path,
+      'POST',
+      null,  // no body needed
+      token, // pass the token
+      null   // no query parameters
+    );
+
+    if (!response) {
+      throw new Error('Network response was not ok');
+    }
+
+    // Clear the token from localStorage after successful logout
+    localStorage.removeItem('token');
+
+    return {
+      success: true,
+      data: response
+    };
+
+  } catch (error) {
+    console.error('Logout error:', error);
+    return {
+      success: false,
+      error: error.message || 'Logout failed. Please try again.'
+    };
+  }
 }
 
 export default {fetchRequest, isValidEmail, isValidName, isValidPassword, isValidConfirmPassword};
