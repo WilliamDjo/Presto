@@ -52,46 +52,56 @@ const isValidConfirmPassword = (password, confirmPassword) => {
 
 // Registration function
 export async function authFetch(userData, path) {
-  // Validate all fields first
-  const errors = [];
+  // Only validate name for registration
+  if (path.includes('register')) {
+    if (!isValidName(userData.name)) {
+      return {
+        success: false,
+        error: 'Please enter a valid name'
+      };
+    }
+  }
+
 
   if (!isValidEmail(userData.email)) {
-    errors.push('Invalid email format');
+    return {
+      success: false,
+      error: 'Please enter a valid email address'
+    };
   }
 
   if (!isValidPassword(userData.password)) {
-    errors.push('Password must contain at least 8 characters, including uppercase, lowercase, number and special character');
-  }
-
-  if (path === config.REGISTER_PATH) {
-    if (!isValidName(userData.name)) {
-      errors.push('Name cannot be empty');
-    }
-  }
-  // If there are validation errors, throw them
-  if (errors.length > 0) {
-    throw new Error(errors.join(', '));
+    return {
+      success: false,
+      error: 'Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character'
+    };
   }
 
   try {
-    const response = await fetch(path, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(userData)
-    });
+    const response = await fetchRequest(
+      path,
+      'POST',
+      userData,
+      null, // no token needed for registration
+      null  // no query parameters needed
+    );
 
-    const data = await response.json();
-
-    if (!response.ok) {
-      throw new Error(data.message || 'Registration failed');
+    if (!response) {
+      throw new Error('Network response was not ok');
     }
 
-    return data;
+    return {
+      success: true,
+      data: response
+    };
+
   } catch (error) {
-    throw new Error(`Registration error: ${error.message}`);
+    return {
+      success: false,
+      error: error.message || 'Registration failed. Please try again.'
+    };
   }
+
 }
 
 export default {fetchRequest, isValidEmail, isValidName, isValidPassword, isValidConfirmPassword};

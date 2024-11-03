@@ -1,25 +1,31 @@
-import { CssBaseline, ThemeProvider, Box, Paper, Button, TextField, Typography, Link } from '@mui/material';
+import { CssBaseline, ThemeProvider, Box, Paper, Button, TextField, Typography, Link, Alert } from '@mui/material';
 import theme from '../../Themes/themes';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 // import fetchRequest from '../../HelperFiles/helper';
-import { registerUser } from '../../HelperFiles/helper';
+import { authFetch } from '../../HelperFiles/helper';
 
 const SignUpPage = () => {
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  const handleSignUpClick = () => {
-    const res = registerUser({ email, name, password });
-
-    if (res.ok) {
-      localStorage.setItem('token', res.token);
-      navigate('/dashboard');
+  const handleSignUpClick = async () => {  // make this async
+    try {
+      const res = await authFetch({ email, name, password }, '/admin/auth/register');  // await here
+      
+      if (res.success) {
+        localStorage.setItem('token', res.data.token);
+        navigate('/dashboard');
+      } else {
+        setError(res.error);
+      }
+    } catch (error) {
+      setError(error);
     }
   };
-
   return (
     <>
       <ThemeProvider theme={theme}>
@@ -37,7 +43,7 @@ const SignUpPage = () => {
               <Typography variant="h5" align="center">
                                 Sign Up
               </Typography>
-
+              {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
               <TextField
                 label="Full Name"
                 fullWidth

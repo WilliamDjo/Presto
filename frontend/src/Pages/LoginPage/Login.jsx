@@ -1,34 +1,32 @@
 // Import necessary modules
 import { useState } from 'react';
-import { TextField, Typography, Container, Box, Paper, Avatar, IconButton, Link } from '@mui/material';
+import { TextField, Typography, Container, Box, Paper, Avatar, IconButton, Link, Alert } from '@mui/material';
 import { LockOutlined } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import CustomButton from '../../components/CustomButton';
-import fetchRequest from '../../HelperFiles/helper';
+import { authFetch } from '../../HelperFiles/helper';
 
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  // const [error, _] = useState('');
+  const [error, setError] = useState('');
   const navigate = useNavigate();
 
   // Handle form submission
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    // Mock login check
-    const data = {
-      email: email,
-      password: password,
+  const handleSubmit = async () => {  // make this async
+    try {
+      const res = await authFetch({ email, name, password }, '/admin/auth/register');  // await here
+      
+      if (res.success) {
+        localStorage.setItem('token', res.data.token);
+        navigate('/dashboard');
+      } else {
+        setError(res.error);
+      }
+    } catch (error) {
+      setError(error);
     }
-
-    const res = fetchRequest('/admin/auth/register', 'post', data, null, null)
-
-    if (res.ok) {
-      localStorage.setItem('token', res.token);
-      navigate('/dashboard');
-    }
-
   };
 
   return (
@@ -56,7 +54,7 @@ const Login = () => {
           </Typography>
         </Box>
 
-        {/* {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>} */}
+        {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
 
         <Box component="form" onSubmit={handleSubmit}>
           <TextField
