@@ -31,23 +31,67 @@ const fetchRequest = async (path, method, body, token, queryJSON) => {
 };
 
 const isValidEmail = (email) => {
-    const emailRegex = /^[a-zA-Z0-9._]+@[a-zA-Z]+\.[a-zA-Z]{2,}$/;
+  const emailRegex = /^[a-zA-Z0-9._]+@[a-zA-Z]+\.[a-zA-Z]{2,}$/;
 
-    return emailRegex.test(email);
+  return emailRegex.test(email);
 };
 
 const isValidPassword = (password) => {
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
+  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
 
-    return passwordRegex.test(password);
+  return passwordRegex.test(password);
 };
 
 const isValidName = (name) => {
-    return name.length > 0;
+  return name.length > 0;
 };
 
 const isValidConfirmPassword = (password, confirmPassword) => {
-    return password === confirmPassword;
+  return password === confirmPassword;
 };
+
+// Registration function
+export async function authFetch(userData, path) {
+  // Validate all fields first
+  const errors = [];
+
+  if (!isValidEmail(userData.email)) {
+    errors.push('Invalid email format');
+  }
+
+  if (!isValidPassword(userData.password)) {
+    errors.push('Password must contain at least 8 characters, including uppercase, lowercase, number and special character');
+  }
+
+  if (path === config.REGISTER_PATH) {
+    if (!isValidName(userData.name)) {
+      errors.push('Name cannot be empty');
+    }
+  }
+  // If there are validation errors, throw them
+  if (errors.length > 0) {
+    throw new Error(errors.join(', '));
+  }
+
+  try {
+    const response = await fetch(path, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(userData)
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || 'Registration failed');
+    }
+
+    return data;
+  } catch (error) {
+    throw new Error(`Registration error: ${error.message}`);
+  }
+}
 
 export default {fetchRequest, isValidEmail, isValidName, isValidPassword, isValidConfirmPassword};

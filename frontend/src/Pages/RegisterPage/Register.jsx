@@ -1,8 +1,9 @@
 import { CssBaseline, ThemeProvider, Box, Paper, Button, TextField, Typography, Link } from '@mui/material';
 import theme from '../../Themes/themes';
-import fetchRequest from '../../HelperFiles/helper';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+// import fetchRequest from '../../HelperFiles/helper';
+import { registerUser } from '../../HelperFiles/helper';
 
 const SignUpPage = () => {
   const [email, setEmail] = useState('');
@@ -11,11 +12,12 @@ const SignUpPage = () => {
   const navigate = useNavigate();
 
   const handleSignUpClick = () => {
-    const res = fetchRequest('/admin/auth/register', 'post', { email, password, name }, null, null)
+    const res = registerUser({ email, name, password });
 
     if (res.ok) {
-            navigate('/dashboard');
-        }
+      localStorage.setItem('token', res.token);
+      navigate('/dashboard');
+    }
   };
 
   return (
@@ -56,9 +58,9 @@ const SignUpPage = () => {
                 onChange={(e) => setPassword(e.target.value)}
               />
 
-                            <Button variant="contained" fullWidth sx={{ mt: 2 }} onClick={() => {
-                                handleSignUpClick();
-                            }}>
+              <Button variant="contained" fullWidth sx={{ mt: 2 }} onClick={() => {
+                handleSignUpClick();
+              }}>
                                 Sign Up
               </Button>
 
