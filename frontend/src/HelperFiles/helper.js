@@ -21,6 +21,7 @@ const fetchRequest = async (path, method, body, token, queryJSON) => {
 
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
+      // return response;
     }
 
     const data = await response.json();
@@ -85,7 +86,7 @@ export async function authFetch(userData, path) {
     );
 
     if (!response) {
-      throw new Error('Registration failed. Please try again.');
+      throw new Error('Incorrect email or password');
     }
 
     return {
