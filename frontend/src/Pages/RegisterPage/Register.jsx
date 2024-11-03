@@ -5,75 +5,75 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const SignUpPage = () => {
-    const [email, setEmail] = useState('');
-    const [name, setName] = useState('');
-    const [password, setPassword] = useState('');
-    const navigate = useNavigate();
+  const [email, setEmail] = useState('');
+  const [name, setName] = useState('');
+  const [password, setPassword] = useState('');
+  const navigate = useNavigate();
 
-    const handleSignUpClick = () => {
-        const res = fetchRequest('/admin/auth/register', 'post', { email, password, name }, null, null)
+  const handleSignUpClick = () => {
+    const res = fetchRequest('/admin/auth/register', 'post', { email, password, name }, null, null)
 
-        if (res.ok) {
+    if (res.ok) {
             navigate('/dashboard');
         }
-    };
+  };
 
-    return (
-        <>
-            <ThemeProvider theme={theme}>
-                <CssBaseline />
+  return (
+    <>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
 
-                <Box
-                    display="flex"
-                    justifyContent="center"
-                    alignItems="center"
-                    minHeight="100vh"
-                >
-                    <Paper component="section" sx={{ p: 3, width: 300 }}>
+        <Box
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          minHeight="100vh"
+        >
+          <Paper component="section" sx={{ p: 3, width: 300 }}>
 
-                        <Box display="flex" flexDirection="column" gap={2}>
-                            <Typography variant="h5" align="center">
+            <Box display="flex" flexDirection="column" gap={2}>
+              <Typography variant="h5" align="center">
                                 Sign Up
-                            </Typography>
+              </Typography>
 
-                            <TextField
-                                label="Full Name"
-                                fullWidth
-                                value={name}
-                                onChange={(e) => setName(e.target.value)}
-                            />
-                            <TextField
-                                label="Email"
-                                fullWidth
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                            />
-                            <TextField
-                                label="Password"
-                                type="password"
-                                fullWidth
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                            />
+              <TextField
+                label="Full Name"
+                fullWidth
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
+              <TextField
+                label="Email"
+                fullWidth
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+              <TextField
+                label="Password"
+                type="password"
+                fullWidth
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
 
                             <Button variant="contained" fullWidth sx={{ mt: 2 }} onClick={() => {
                                 handleSignUpClick();
                             }}>
                                 Sign Up
-                            </Button>
+              </Button>
 
-                            <Typography variant="body2" align="center" sx={{ mt: 2 }}>
+              <Typography variant="body2" align="center" sx={{ mt: 2 }}>
                                 Already have an account?
-                                <Link onClick={() => navigate('/login')} underline="hover" hover='pointer' color="primary" ml={1}>
+                <Link onClick={() => navigate('/login')} underline="hover" hover='pointer' color="primary" ml={1}>
                                     Sign in
-                                </Link>
-                            </Typography>
-                        </Box>
-                    </Paper>
-                </Box >
-            </ThemeProvider >
-        </>
-    );
+                </Link>
+              </Typography>
+            </Box>
+          </Paper>
+        </Box >
+      </ThemeProvider >
+    </>
+  );
 }
 
 export default SignUpPage;
