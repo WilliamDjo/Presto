@@ -103,14 +103,8 @@ export async function authFetch(userData, path) {
 }
 
 // Logout function 
-export async function logoutFetch(path) {
+export async function logoutFetch(path, token) {
   try {
-    const token = localStorage.getItem('token');
-    
-    if (!token) {
-      throw new Error('No authentication token found');
-    }
-
     const response = await fetchRequest(
       path,
       'POST',
@@ -122,9 +116,6 @@ export async function logoutFetch(path) {
     if (!response) {
       throw new Error('Network response was not ok');
     }
-
-    // Clear the token from localStorage after successful logout
-    localStorage.removeItem('token');
 
     return {
       success: true,
