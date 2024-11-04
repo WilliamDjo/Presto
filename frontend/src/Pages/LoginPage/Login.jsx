@@ -4,6 +4,7 @@ import { TextField, Typography, Container, Box, Paper, Avatar, IconButton, Link,
 import { LockOutlined } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import CustomButton from '../../components/CustomButton';
+import CustomLink from '../../Components/CustomLink'
 import { authFetch } from '../../HelperFiles/helper';
 
 
@@ -17,10 +18,10 @@ const Login = () => {
   const handleSubmit = async (e) => {  // make this async
     e.preventDefault();
     setError('');
-    
+
     try {
       const res = await authFetch({ email, password }, '/admin/auth/login');  // await here
-      
+
       if (res.success) {
         localStorage.setItem('token', res.data.token);
         navigate('/dashboard');
@@ -95,7 +96,7 @@ const Login = () => {
           sx={{ mt: 2 }}
         />
         <Typography variant="body2" color="textSecondary" sx={{ mt: 3, textAlign: 'center' }}>
-          Don't have an account? <Link onClick={() => navigate('/register')} style={{ color: '#1976d2', textDecoration: 'none' }}>Sign Up</Link>
+          Don't have an account? <CustomLink text="Sign up" navigateTo="/register" />
         </Typography>
       </Paper>
     </Container>
