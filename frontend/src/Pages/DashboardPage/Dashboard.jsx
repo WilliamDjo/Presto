@@ -1,8 +1,24 @@
+import { useState } from 'react';
 import CustomButton from "../../components/CustomButton"
 import { logoutFetch } from "../../HelperFiles/helper"
 import { useNavigate } from 'react-router-dom';
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import DialogActions from '@mui/material/DialogActions';
+import TextField from '@mui/material/TextField';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import Typography from '@mui/material/Typography';
+import Grid from '@mui/material/Grid';
+import Box from '@mui/material/Box';
+import Container from '@mui/material/Container';
+import AddCircleIcon from '@mui/icons-material/AddCircle';
 
 const DashboardPage = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [presentationName, setPresentationName] = useState('');
+  const [presentations, setPresentations] = useState([]);
   const navigate = useNavigate();
   
   const handleLogout = async () => {
@@ -23,6 +39,7 @@ const DashboardPage = () => {
 
   return (
     <>
+    
       <CustomButton  text="Log out" onClick={handleLogout}/>
     </>
   )
