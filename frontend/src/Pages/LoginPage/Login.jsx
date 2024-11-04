@@ -1,9 +1,12 @@
 // Import necessary modules
 import { useState } from 'react';
-import { TextField, Typography, Container, Box, Alert, Paper, Avatar, IconButton, Link } from '@mui/material';
+import { TextField, Typography, Container, Box, Paper, Avatar, IconButton, Link, Alert } from '@mui/material';
 import { LockOutlined } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import CustomButton from '../../components/CustomButton';
+import CustomLink from '../../Components/CustomLink'
+import { authFetch } from '../../HelperFiles/helper';
+
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -12,13 +15,21 @@ const Login = () => {
   const navigate = useNavigate();
 
   // Handle form submission
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    // Mock login check
-    if (email === 'user@example.com' && password === 'password') {
-      navigate('/dashboard');
-    } else {
-      setError('Invalid email or password');
+  const handleLoginClick = async (e) => {  // make this async
+    e.preventDefault();
+    setError('');
+
+    try {
+      const res = await authFetch({ email, password }, '/admin/auth/login');  // await here
+
+      if (res.success) {
+        localStorage.setItem('token', res.data.token);
+        navigate('/dashboard');
+      } else {
+        setError(res.error);
+      }
+    } catch (error) {
+      setError(error);
     }
   };
 
@@ -49,7 +60,7 @@ const Login = () => {
 
         {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
 
-        <Box component="form" onSubmit={handleSubmit}>
+        <Box component="form" onSubmit={handleLoginClick}>
           <TextField
             label="Email Address"
             type="email"
@@ -72,14 +83,19 @@ const Login = () => {
           />
           <CustomButton
             text="Login"
-            onClick={handleSubmit}
-            color="primary"
+            onClick={handleLoginClick}
             sx={{ mt: 2 }}
           />
         </Box>
-
+        <CustomButton
+          text="Back to Home"
+          onClick={() => navigate('/')}
+          variant="outlined"
+          sx={{ mt: 2 }}
+          type="button"
+        />
         <Typography variant="body2" color="textSecondary" sx={{ mt: 3, textAlign: 'center' }}>
-          Don't have an account? <Link onClick={() => navigate('/register')} style={{ color: '#1976d2', textDecoration: 'none' }}>Sign Up</Link>
+          Don't have an account? <CustomLink text="Sign up" navigateTo="/register" />
         </Typography>
       </Paper>
     </Container>

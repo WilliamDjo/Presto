@@ -1,3 +1,5 @@
 {
-  "BACKEND_PORT": 5005
+  "BACKEND_PORT": 5005,
+  "REGISTER_PATH": "/admin/auth/register",
+  "LOGIN_PATH": "/admin/auth/login"
 }
