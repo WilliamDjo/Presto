@@ -15,7 +15,7 @@ const Login = () => {
   const navigate = useNavigate();
 
   // Handle form submission
-  const handleSubmit = async (e) => {  // make this async
+  const handleLoginClick = async (e) => {  // make this async
     e.preventDefault();
     setError('');
 
@@ -60,7 +60,7 @@ const Login = () => {
 
         {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
 
-        <Box component="form" onSubmit={handleSubmit}>
+        <Box component="form" onSubmit={handleLoginClick}>
           <TextField
             label="Email Address"
             type="email"
@@ -83,8 +83,7 @@ const Login = () => {
           />
           <CustomButton
             text="Login"
-            onClick={handleSubmit}
-            color="primary"
+            onClick={handleLoginClick}
             sx={{ mt: 2 }}
           />
         </Box>
@@ -92,8 +91,8 @@ const Login = () => {
           text="Back to Home"
           onClick={() => navigate('/')}
           variant="outlined"
-          color="primary"
           sx={{ mt: 2 }}
+          type="button"
         />
         <Typography variant="body2" color="textSecondary" sx={{ mt: 3, textAlign: 'center' }}>
           Don't have an account? <CustomLink text="Sign up" navigateTo="/register" />

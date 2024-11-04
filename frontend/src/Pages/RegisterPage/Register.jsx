@@ -1,5 +1,6 @@
 import { CssBaseline, ThemeProvider, Box, Paper, Button, TextField, Typography, Link, Alert } from '@mui/material';
 import CustomLink from '../../Components/CustomLink'
+import CustomButton from '../../components/CustomButton';
 import theme from '../../Themes/themes';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -13,10 +14,10 @@ const SignUpPage = () => {
     const [error, setError] = useState('');
     const navigate = useNavigate();
 
-    const handleSignUpClick = async (e) => {  // make this async
+    const handleRegisterClick = async (e) => {
         e.preventDefault();
         try {
-            const res = await authFetch({ email, name, password }, '/admin/auth/register');  // await here
+            const res = await authFetch({ email, name, password }, '/admin/auth/register');
 
             if (res.success) {
                 localStorage.setItem('token', res.data.token);
@@ -41,7 +42,7 @@ const SignUpPage = () => {
                 >
                     <Paper component="section" sx={{ p: 3, width: 300 }}>
 
-                        <Box display="flex" flexDirection="column" gap={2} component="form" onSubmit={handleSignUpClick}>
+                        <Box display="flex" flexDirection="column" gap={2} component="form" onSubmit={handleRegisterClick}>
                             <Typography variant="h5" align="center">
                                 Sign Up
                             </Typography>
@@ -66,15 +67,23 @@ const SignUpPage = () => {
                                 onChange={(e) => setPassword(e.target.value)}
                             />
 
-                            <Button variant="contained" fullWidth sx={{ mt: 2 }} type='submit'>
-                                Sign Up
-                            </Button>
+                            <CustomButton
+                                text="Register"
+                                onClick={handleRegisterClick}
+                                sx={{ mt: 2 }}
+                            />
+
+                            <CustomButton
+                                text="Back to Home"
+                                onClick={() => navigate('/')}
+                                variant="outlined"
+                                sx={{ mt: 2 }}
+                                type="button"
+                            />
 
                             <Typography variant="body2" align="center" sx={{ mt: 2 }}>
                                 Already have an account?
-                                <CustomLink text="Sign in" navigateTo="/login">
-                                    Sign in
-                                </CustomLink>
+                                <CustomLink text="Sign in" navigateTo="/login" />
                             </Typography>
                         </Box>
                     </Paper>
