@@ -1,11 +1,12 @@
 // Import necessary modules
 import { useState } from 'react';
-import { TextField, Typography, Container, Box, Paper, Avatar, IconButton, Link, Alert } from '@mui/material';
+import { TextField, Typography, Container, Box, Paper, Avatar, IconButton, Link, Alert, CssBaseline } from '@mui/material';
 import { LockOutlined } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
+import { authFetch } from '../../HelperFiles/helper';
 import CustomButton from '../../components/CustomButton';
 import CustomLink from '../../Components/CustomLink'
-import { authFetch } from '../../HelperFiles/helper';
+import CentralPanel from '../../Components/CentralPanel';
 
 
 const Login = () => {
@@ -34,8 +35,9 @@ const Login = () => {
   };
 
   return (
-    <Container maxWidth="xs" sx={{ mt: 8 }}>
-      <Paper elevation={3} sx={{ p: 4, borderRadius: 2 }}>
+    <>
+      <CssBaseline />
+      <CentralPanel>
         <Box
           display="flex"
           flexDirection="column"
@@ -95,10 +97,10 @@ const Login = () => {
           type="button"
         />
         <Typography variant="body2" color="textSecondary" sx={{ mt: 3, textAlign: 'center' }}>
-          Don't have an account? <CustomLink text="Sign up" navigateTo="/register" />
+          Don't have an account? <CustomLink text="Register" navigateTo="/register" />
         </Typography>
-      </Paper>
-    </Container>
+      </CentralPanel>
+    </>
   );
 };
 
