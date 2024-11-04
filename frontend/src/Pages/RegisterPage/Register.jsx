@@ -1,6 +1,6 @@
 import { CssBaseline, ThemeProvider, Box, Paper, Button, TextField, Typography, Link, Alert } from '@mui/material';
 import CustomLink from '../../Components/CustomLink'
-import CustomButton from '../../components/CustomButton';
+import CustomButton from '../../Components/CustomButton';
 import theme from '../../Themes/themes';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
