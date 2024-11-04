@@ -1,0 +1,10 @@
+{
+    presentations: [
+        {
+            title: string,
+            slides: [
+                
+            ]
+        }
+    ]
+}
