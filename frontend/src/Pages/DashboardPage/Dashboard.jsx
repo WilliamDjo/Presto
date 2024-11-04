@@ -7,10 +7,10 @@ import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
 import TextField from '@mui/material/TextField';
-// import Card from '@mui/material/Card';
-// import CardContent from '@mui/material/CardContent';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
-// import Grid from '@mui/material/Grid';
+import Grid from '@mui/material/Grid2';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
@@ -79,39 +79,66 @@ const DashboardPage = () => {
               onClick={() => setIsModalOpen(true)}
             />
           </Box>
+       
+          <Dialog 
+            open={isModalOpen} 
+            onClose={() => setIsModalOpen(false)}
+            maxWidth="sm"
+            fullWidth
+          >
+            <DialogTitle>Create New Presentation</DialogTitle>
+            <DialogContent>
+              <TextField
+                autoFocus
+                margin="dense"
+                label="Presentation Name"
+                type="text"
+                fullWidth
+                variant="outlined"
+                value={presentationName}
+                onChange={(e) => setPresentationName(e.target.value)}
+                sx={{ mt: 2 }}
+              />
+            </DialogContent>
+            <DialogActions sx={{ px: 3, pb: 3 }}>
+              <CustomButton text="Cancel" onClick={() => setIsModalOpen(false)}/>
+              <CustomButton 
+                onClick={handleCreatePresentation} 
+                variant="contained"
+                disabled={!presentationName.trim()}
+                text="Create"
+              />
+            </DialogActions>
+          </Dialog>
+          <Grid container spacing={3}>
+            {presentations.map((presentation) => (
+              <Grid item xs={12} sm={6} md={4} key={presentation.id}>
+                <Card 
+                  sx={{ 
+                    height: '100%',
+                    transition: 'all 0.2s',
+                    '&:hover': {
+                      transform: 'translateY(-4px)',
+                      boxShadow: 3
+                    }
+                  }}
+                >
+                  <CardContent>
+                    <Typography variant="h6" component="h2" gutterBottom>
+                      {presentation.name}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      {presentation.slides.length} slide{presentation.slides.length !== 1 ? 's' : ''}
+                    </Typography>
+                  </CardContent>
+                </Card>
+              </Grid>
+            ))}
+          </Grid>
         </Box>
-        <Dialog 
-          open={isModalOpen} 
-          onClose={() => setIsModalOpen(false)}
-          maxWidth="sm"
-          fullWidth
-        >
-          <DialogTitle>Create New Presentation</DialogTitle>
-          <DialogContent>
-            <TextField
-              autoFocus
-              margin="dense"
-              label="Presentation Name"
-              type="text"
-              fullWidth
-              variant="outlined"
-              value={presentationName}
-              onChange={(e) => setPresentationName(e.target.value)}
-              sx={{ mt: 2 }}
-            />
-          </DialogContent>
-          <DialogActions sx={{ px: 3, pb: 3 }}>
-            <CustomButton text="Cancel" onClick={() => setIsModalOpen(false)}/>
-            <CustomButton 
-              onClick={handleCreatePresentation} 
-              variant="contained"
-              disabled={!presentationName.trim()}
-              text="Create"
-            />
-          </DialogActions>
-        </Dialog>
+        <CustomButton  text="Log out" onClick={handleLogout}/>
       </Container>
-      <CustomButton  text="Log out" onClick={handleLogout}/>
+   
     </>
   )
 }
