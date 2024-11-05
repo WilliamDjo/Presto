@@ -4,7 +4,7 @@ import { TextField, Typography, Box, Avatar, IconButton, Alert, CssBaseline } fr
 import { LockOutlined } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { authFetch } from '../../HelperFiles/helper';
-import CustomButton from '../../components/CustomButton';
+import CustomButton from '../../Components/CustomButton';
 import CustomLink from '../../Components/CustomLink'
 import CentralPanel from '../../Components/CentralPanel';
 

@@ -1,6 +1,6 @@
 import { Typography, Box } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import CustomButton from '../../components/CustomButton';
+import CustomButton from '../../Components/CustomButton';
 import CentralPanel from '../../Components/CentralPanel';
 
 const LandingPage = () => {
