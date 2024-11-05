@@ -146,7 +146,7 @@ const DashboardPage = () => {
             </DialogActions>
           </Dialog>
           <Grid container spacing={3}>
-            {presentations.map((presentation) => (
+            {presentations?.map((presentation) => (
               <Grid xs={12} sm={6} md={4} key={presentation.id} sx={{ cursor: 'pointer' }} onClick={() => {navigate(`/presentation/${presentation.id}#/1`)}}>
                 <Card
                   sx={{
