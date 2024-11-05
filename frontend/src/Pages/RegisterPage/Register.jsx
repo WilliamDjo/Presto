@@ -41,7 +41,7 @@ const SignUpPage = () => {
       >
         <Box display="flex" flexDirection="column" gap={2} component="form" onSubmit={handleRegisterClick}>
           <Typography variant="h5" align="center">
-                        Sign Up
+            Sign Up
           </Typography>
           {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
           <TextField
@@ -80,10 +80,10 @@ const SignUpPage = () => {
         />
 
         <Typography variant="body2" align="center" sx={{ mt: 2 }}>
-                    Already have an account?
+          Already have an account?
           <CustomLink text="Sign in" navigateTo="/login" />
         </Typography>
-      </CentralPanel >
+      </CentralPanel>
     </>
   );
 }
