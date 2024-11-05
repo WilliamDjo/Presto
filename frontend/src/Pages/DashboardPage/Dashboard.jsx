@@ -1,7 +1,7 @@
-import { useState, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import CustomButton from "../../Components/CustomButton";
-import { logoutFetch } from "../../HelperFiles/helper";
+import { fetchRequest, logoutFetch } from "../../HelperFiles/helper";
 import Grid from '@mui/material/Grid2';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import {
@@ -24,7 +24,15 @@ const DashboardPage = () => {
   const [presentations, setPresentations] = useState([]);
   const [error, setError] = useState('');
   const navigate = useNavigate();
-  const defaultRef = useRef();
+
+  useEffect(() => {
+    const fetchStore = async () => {
+      const res = await fetchRequest('/store', 'get', null, localStorage.getItem('token'), null);
+      setPresentations(res.store.presentations);
+    }
+
+    fetchStore();
+  }, [])
 
   const handleCreatePresentation = (e) => {
     e.preventDefault();
@@ -33,19 +41,29 @@ const DashboardPage = () => {
     if (presentationName.trim()) {
       const newPresentation = {
         id: Date.now(),
-        name: presentationName,
+        title: presentationName,
+        thumbnail: "Default thumbnail", // TODO: fix thumbnail format
+        defaultBackground: "Default background", // TODO: fix background format
+        versionHistory: [],
         slides: [
           {
-            id: 1,
-            content: [] // Empty slide content
+            slideNum: 1,
+            background: null,
+            contents: []
           }
         ]
       };
 
+      const userStore = {
+        store: {
+          presentations: [...presentations, newPresentation]
+        }
+      }
+
+      fetchRequest('/store', 'put', userStore, localStorage.getItem('token'), null);
       setPresentations([...presentations, newPresentation]);
       setPresentationName('');
       setIsModalOpen(false);
-      defaultRef.current.focus();
     } else {
       setError('Please enter valid a name');
     }
@@ -69,7 +87,7 @@ const DashboardPage = () => {
 
   return (
     <>
-      <Container maxWidth="lg" ref={defaultRef} tabIndex={-1}>
+      <Container maxWidth="lg" tabIndex={-1}>
         <Box sx={{ py: 4 }}>
           <Box
             sx={{
@@ -142,7 +160,7 @@ const DashboardPage = () => {
                 >
                   <CardContent>
                     <Typography variant="h6" component="h2" gutterBottom>
-                      {presentation.name}
+                      {presentation.title}
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
                       {presentation.slides.length} slide{presentation.slides.length !== 1 ? 's' : ''}
