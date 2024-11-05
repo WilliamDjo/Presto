@@ -31,6 +31,33 @@ export default function Slide({ children, initialPosition = { x: 0, y: 0 }, init
     return (pixels / total) * 100;
   }, []);
 
+  const handleMouseDown = (e) => {
+    if (e.target.classList.contains('resize-handle')) {
+      // Start resizing
+      isResizing.current = true;
+      resizeCorner.current = e.target.dataset.corner;
+      initialSizeRef.current = {
+        width: percentToPixels(size.width, 'width'),
+        height: percentToPixels(size.height, 'height')
+      };
+      initialPosRef.current = {
+        x: percentToPixels(position.x, 'width'),
+        y: percentToPixels(position.y, 'height')
+      };
+    } else {
+      // Start dragging
+      isDragging.current = true;
+      initialPosRef.current = {
+        x: percentToPixels(position.x, 'width'),
+        y: percentToPixels(position.y, 'height')
+      };
+    }
+    dragStart.current = { x: e.clientX, y: e.clientY };
+    setIsSelected(true);
+    e.stopPropagation();
+  };
+
+
   return (
     <div>DraggableResizable</div>
   )
