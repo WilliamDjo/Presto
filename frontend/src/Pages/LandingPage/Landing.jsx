@@ -1,4 +1,4 @@
-import { Container, Typography, Box, Paper } from '@mui/material';
+import { Typography, Box } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import CustomButton from '../../components/CustomButton';
 import CentralPanel from '../../Components/CentralPanel';
