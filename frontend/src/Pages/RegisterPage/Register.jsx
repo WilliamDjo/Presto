@@ -11,13 +11,14 @@ const SignUpPage = () => {
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
   const handleRegisterClick = async (e) => {
     e.preventDefault();
     try {
-      const res = await authFetch({ email, name, password }, '/admin/auth/register');
+      const res = await authFetch({ email, name, password, confirmPassword }, '/admin/auth/register');
 
       if (res.success) {
         localStorage.setItem('token', res.data.token);
@@ -71,6 +72,13 @@ const SignUpPage = () => {
             fullWidth
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+          />
+          <TextField
+            label="Confirm Password"
+            type="password"
+            fullWidth
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
           />
 
           <CustomButton

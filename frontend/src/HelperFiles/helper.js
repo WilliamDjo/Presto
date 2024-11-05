@@ -70,6 +70,13 @@ export async function authFetch(userData, path) {
         error: 'Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character'
       };
     }
+
+    if (!isValidConfirmPassword(userData.password, userData.confirmPassword)) {
+      return {
+        success: false,
+        error: 'Passwords do not match'
+      };
+    }
   }
 
   try {
