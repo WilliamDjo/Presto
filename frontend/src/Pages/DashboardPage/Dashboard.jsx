@@ -20,7 +20,7 @@ import {
 
 const DashboardPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [presentationName, setPresentationName] = useState('');
+  const [presentationTitle, setPresentationTitle] = useState('');
   const [presentations, setPresentations] = useState([]);
   const [error, setError] = useState('');
   const navigate = useNavigate();
@@ -38,10 +38,10 @@ const DashboardPage = () => {
     e.preventDefault();
     setError('');
 
-    if (presentationName.trim()) {
+    if (presentationTitle.trim()) {
       const newPresentation = {
         id: Date.now(),
-        title: presentationName,
+        title: presentationTitle,
         thumbnail: "Default thumbnail", // TODO: fix thumbnail format
         defaultBackground: "Default background", // TODO: fix background format
         versionHistory: [],
@@ -62,7 +62,7 @@ const DashboardPage = () => {
 
       fetchRequest('/store', 'put', userStore, localStorage.getItem('token'), null);
       setPresentations([...presentations, newPresentation]);
-      setPresentationName('');
+      setPresentationTitle('');
       setIsModalOpen(false);
     } else {
       setError('Please enter valid a name');
@@ -98,7 +98,7 @@ const DashboardPage = () => {
             }}
           >
             <Typography variant="h4" component="h1">
-                            Presentations
+              Presentations
             </Typography>
             <CustomButton
               text="New Presentation"
@@ -127,8 +127,8 @@ const DashboardPage = () => {
                   type="text"
                   fullWidth
                   variant="outlined"
-                  value={presentationName}
-                  onChange={(e) => setPresentationName(e.target.value)}
+                  value={presentationTitle}
+                  onChange={(e) => setPresentationTitle(e.target.value)}
                   sx={{ mt: 2 }}
                 />
               </DialogContent>
@@ -136,7 +136,7 @@ const DashboardPage = () => {
                 <CustomButton
                   onClick={handleCreatePresentation}
                   variant="contained"
-                  disabled={!presentationName.trim()}
+                  disabled={!presentationTitle.trim()}
                   text="Create"
                 />
               </DialogActions>
@@ -147,7 +147,7 @@ const DashboardPage = () => {
           </Dialog>
           <Grid container spacing={3}>
             {presentations.map((presentation) => (
-              <Grid xs={12} sm={6} md={4} key={presentation.id} sx={{ cursor: 'pointer' }}>
+              <Grid xs={12} sm={6} md={4} key={presentation.id} sx={{ cursor: 'pointer' }} onClick={() => {navigate(`/presentation/${presentation.id}#/1`)}}>
                 <Card
                   sx={{
                     height: '100%',
