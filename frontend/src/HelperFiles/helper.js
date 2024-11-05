@@ -8,20 +8,16 @@ const genQueryString = (queryJSON) => {
   return queryString.slice(1);
 }
 
-const fetchRequest = async (path, method, body, token, queryJSON) => {
+export const fetchRequest = async (path, method, body, token, queryJSON) => {
   const url = `http://localhost:${config.BACKEND_PORT}${path}` + (queryJSON ? ('?' + genQueryString(queryJSON)) : '');
   const headers = token ? {'Content-type': 'application/json', 'Authorization': `Bearer ${token}`} : {'Content-type': 'application/json'};
   const request = body ? {'method': method, 'headers': headers, 'body': JSON.stringify(body)} : {'method': method, 'headers': headers};
-
-  console.log(url);
-  console.log(request);
 
   try {
     const response = await fetch(url, request);
 
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
-      // return response;
     }
 
     const data = await response.json();
@@ -132,4 +128,4 @@ export async function logoutFetch(path, token) {
   }
 }
 
-export default {fetchRequest, isValidEmail, isValidName, isValidPassword, isValidConfirmPassword};
+export default { isValidEmail, isValidName, isValidPassword, isValidConfirmPassword };

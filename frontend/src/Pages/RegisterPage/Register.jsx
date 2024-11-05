@@ -4,7 +4,7 @@ import CustomButton from '../../Components/CustomButton';
 import CentralPanel from '../../Components/CentralPanel';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { authFetch } from '../../HelperFiles/helper';
+import { authFetch, fetchRequest } from '../../HelperFiles/helper';
 
 
 const SignUpPage = () => {
@@ -21,6 +21,15 @@ const SignUpPage = () => {
 
       if (res.success) {
         localStorage.setItem('token', res.data.token);
+
+        const newUserStore = {
+          store: {
+            presentations: []
+          }
+        };
+
+        await fetchRequest('/store', 'put', newUserStore, res.data.token, null);
+
         navigate('/dashboard');
       } else {
         setError(res.error);

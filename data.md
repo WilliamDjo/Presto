@@ -20,14 +20,14 @@
                 {
                     slideNum: int,
                     background: null || string,
-                    contains: [
+                    contents: [
 
                     ]
                 },
                 {
                     slideNum: int,
                     background: null || string,
-                    contains: [
+                    contents: [
                         {
                             type: 'text',
                             attributes: {
