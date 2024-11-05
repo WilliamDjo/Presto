@@ -7,8 +7,8 @@ import BackButton from '../../Components/BackButton';
 import SlidesBar from './PresentationComponents/SlidesBar';
 
 const PresentationPage = () => {
-  const [presentations, setPresentations] = useState([]);
-  const [presentation, setPresentation] = useState(null);
+  // const [presentations, setPresentations] = useState([]);
+  // const [presentation, setPresentation] = useState(null);
   const [presentationTitle, setPresentationTitle] = useState("");
   const [saveStatus, setSaveStatus] = useState("Saved");
   const [slideWidth, setSlideWidth] = useState(100);
