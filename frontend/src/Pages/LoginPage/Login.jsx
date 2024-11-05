@@ -1,6 +1,6 @@
 // Import necessary modules
 import { useState } from 'react';
-import { TextField, Typography, Container, Box, Paper, Avatar, IconButton, Link, Alert, CssBaseline } from '@mui/material';
+import { TextField, Typography, Box, Avatar, IconButton, Alert, CssBaseline } from '@mui/material';
 import { LockOutlined } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { authFetch } from '../../HelperFiles/helper';
@@ -97,7 +97,7 @@ const Login = () => {
           type="button"
         />
         <Typography variant="body2" color="textSecondary" sx={{ mt: 3, textAlign: 'center' }}>
-          Don't have an account? <CustomLink text="Register" navigateTo="/register" />
+          Don&apos;t have an account? <CustomLink text="Register" navigateTo="/register" />
         </Typography>
       </CentralPanel>
     </>
