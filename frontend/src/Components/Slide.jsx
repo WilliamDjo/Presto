@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 
 export default function Slide({ children, initialPosition = { x: 0, y: 0 }, initialSize = { width: 30, height: 30 } }) {
   // Position and size stored as percentages (0-100)
@@ -133,6 +133,35 @@ export default function Slide({ children, initialPosition = { x: 0, y: 0 }, init
     }
   }, [percentToPixels, pixelsToPercent, size.width, size.height]);
 
+  const handleMouseUp = useCallback(() => {
+    isDragging.current = false;
+    isResizing.current = false;
+  }, []);
+
+  // Add and remove event listeners
+  useEffect(() => {
+    if (isSelected) {
+      window.addEventListener('mousemove', handleMouseMove);
+      window.addEventListener('mouseup', handleMouseUp);
+      
+      return () => {
+        window.removeEventListener('mousemove', handleMouseMove);
+        window.removeEventListener('mouseup', handleMouseUp);
+      };
+    }
+  }, [isSelected, handleMouseMove, handleMouseUp]);
+
+  // Handle clicking outside to deselect
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (elementRef.current && !elementRef.current.contains(e.target)) {
+        setIsSelected(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   return (
     <div>DraggableResizable</div>
