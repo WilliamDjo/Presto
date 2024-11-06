@@ -29,10 +29,13 @@ const ResizeHandle = styled(Box)(({ corner }) => ({
   }),
 }));
 
-const DraggableCard = styled(Card)(({ isSelected, isDragging }) => ({
+// Create a styled component that doesn't forward the custom props to the DOM
+const DraggableCard = styled(Card, {
+  shouldForwardProp: prop => !['isSelected', 'isDragging'].includes(prop)
+})(({ theme, isSelected, isDragging }) => ({
   position: 'absolute',
   cursor: isDragging ? 'grabbing' : 'grab',
-  border: isSelected ? '2px solid #2196f3' : 'none',
+  border: isSelected ? `2px solid ${theme.palette.primary.main}` : 'none',
   boxSizing: 'border-box',
 }));
 
@@ -107,26 +110,26 @@ export default function Slide({ children, initialPosition = { x: 0, y: 0 }, init
       let newY = initialPosRef.current.y;
 
       switch (resizeCorner.current) {
-        case 'nw':
-          newWidth = initialSizeRef.current.width - deltaX;
-          newHeight = initialSizeRef.current.height - deltaY;
-          newX = initialPosRef.current.x + deltaX;
-          newY = initialPosRef.current.y + deltaY;
-          break;
-        case 'ne':
-          newWidth = initialSizeRef.current.width + deltaX;
-          newHeight = initialSizeRef.current.height - deltaY;
-          newY = initialPosRef.current.y + deltaY;
-          break;
-        case 'sw':
-          newWidth = initialSizeRef.current.width - deltaX;
-          newHeight = initialSizeRef.current.height + deltaY;
-          newX = initialPosRef.current.x + deltaX;
-          break;
-        case 'se':
-          newWidth = initialSizeRef.current.width + deltaX;
-          newHeight = initialSizeRef.current.height + deltaY;
-          break;
+      case 'nw':
+        newWidth = initialSizeRef.current.width - deltaX;
+        newHeight = initialSizeRef.current.height - deltaY;
+        newX = initialPosRef.current.x + deltaX;
+        newY = initialPosRef.current.y + deltaY;
+        break;
+      case 'ne':
+        newWidth = initialSizeRef.current.width + deltaX;
+        newHeight = initialSizeRef.current.height - deltaY;
+        newY = initialPosRef.current.y + deltaY;
+        break;
+      case 'sw':
+        newWidth = initialSizeRef.current.width - deltaX;
+        newHeight = initialSizeRef.current.height + deltaY;
+        newX = initialPosRef.current.x + deltaX;
+        break;
+      case 'se':
+        newWidth = initialSizeRef.current.width + deltaX;
+        newHeight = initialSizeRef.current.height + deltaY;
+        break;
       }
 
       const minWidth = slideElement.offsetWidth / 100;
@@ -216,7 +219,6 @@ export default function Slide({ children, initialPosition = { x: 0, y: 0 }, init
       )}
       {children}
     </DraggableCard>
-  );
   );
 }
 

@@ -17,7 +17,6 @@ import {
   Container,
   Alert
 } from '@mui/material';
-import  Slide  from '../../Components/Slide';
 
 const DashboardPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -173,11 +172,7 @@ const DashboardPage = () => {
           </Grid>
         </Box>
         <CustomButton text="Log out" onClick={handleLogout} />
-        <div className="relative w-full h-full">
-          <Slide initialPosition={{ x: 10, y: 10 }} initialSize={{ width: 30, height: 20 }}>
-          Hello World
-          </Slide>
-        </div>
+ 
     
       </Container>
 
