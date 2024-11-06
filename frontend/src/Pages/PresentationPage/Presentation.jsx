@@ -1,10 +1,9 @@
 import { Typography, CssBaseline, TextField, Box, Button, IconButton, Divider } from '@mui/material';
 import { useEffect, useState, useRef } from 'react';
-import { Notes, Image, VideoLibrary, Code, KeyboardDoubleArrowLeft, ArrowRight, ArrowLeft } from '@mui/icons-material';
-import AspectRatio from '@mui/joy/AspectRatio';
+import { Notes, Image, VideoLibrary, Code, KeyboardDoubleArrowLeft, ArrowRight, ArrowLeft, Settings, Delete } from '@mui/icons-material';
 import { fetchRequest } from '../../HelperFiles/helper';
-
-const scale = 5;
+import BackButton from '../../Components/BackButton';
+import { useNavigate } from 'react-router-dom';
 
 const PresentationPage = () => {
   const [presentations, setPresentations] = useState([]);
@@ -15,6 +14,7 @@ const PresentationPage = () => {
   const [slideHeight, setSlideHeight] = useState(100);
   const slideContainerRef = useRef(null);
   const slideRef = useRef(null);
+  const navigate = useNavigate();
 
   const updateDimensions = (e) => {
     if (slideRef.current) {
@@ -68,29 +68,30 @@ const PresentationPage = () => {
     <>
       <CssBaseline />
 
-      <Box sx={{display: "flex", flexDirection: "column", justifyContent: "space-between", height: "100vh", justifyContent: "center"}}>
+      <Box sx={{display: "flex", flexDirection: "column", justifyContent: "space-between", height: "100vh", justifyContent: "center", backgroundColor: "#f5f5f5"}}>
         {/* Header */}
-        <Box sx={{ display: "flex", alignItems: "center", p: 2, backgroundColor: 'primary.main', color: 'white', gap: 2, minHeight: 100 }}>
-          <Button color="white">Back</Button>
-          <TextField
-            label="Presentation Title"
-            value={presentationTitle}
-            InputLabelProps={{ shrink: true }}
-            onChange={(e) => setPresentationTitle(e.target.value)}
-            onBlur={(e) => {
-              if (!e.target.value) setPresentationTitle("Untitled Presentation");
-            }}
-            sx={{
-              input: { color: 'white' },
-              '& .MuiInputLabel-root': { color: "white" },
-              '& .MuiOutlinedInput-root': {
-                '& fieldset': { borderColor: 'white' },
-                '&:hover fieldset': { borderColor: 'white', borderWidth: 2 },
-                '&.Mui-focused fieldset': { borderColor: 'white', borderWidth: 3 },
-              },
-            }}
-          />
-          <Typography variant="body2" sx={{ fontWeight: 'bold' }}>{saveStatus}</Typography>
+        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", p: 2, backgroundColor: 'primary.main', color: 'white', gap: 2, minHeight: 100 }}>
+          <Box sx={{display: "flex", alignItems: "center", gap: 2}}>
+            <BackButton onClick={() => navigate("/dashboard")} />
+            <Image>
+
+            </Image>
+            <Box sx={{display: "flex", flexDirection: "column"}}>
+              <Box sx={{display: "flex", gap: 0.5}}>
+                <Typography variant="h5" sx={{ fontWeight: 'bold' }}>{presentationTitle}</Typography>
+                <IconButton size="small" sx={{color: "white"}}>
+                  <Settings />
+                </IconButton>
+              </Box>
+              <Typography variant="body2" sx={{ fontWeight: "semi-bold" }}>{saveStatus}</Typography>
+            </Box>
+          </Box>
+
+          <Box>
+            <IconButton>
+              <Delete sx={{color: "white"}}/>
+            </IconButton>
+          </Box>
         </Box>
 
         <Box
@@ -128,20 +129,20 @@ const PresentationPage = () => {
         </Box>
 
         {/* Central Box */}
-        <Box p={2} ref={slideContainerRef} sx={{ display: "flex", justifyContent: "center", height: "100%", overflowY: 'auto', overflowX: 'auto' }}>
-          <Box ref={slideRef} height={slideHeight} width={slideWidth} sx={{ backgroundColor: "grey"}}>
-            <Typography>
+        <Box p={2} ref={slideContainerRef} sx={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100%", overflowY: 'auto', overflowX: 'auto' }}>
+          <Box ref={slideRef} height={slideHeight} width={slideWidth} border={1} sx={{ backgroundColor: "white"}}>
+            <Typography sx={{position: "relative", top: "50%", left: "50%", width: "50%", height: "50%", backgroundColor: "green"}}>
               Hello
             </Typography>
           </Box>
         </Box>
 
         {/* Footer */}
-        <Box sx={{ display: "flex", justifyContent: "space-between", backgroundColor: "grey", width: "100%", minHeight: 100 }}>
-          <IconButton>
+        <Box sx={{ display: "flex", justifyContent: "space-between", backgroundColor: "primary.main", width: "100%", minHeight: 150 }}>
+          <IconButton sx={{ color: 'white' }}>
             <ArrowLeft />
-          </IconButton>
-          <IconButton>
+          </IconButton >
+          <IconButton sx={{ color: 'white' }}>
             <ArrowRight />
           </IconButton>
         </Box>
