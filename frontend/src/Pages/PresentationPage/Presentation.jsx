@@ -61,6 +61,8 @@ const PresentationPage = () => {
 
         <SlidesBar />
       </Box>
+
+      {/* Delete Modal */}
       <Dialog
         open={showDeleteDialog}
         onClose={() => setShowDeleteDialog(false)}
@@ -85,6 +87,7 @@ const PresentationPage = () => {
         </DialogActions>
       </Dialog>
 
+      {/* Settings Modal */}
       <Dialog 
         open={showSettingsDialog} 
         onClose={handleDialogClose}
