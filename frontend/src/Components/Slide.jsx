@@ -106,41 +106,37 @@ export default function Slide({ children, initialPosition = { x: 0, y: 0 }, init
       let newX = initialPosRef.current.x;
       let newY = initialPosRef.current.y;
 
-      // Handle resizing based on which corner is being dragged
       switch (resizeCorner.current) {
-      case 'nw':
-        newWidth = initialSizeRef.current.width - deltaX;
-        newHeight = initialSizeRef.current.height - deltaY;
-        newX = initialPosRef.current.x + deltaX;
-        newY = initialPosRef.current.y + deltaY;
-        break;
-      case 'ne':
-        newWidth = initialSizeRef.current.width + deltaX;
-        newHeight = initialSizeRef.current.height - deltaY;
-        newY = initialPosRef.current.y + deltaY;
-        break;
-      case 'sw':
-        newWidth = initialSizeRef.current.width - deltaX;
-        newHeight = initialSizeRef.current.height + deltaY;
-        newX = initialPosRef.current.x + deltaX;
-        break;
-      case 'se':
-        newWidth = initialSizeRef.current.width + deltaX;
-        newHeight = initialSizeRef.current.height + deltaY;
-        break;
+        case 'nw':
+          newWidth = initialSizeRef.current.width - deltaX;
+          newHeight = initialSizeRef.current.height - deltaY;
+          newX = initialPosRef.current.x + deltaX;
+          newY = initialPosRef.current.y + deltaY;
+          break;
+        case 'ne':
+          newWidth = initialSizeRef.current.width + deltaX;
+          newHeight = initialSizeRef.current.height - deltaY;
+          newY = initialPosRef.current.y + deltaY;
+          break;
+        case 'sw':
+          newWidth = initialSizeRef.current.width - deltaX;
+          newHeight = initialSizeRef.current.height + deltaY;
+          newX = initialPosRef.current.x + deltaX;
+          break;
+        case 'se':
+          newWidth = initialSizeRef.current.width + deltaX;
+          newHeight = initialSizeRef.current.height + deltaY;
+          break;
       }
 
-      // Enforce minimum size (1%)
       const minWidth = slideElement.offsetWidth / 100;
       const minHeight = slideElement.offsetHeight / 100;
       newWidth = Math.max(newWidth, minWidth);
       newHeight = Math.max(newHeight, minHeight);
 
-      // Enforce maximum size (prevent extending beyond slide edges)
       newWidth = Math.min(newWidth, slideElement.offsetWidth - newX);
       newHeight = Math.min(newHeight, slideElement.offsetHeight - newY);
 
-      // Update position and size as percentages
       setSize({
         width: pixelsToPercent(newWidth, 'width'),
         height: pixelsToPercent(newHeight, 'height')
@@ -150,7 +146,6 @@ export default function Slide({ children, initialPosition = { x: 0, y: 0 }, init
         y: pixelsToPercent(Math.max(0, newY), 'height')
       });
     } else if (isDragging.current) {
-      // Calculate new position while keeping element within slide boundaries
       const newX = Math.max(0, Math.min(
         initialPosRef.current.x + deltaX,
         slideElement.offsetWidth - percentToPixels(size.width, 'width')
