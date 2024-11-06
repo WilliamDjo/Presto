@@ -2,6 +2,7 @@ import { CssBaseline, Box, TextField, Typography, Alert } from '@mui/material';
 import CustomLink from '../../Components/CustomLink'
 import CustomButton from '../../Components/CustomButton';
 import CentralPanel from '../../Components/CentralPanel';
+import BackButton from '../../Components/BackButton';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { authFetch, fetchRequest } from '../../HelperFiles/helper';
@@ -49,6 +50,8 @@ const SignUpPage = () => {
         alignItems="center"
         minHeight="100vh"
       >
+        <BackButton color="" onClick={() => navigate('/')} />
+
         <Box display="flex" flexDirection="column" gap={2} component="form" onSubmit={handleRegisterClick}>
           <Typography variant="h5" align="center">
             Sign Up
@@ -88,13 +91,6 @@ const SignUpPage = () => {
           />
 
         </Box>
-        <CustomButton
-          text="Back to Home"
-          onClick={() => navigate('/')}
-          variant="outlined"
-          sx={{ mt: 2 }}
-          type="button"
-        />
 
         <Typography variant="body2" align="center" sx={{ mt: 2 }}>
           Already have an account?

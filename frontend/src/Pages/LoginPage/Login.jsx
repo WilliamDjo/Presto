@@ -7,6 +7,7 @@ import { authFetch } from '../../HelperFiles/helper';
 import CustomButton from '../../Components/CustomButton';
 import CustomLink from '../../Components/CustomLink'
 import CentralPanel from '../../Components/CentralPanel';
+import BackButton from '../../Components/BackButton';
 
 
 const Login = () => {
@@ -38,6 +39,8 @@ const Login = () => {
     <>
       <CssBaseline />
       <CentralPanel>
+        <BackButton color="" onClick={() => navigate('/')} />
+
         <Box
           display="flex"
           flexDirection="column"
@@ -89,13 +92,6 @@ const Login = () => {
             sx={{ mt: 2 }}
           />
         </Box>
-        <CustomButton
-          text="Back to Home"
-          onClick={() => navigate('/')}
-          variant="outlined"
-          sx={{ mt: 2 }}
-          type="button"
-        />
         <Typography variant="body2" color="textSecondary" sx={{ mt: 3, textAlign: 'center' }}>
           Don&apos;t have an account? <CustomLink text="Register" navigateTo="/register" />
         </Typography>
