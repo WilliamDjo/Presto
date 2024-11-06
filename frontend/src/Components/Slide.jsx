@@ -162,12 +162,12 @@ export default function Slide({ children, initialPosition = { x: 0, y: 0 }, init
     }
   }, [percentToPixels, pixelsToPercent, size.width, size.height]);
 
+
   const handleMouseUp = useCallback(() => {
     isDragging.current = false;
     isResizing.current = false;
   }, []);
 
-  // Add and remove event listeners
   useEffect(() => {
     if (isSelected) {
       window.addEventListener('mousemove', handleMouseMove);
@@ -180,7 +180,6 @@ export default function Slide({ children, initialPosition = { x: 0, y: 0 }, init
     }
   }, [isSelected, handleMouseMove, handleMouseUp]);
 
-  // Handle clicking outside to deselect
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (elementRef.current && !elementRef.current.contains(e.target)) {
