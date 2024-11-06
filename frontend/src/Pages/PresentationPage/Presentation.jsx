@@ -61,22 +61,29 @@ const PresentationPage = () => {
 
         <SlidesBar />
       </Box>
-
-      <DeleteDialog 
+      <Dialog
         open={showDeleteDialog}
         onClose={() => setShowDeleteDialog(false)}
-        onConfirm={handleDelete}
-      />
-
-      <SettingsDialog 
-        open={showSettingsDialog}
-        onClose={() => setShowSettingsDialog(false)}
-        onSave={handleSave}
-        title={newTitle}
-        thumbnail={previewThumbnail}
-        onTitleChange={setNewTitle}
-        onThumbnailChange={handleThumbnailChange}
-      />
+        aria-labelledby="delete-dialog-title"
+        aria-describedby="delete-dialog-description"
+      >
+        <DialogTitle id="delete-dialog-title">
+          Delete Presentation
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="delete-dialog-description">
+            Are you sure?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setShowDeleteDialog(false)} color="primary">
+            No
+          </Button>
+          <Button onClick={handleDelete} color="error" autoFocus>
+            Yes
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 };
