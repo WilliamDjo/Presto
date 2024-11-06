@@ -5,6 +5,7 @@ import LandingPage from '../Pages/LandingPage/Landing';
 import Register from '../Pages/RegisterPage/Register';
 import DashboardPage from '../Pages/DashboardPage/Dashboard';
 import PresentationPage from '../Pages/PresentationPage/Presentation';
+import Test from '../Pages/TestPage/Test';
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { setPresentations, fetchPresentations } from '../State/presentationsSlice';
@@ -37,6 +38,7 @@ const Router = () => {
       <Route path="/register" element={<Register />} />
       <Route path="/dashboard" element={<DashboardPage />} />
       <Route path="/presentation/*" element={<PresentationPage />} />
+      <Route path="/test" element={<Test />} />
     </Routes>
   );
 };
