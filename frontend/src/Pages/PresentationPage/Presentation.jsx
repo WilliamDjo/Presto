@@ -1,9 +1,10 @@
-import { Typography, CssBaseline, TextField, Box, Button, IconButton, Divider } from '@mui/material';
+import { Typography, CssBaseline, Box, IconButton, Divider } from '@mui/material';
 import { useEffect, useState, useRef } from 'react';
-import { Notes, Image, VideoLibrary, Code, KeyboardDoubleArrowLeft, ArrowRight, ArrowLeft, Settings, Delete } from '@mui/icons-material';
+import { Notes, Image, VideoLibrary, Code, KeyboardDoubleArrowLeft, Settings, Delete } from '@mui/icons-material';
 import { fetchRequest } from '../../HelperFiles/helper';
-import BackButton from '../../Components/BackButton';
 import { useNavigate } from 'react-router-dom';
+import BackButton from '../../Components/BackButton';
+import SlidesBar from './PresentationComponents/SlidesBar';
 
 const PresentationPage = () => {
   const [presentations, setPresentations] = useState([]);
@@ -137,15 +138,7 @@ const PresentationPage = () => {
           </Box>
         </Box>
 
-        {/* Footer */}
-        <Box sx={{ display: "flex", justifyContent: "space-between", backgroundColor: "primary.main", width: "100%", minHeight: 150 }}>
-          <IconButton sx={{ color: 'white' }}>
-            <ArrowLeft />
-          </IconButton >
-          <IconButton sx={{ color: 'white' }}>
-            <ArrowRight />
-          </IconButton>
-        </Box>
+        <SlidesBar slides={presentation?.slides} />
       </Box>
     </>
   );
