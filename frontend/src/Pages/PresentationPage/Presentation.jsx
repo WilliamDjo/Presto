@@ -1,15 +1,21 @@
-import { Typography, CssBaseline, Box, IconButton, Divider } from '@mui/material';
+import { Typography, CssBaseline, Box, IconButton, Divider, Button } from '@mui/material';
 import { useEffect, useState, useRef } from 'react';
 import { Notes, Image, VideoLibrary, Code, KeyboardDoubleArrowLeft, Settings, Delete } from '@mui/icons-material';
 import { fetchRequest } from '../../HelperFiles/helper';
 import { useNavigate } from 'react-router-dom';
 import BackButton from '../../Components/BackButton';
 import SlidesBar from './PresentationComponents/SlidesBar';
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent, DialogContentText,
+  DialogActions,} from '@mui/material';
 
 const PresentationPage = () => {
   const [, setPresentations] = useState([]);
   const [presentation, setPresentation] = useState(null);
   const [presentationTitle, setPresentationTitle] = useState("");
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [saveStatus, setSaveStatus] = useState("Saved");
   const [slideWidth, setSlideWidth] = useState(100);
   const [slideHeight, setSlideHeight] = useState(100);
@@ -65,6 +71,12 @@ const PresentationPage = () => {
     savePresentation();
   }, [presentationTitle]);
 
+  const handleDelete = () => {
+
+    setShowDeleteDialog(false);
+    // onDelete();
+  };
+
   return (
     <>
       <CssBaseline />
@@ -89,7 +101,7 @@ const PresentationPage = () => {
           </Box>
 
           <Box>
-            <IconButton>
+            <IconButton onClick={() => setShowDeleteDialog(true)}>
               <Delete sx={{color: "white"}}/>
             </IconButton>
           </Box>
@@ -140,6 +152,29 @@ const PresentationPage = () => {
 
         <SlidesBar slides={presentation?.slides} />
       </Box>
+      <Dialog
+        open={showDeleteDialog}
+        onClose={() => setShowDeleteDialog(false)}
+        aria-labelledby="delete-dialog-title"
+        aria-describedby="delete-dialog-description"
+      >
+        <DialogTitle id="delete-dialog-title">
+          Delete Presentation
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="delete-dialog-description">
+            Are you sure?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setShowDeleteDialog(false)} color="primary">
+            No
+          </Button>
+          <Button onClick={handleDelete} color="error" autoFocus>
+            Yes
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 };
