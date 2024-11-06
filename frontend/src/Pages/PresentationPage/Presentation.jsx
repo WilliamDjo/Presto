@@ -1,4 +1,8 @@
-import { Typography, CssBaseline, Box, IconButton, Divider, Button } from '@mui/material';
+import { Typography, CssBaseline, Box, IconButton, Divider, Button, Stack, TextField,   Card,
+  CardActionArea,
+  CardMedia,
+  InputLabel,
+  Input } from '@mui/material';
 import { useEffect, useState, useRef } from 'react';
 import { Notes, Image, VideoLibrary, Code, KeyboardDoubleArrowLeft, Settings, Delete } from '@mui/icons-material';
 import { fetchRequest } from '../../HelperFiles/helper';
@@ -16,6 +20,9 @@ const PresentationPage = () => {
   const [presentation, setPresentation] = useState(null);
   const [presentationTitle, setPresentationTitle] = useState("");
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [showSettingsDialog, setShowSettingsDialog] = useState(false);
+  const [newTitle, setNewTitle] = useState(presentationTitle);
+  const [previewThumbnail, setPreviewThumbnail] = useState("");
   const [saveStatus, setSaveStatus] = useState("Saved");
   const [slideWidth, setSlideWidth] = useState(100);
   const [slideHeight, setSlideHeight] = useState(100);
@@ -77,6 +84,29 @@ const PresentationPage = () => {
     // onDelete();
   };
 
+  const handleSave = () => {
+    // onTitleChange(newTitle);
+    // onThumbnailChange(previewThumbnail);
+    setShowSettingsDialog(false);
+  };
+
+  const handleThumbnailChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setPreviewThumbnail(e.target.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleDialogClose = () => {
+    setShowSettingsDialog(false);
+    setNewTitle(presentationTitle);
+    setPreviewThumbnail("");
+  };
+
   return (
     <>
       <CssBaseline />
@@ -92,7 +122,7 @@ const PresentationPage = () => {
             <Box sx={{display: "flex", flexDirection: "column"}}>
               <Box sx={{display: "flex", gap: 0.5}}>
                 <Typography variant="h5" sx={{ fontWeight: 'bold' }}>{presentationTitle}</Typography>
-                <IconButton size="small" sx={{color: "white"}}>
+                <IconButton size="small" sx={{color: "white"}} onClick={() => setShowSettingsDialog(true)}>
                   <Settings />
                 </IconButton>
               </Box>
@@ -175,7 +205,73 @@ const PresentationPage = () => {
           </Button>
         </DialogActions>
       </Dialog>
+
+      <Dialog 
+        open={showSettingsDialog} 
+        onClose={handleDialogClose}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle>Presentation Settings</DialogTitle>
+        <DialogContent>
+          <Stack spacing={3} sx={{ mt: 1 }}>
+            <TextField
+              autoFocus
+              label="Title"
+              fullWidth
+              value={newTitle}
+              onChange={(e) => setNewTitle(e.target.value)}
+              variant="outlined"
+            />
+            
+            <Divider />
+            
+            <Stack spacing={1}>
+              <InputLabel>Thumbnail</InputLabel>
+              <Input
+                type="file"
+                accept="image/*"
+                onChange={handleThumbnailChange}
+                style={{ display: 'none' }}
+                id="thumbnail-upload"
+              />
+              <label htmlFor="thumbnail-upload">
+                <Card sx={{ width: '100%', maxWidth: 345 }}>
+                  <CardActionArea>
+                    <CardMedia
+                      component={previewThumbnail ? "img" : "div"}
+                      sx={{
+                        height: 194,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        bgcolor: 'grey.100'
+                      }}
+                      image={previewThumbnail}
+                      title="Presentation thumbnail"
+                    >
+                      {!previewThumbnail && (
+                        <Stack alignItems="center" spacing={1}>
+                          <Image color="action" sx={{ fontSize: 40 }} />
+                          <Typography variant="body2" color="text.secondary">
+                            Click to add thumbnail
+                          </Typography>
+                        </Stack>
+                      )}
+                    </CardMedia>
+                  </CardActionArea>
+                </Card>
+              </label>
+            </Stack>
+          </Stack>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDialogClose}>Cancel</Button>
+          <Button onClick={handleSave} variant="contained">Save</Button>
+        </DialogActions>
+      </Dialog>
     </>
+  
   );
 };
 
