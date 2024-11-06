@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
+import { Card } from '@mui/material';
 
-export default function Slide({ children, initialPosition = { x: 0, y: 0 }, initialSize = { width: 30, height: 30 } }) {
+export default function Slide({ children, initialPosition = { x: 0, y: 0 }, initialSize = { width: 30, height: 30 }, backgroundColor = 'grey'  }) {
   // Position and size stored as percentages (0-100)
   const [position, setPosition] = useState(initialPosition);
   const [size, setSize] = useState(initialSize);
@@ -164,6 +165,41 @@ export default function Slide({ children, initialPosition = { x: 0, y: 0 }, init
   }, []);
 
   return (
-    <div>DraggableResizable</div>
-  )
+    <Card
+      ref={elementRef}
+      className={`absolute ${isSelected ? 'ring-2 ring-blue-500' : ''}`}
+      style={{
+        width: `${size.width}%`,
+        height: `${size.height}%`,
+        left: `${position.x}%`,
+        top: `${position.y}%`,
+        cursor: isDragging.current ? 'grabbing' : 'grab',
+        backgroundColor: backgroundColor
+      }}
+      onMouseDown={handleMouseDown}
+    >
+      {isSelected && (
+        <>
+          <div
+            className="resize-handle absolute w-2 h-2 bg-blue-500 -left-1 -top-1 cursor-nw-resize"
+            data-corner="nw"
+          />
+          <div
+            className="resize-handle absolute w-2 h-2 bg-blue-500 -right-1 -top-1 cursor-ne-resize"
+            data-corner="ne"
+          />
+          <div
+            className="resize-handle absolute w-2 h-2 bg-blue-500 -left-1 -bottom-1 cursor-sw-resize"
+            data-corner="sw"
+          />
+          <div
+            className="resize-handle absolute w-2 h-2 bg-blue-500 -right-1 -bottom-1 cursor-se-resize"
+            data-corner="se"
+          />
+        </>
+      )}
+      {children}
+    </Card>
+  );
 }
+
