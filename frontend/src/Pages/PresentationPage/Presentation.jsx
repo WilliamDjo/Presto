@@ -1,19 +1,14 @@
-import { Typography, CssBaseline, Box, IconButton, Divider, Button, Stack, TextField,   Card,
-  CardActionArea,
-  CardMedia,
-  InputLabel,
-  Input } from '@mui/material';
+import { Typography, CssBaseline, Box, IconButton, Divider } from '@mui/material';
 import { useEffect, useState, useRef } from 'react';
-import { Notes, Image, VideoLibrary, Code, KeyboardDoubleArrowLeft, Settings, Delete } from '@mui/icons-material';
+import { Notes, Image, VideoLibrary, Code, KeyboardDoubleArrowLeft} from '@mui/icons-material';
 import { fetchRequest } from '../../HelperFiles/helper';
 import { useNavigate } from 'react-router-dom';
-import BackButton from '../../Components/BackButton';
+// import BackButton from '../../Components/BackButton';
 import SlidesBar from './PresentationComponents/SlidesBar';
-import {
-  Dialog,
-  DialogTitle,
-  DialogContent, DialogContentText,
-  DialogActions,} from '@mui/material';
+import DeleteDialog from './PresentationComponents/DeleteDialog';
+import SettingsDialog from './PresentationComponents/SettingsDialog';
+import Header from './PresentationComponents/Header';
+
 
 const PresentationPage = () => {
   const [, setPresentations] = useState([]);
@@ -101,11 +96,6 @@ const PresentationPage = () => {
     }
   };
 
-  const handleDialogClose = () => {
-    setShowSettingsDialog(false);
-    setNewTitle(presentationTitle);
-    setPreviewThumbnail("");
-  };
 
   return (
     <>
@@ -113,29 +103,13 @@ const PresentationPage = () => {
 
       <Box sx={{display: "flex", flexDirection: "column", justifyContent: "space-between", height: "100vh", justifyContent: "center", backgroundColor: "#f5f5f5"}}>
         {/* Header */}
-        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", p: 2, backgroundColor: 'primary.main', color: 'white', gap: 2, minHeight: 100 }}>
-          <Box sx={{display: "flex", alignItems: "center", gap: 2}}>
-            <BackButton onClick={() => navigate("/dashboard")} />
-            <Image>
-
-            </Image>
-            <Box sx={{display: "flex", flexDirection: "column"}}>
-              <Box sx={{display: "flex", gap: 0.5}}>
-                <Typography variant="h5" sx={{ fontWeight: 'bold' }}>{presentationTitle}</Typography>
-                <IconButton size="small" sx={{color: "white"}} onClick={() => setShowSettingsDialog(true)}>
-                  <Settings />
-                </IconButton>
-              </Box>
-              <Typography variant="body2" sx={{ fontWeight: "semi-bold" }}>{saveStatus}</Typography>
-            </Box>
-          </Box>
-
-          <Box>
-            <IconButton onClick={() => setShowDeleteDialog(true)}>
-              <Delete sx={{color: "white"}}/>
-            </IconButton>
-          </Box>
-        </Box>
+        <Header 
+          title={presentationTitle}
+          saveStatus={saveStatus}
+          onBackClick={() => navigate("/dashboard")}
+          onSettingsClick={() => setShowSettingsDialog(true)}
+          onDeleteClick={() => setShowDeleteDialog(true)}
+        />
 
         <Box
           m={2}
@@ -183,96 +157,21 @@ const PresentationPage = () => {
         <SlidesBar slides={presentation?.slides} />
       </Box>
 
-      {/* Delete Modal */}
-      <Dialog
+      <DeleteDialog 
         open={showDeleteDialog}
         onClose={() => setShowDeleteDialog(false)}
-        aria-labelledby="delete-dialog-title"
-        aria-describedby="delete-dialog-description"
-      >
-        <DialogTitle id="delete-dialog-title">
-          Delete Presentation
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText id="delete-dialog-description">
-            Are you sure?
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setShowDeleteDialog(false)} color="primary">
-            No
-          </Button>
-          <Button onClick={handleDelete} color="error" autoFocus>
-            Yes
-          </Button>
-        </DialogActions>
-      </Dialog>
+        onConfirm={handleDelete}
+      />
 
-      {/* Settings Modal */}
-      <Dialog 
-        open={showSettingsDialog} 
-        onClose={handleDialogClose}
-        maxWidth="sm"
-        fullWidth
-      >
-        <DialogTitle>Presentation Settings</DialogTitle>
-        <DialogContent>
-          <Stack spacing={3} sx={{ mt: 1 }}>
-            <TextField
-              autoFocus
-              label="Title"
-              fullWidth
-              value={newTitle}
-              onChange={(e) => setNewTitle(e.target.value)}
-              variant="outlined"
-            />
-            
-            <Divider />
-            
-            <Stack spacing={1}>
-              <InputLabel>Thumbnail</InputLabel>
-              <Input
-                type="file"
-                accept="image/*"
-                onChange={handleThumbnailChange}
-                style={{ display: 'none' }}
-                id="thumbnail-upload"
-              />
-              <label htmlFor="thumbnail-upload">
-                <Card sx={{ width: '100%', maxWidth: 345 }}>
-                  <CardActionArea>
-                    <CardMedia
-                      component={previewThumbnail ? "img" : "div"}
-                      sx={{
-                        height: 194,
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        bgcolor: 'grey.100'
-                      }}
-                      image={previewThumbnail}
-                      title="Presentation thumbnail"
-                    >
-                      {!previewThumbnail && (
-                        <Stack alignItems="center" spacing={1}>
-                          <Image color="action" sx={{ fontSize: 40 }} />
-                          <Typography variant="body2" color="text.secondary">
-                            Click to add thumbnail
-                          </Typography>
-                        </Stack>
-                      )}
-                    </CardMedia>
-                  </CardActionArea>
-                </Card>
-              </label>
-            </Stack>
-          </Stack>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleDialogClose}>Cancel</Button>
-          <Button onClick={handleSave} variant="contained">Save</Button>
-        </DialogActions>
-      </Dialog>
+      <SettingsDialog 
+        open={showSettingsDialog}
+        onClose={() => setShowSettingsDialog(false)}
+        onSave={handleSave}
+        title={newTitle}
+        thumbnail={previewThumbnail}
+        onTitleChange={setNewTitle}
+        onThumbnailChange={handleThumbnailChange}
+      />
     </>
   
   );

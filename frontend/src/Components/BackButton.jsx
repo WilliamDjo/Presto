@@ -1,4 +1,4 @@
-import { Button, IconButton } from '@mui/material';
+import { Button } from '@mui/material';
 import { ArrowBackIosNew } from '@mui/icons-material';
 
 const BackButton = ({ onClick, color="white", sx = {} }) => {
@@ -8,7 +8,7 @@ const BackButton = ({ onClick, color="white", sx = {} }) => {
       onClick={onClick}
       sx={{ ...sx }}
     >
-        <ArrowBackIosNew />
+      <ArrowBackIosNew />
     </Button>
   );
 };

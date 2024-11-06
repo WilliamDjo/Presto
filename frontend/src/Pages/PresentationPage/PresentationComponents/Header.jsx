@@ -1,6 +1,6 @@
 import { Box, Typography, IconButton } from '@mui/material';
 import { Settings, Delete, Image } from '@mui/icons-material';
-import BackButton from '../../Components/BackButton';
+import BackButton from '../../../Components/BackButton';
 
 const Header = ({ 
   title, 
