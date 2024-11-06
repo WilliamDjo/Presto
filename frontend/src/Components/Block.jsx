@@ -7,7 +7,7 @@ export default function Block({ initialWidth, initialHeight, initialX, initialY,
   
   const handleDoubleClick = () => {
     setIsMovable(!isMovable);
-    setShowHandles(!isMovable);
+    setShowHandles(false);
   };
     
   const handleSingleClick = () => {
@@ -42,7 +42,7 @@ export default function Block({ initialWidth, initialHeight, initialX, initialY,
                     height: "5px",
                     backgroundColor: "black",
                     position: "absolute",
-                    ...(corner.includes("top") ? { top: "-3px" } : { bottom: "-3px" }),
+                    ...(corner.includes("top") ? { top: "-10px" } : { bottom: "-3px" }),
                     ...(corner.includes("left") ? { left: "-3px" } : { right: "-3px" }),
                   }}
                 />
