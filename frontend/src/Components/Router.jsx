@@ -6,13 +6,14 @@ import SignUp from '../Pages/RegisterPage/Register';
 import DashboardPage from '../Pages/DashboardPage/Dashboard';
 import PresentationPage from '../Pages/PresentationPage/Presentation';
 import { useEffect } from 'react';
+import TestPage from '../Pages/TestPage';
 
 
 const Router = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!localStorage.getItem('token') && !['login', 'register', ''].includes(location.pathname.split("/")[1])) {
+    if (!localStorage.getItem('token') && !['login', 'register', '', 'test'].includes(location.pathname.split("/")[1])) {
       navigate('/');
     }
 
@@ -28,6 +29,7 @@ const Router = () => {
       <Route path="/register" element={<SignUp />} />
       <Route path="/dashboard" element={<DashboardPage />} />
       <Route path="/presentation/*" element={<PresentationPage />} />
+      <Route path="/test" element={<TestPage />} />
     </Routes>
   );
 };
