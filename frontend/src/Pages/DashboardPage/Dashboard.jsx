@@ -56,12 +56,16 @@ const DashboardPage = () => {
 
       const userStore = {
         store: {
-          presentations: [...presentations, newPresentation]
+          presentations: Array.isArray(presentations) 
+            ? [...presentations, newPresentation]
+            : [newPresentation]
         }
       }
 
       fetchRequest('/store', 'put', userStore, localStorage.getItem('token'), null);
-      setPresentations([...presentations, newPresentation]);
+      setPresentations(Array.isArray(presentations) 
+        ? [...presentations, newPresentation]
+        : [newPresentation]);
       setPresentationTitle('');
       setIsModalOpen(false);
     } else {

@@ -1,7 +1,7 @@
 import { Box } from '@mui/material';
 import { Add } from '@mui/icons-material';
 
-const AddSlidesBarComponent = ({ onClick, index, sx = { 
+const AddSlidesBarComponent = ({ onClick, sx = { 
   height: "60%",
   minWidth: "8%", 
   backgroundColor: "white", 

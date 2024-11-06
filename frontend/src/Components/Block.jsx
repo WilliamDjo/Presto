@@ -1,45 +1,8 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
-import { Card, Box } from '@mui/material';
-import { styled } from '@mui/material/styles';
+import ResizeHandle from './ResizableHandle';
+import DraggableCard from './DraggableCard';
 
-const ResizeHandle = styled(Box)(({ corner }) => ({
-  position: 'absolute',
-  width: 8,
-  height: 8,
-  backgroundColor: '#2196f3',
-  ...(corner === 'nw' && {
-    left: -4,
-    top: -4,
-    cursor: 'nw-resize',
-  }),
-  ...(corner === 'ne' && {
-    right: -4,
-    top: -4,
-    cursor: 'ne-resize',
-  }),
-  ...(corner === 'sw' && {
-    left: -4,
-    bottom: -4,
-    cursor: 'sw-resize',
-  }),
-  ...(corner === 'se' && {
-    right: -4,
-    bottom: -4,
-    cursor: 'se-resize',
-  }),
-}));
-
-// Create a styled component that doesn't forward the custom props to the DOM
-const DraggableCard = styled(Card, {
-  shouldForwardProp: prop => !['isSelected', 'isDragging'].includes(prop)
-})(({ theme, isSelected, isDragging }) => ({
-  position: 'absolute',
-  cursor: isDragging ? 'grabbing' : 'grab',
-  border: isSelected ? `2px solid ${theme.palette.primary.main}` : 'none',
-  boxSizing: 'border-box',
-}));
-
-export default function Slide({ children, initialPosition = { x: 0, y: 0 }, initialSize = { width: 30, height: 30 }, backgroundColor = 'grey'  }) {
+export default function Block({ children, initialPosition = { x: 0, y: 0 }, initialSize = { width: 30, height: 30 }, backgroundColor = 'grey'  }) {
   // Position and size stored as percentages (0-100)
   const [position, setPosition] = useState(initialPosition);
   const [size, setSize] = useState(initialSize);

@@ -7,8 +7,8 @@ import BackButton from '../../Components/BackButton';
 import SlidesBar from './PresentationComponents/SlidesBar';
 
 const PresentationPage = () => {
-  // const [presentations, setPresentations] = useState([]);
-  // const [presentation, setPresentation] = useState(null);
+  const [, setPresentations] = useState([]);
+  const [presentation, setPresentation] = useState(null);
   const [presentationTitle, setPresentationTitle] = useState("");
   const [saveStatus, setSaveStatus] = useState("Saved");
   const [slideWidth, setSlideWidth] = useState(100);
@@ -17,7 +17,7 @@ const PresentationPage = () => {
   const slideRef = useRef(null);
   const navigate = useNavigate();
 
-  const updateDimensions = (e) => {
+  const updateDimensions = () => {
     if (slideRef.current) {
       const padding = parseFloat(window.getComputedStyle(slideContainerRef.current).padding);
 
@@ -38,7 +38,7 @@ const PresentationPage = () => {
     updateDimensions();
 
     window.addEventListener("resize", (e) => updateDimensions(e));
-    return (e) => window.removeEventListener("resize", (e) => updateDimensions(e));
+    return () => window.removeEventListener("resize", (e) => updateDimensions(e));
   }, []);
 
   useEffect(() => {
