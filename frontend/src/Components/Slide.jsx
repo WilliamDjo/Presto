@@ -1,5 +1,40 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
-import { Card } from '@mui/material';
+import { Card, Box } from '@mui/material';
+import { styled } from '@mui/material/styles';
+
+const ResizeHandle = styled(Box)(({ corner }) => ({
+  position: 'absolute',
+  width: 8,
+  height: 8,
+  backgroundColor: '#2196f3',
+  ...(corner === 'nw' && {
+    left: -4,
+    top: -4,
+    cursor: 'nw-resize',
+  }),
+  ...(corner === 'ne' && {
+    right: -4,
+    top: -4,
+    cursor: 'ne-resize',
+  }),
+  ...(corner === 'sw' && {
+    left: -4,
+    bottom: -4,
+    cursor: 'sw-resize',
+  }),
+  ...(corner === 'se' && {
+    right: -4,
+    bottom: -4,
+    cursor: 'se-resize',
+  }),
+}));
+
+const DraggableCard = styled(Card)(({ isSelected, isDragging }) => ({
+  position: 'absolute',
+  cursor: isDragging ? 'grabbing' : 'grab',
+  border: isSelected ? '2px solid #2196f3' : 'none',
+  boxSizing: 'border-box',
+}));
 
 export default function Slide({ children, initialPosition = { x: 0, y: 0 }, initialSize = { width: 30, height: 30 }, backgroundColor = 'grey'  }) {
   // Position and size stored as percentages (0-100)
@@ -165,41 +200,31 @@ export default function Slide({ children, initialPosition = { x: 0, y: 0 }, init
   }, []);
 
   return (
-    <Card
+    <DraggableCard
       ref={elementRef}
-      className={`absolute ${isSelected ? 'ring-2 ring-blue-500' : ''}`}
-      style={{
+      isSelected={isSelected}
+      isDragging={isDragging.current}
+      sx={{
         width: `${size.width}%`,
         height: `${size.height}%`,
         left: `${position.x}%`,
         top: `${position.y}%`,
-        cursor: isDragging.current ? 'grabbing' : 'grab',
-        backgroundColor: backgroundColor
+        backgroundColor,
       }}
       onMouseDown={handleMouseDown}
+      elevation={isSelected ? 8 : 1}
     >
       {isSelected && (
         <>
-          <div
-            className="resize-handle absolute w-2 h-2 bg-blue-500 -left-1 -top-1 cursor-nw-resize"
-            data-corner="nw"
-          />
-          <div
-            className="resize-handle absolute w-2 h-2 bg-blue-500 -right-1 -top-1 cursor-ne-resize"
-            data-corner="ne"
-          />
-          <div
-            className="resize-handle absolute w-2 h-2 bg-blue-500 -left-1 -bottom-1 cursor-sw-resize"
-            data-corner="sw"
-          />
-          <div
-            className="resize-handle absolute w-2 h-2 bg-blue-500 -right-1 -bottom-1 cursor-se-resize"
-            data-corner="se"
-          />
+          <ResizeHandle corner="nw" data-resize data-corner="nw" />
+          <ResizeHandle corner="ne" data-resize data-corner="ne" />
+          <ResizeHandle corner="sw" data-resize data-corner="sw" />
+          <ResizeHandle corner="se" data-resize data-corner="se" />
         </>
       )}
       {children}
-    </Card>
+    </DraggableCard>
+  );
   );
 }
 
