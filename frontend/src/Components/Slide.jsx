@@ -68,10 +68,9 @@ export default function Slide({ children, initialPosition = { x: 0, y: 0 }, init
   }, []);
 
   const handleMouseDown = (e) => {
-    if (e.target.classList.contains('resize-handle')) {
-      // Start resizing
+    if (e.target.getAttribute('data-resize')) {
       isResizing.current = true;
-      resizeCorner.current = e.target.dataset.corner;
+      resizeCorner.current = e.target.getAttribute('data-corner');
       initialSizeRef.current = {
         width: percentToPixels(size.width, 'width'),
         height: percentToPixels(size.height, 'height')
@@ -81,7 +80,6 @@ export default function Slide({ children, initialPosition = { x: 0, y: 0 }, init
         y: percentToPixels(position.y, 'height')
       };
     } else {
-      // Start dragging
       isDragging.current = true;
       initialPosRef.current = {
         x: percentToPixels(position.x, 'width'),
