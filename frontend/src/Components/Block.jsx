@@ -69,7 +69,7 @@ export default function Block({ initialWidth, initialHeight, initialX, initialY,
       disableDragging={!isMovable}
       onDoubleClick={handleDoubleClick}
       onClick={handleSingleClick}
-      style={{...styles, position: "relative",  touchAction: "none"}}
+      style={{...styles, touchAction: "none"}}
     >
       <div style={{ width: "100%", height: "100%", position: "absolute" }}>
       <div style={{ width: "100%", height: "100%", position: "absolute" }}>
