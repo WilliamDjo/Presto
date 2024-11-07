@@ -1,6 +1,7 @@
 import { Box, Typography } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
-const SlidesBarComponent = ({ onClick, index, sx = { 
+const SlidesBarComponent = ({ index, sx = { 
   height: "60%", 
   minWidth: "8%", 
   backgroundColor: "white", 
@@ -13,10 +14,13 @@ const SlidesBarComponent = ({ onClick, index, sx = {
   '&:hover': {
     backgroundColor: "#f0f0f0",
     boxShadow: "0px 6px 12px rgba(0, 0, 0, 0.15)",
-  }
+  },
+  border: index == location.hash.split("/")[1] ? "2px solid black" : ""
 }}) => {
+  const navigate = useNavigate();
+
   return (
-    <Box onClick={onClick} sx={{ ...sx }}>
+    <Box onClick={() => navigate(`${location.pathname}#/${index}`)} sx={{ ...sx }}>
       <Typography>
         {index}
       </Typography>
