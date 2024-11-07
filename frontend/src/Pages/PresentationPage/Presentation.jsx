@@ -102,7 +102,7 @@ const PresentationPage = () => {
     <>
       <CssBaseline />
 
-      <Box sx={{display: "flex", flexDirection: "column", justifyContent: "space-between", height: "100vh", justifyContent: "center", backgroundColor: "#f5f5f5"}}>
+      <Box sx={{display: "flex", flexDirection: "column", height: "100vh", justifyContent: "center", backgroundColor: "#f5f5f5"}}>
         {/* Header */}
         <Header 
           title={presentationTitle}
