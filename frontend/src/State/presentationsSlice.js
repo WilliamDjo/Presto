@@ -1,0 +1,116 @@
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { fetchRequest } from '../HelperFiles/helper';
+import { startSaving, finishSaving } from './saveStatusSlice';
+import { getSlides } from '../HelperFiles/helper';
+
+const initialState =  {
+  loading: false,
+  presentations: null,
+  error: ''
+};
+
+export const fetchPresentations = createAsyncThunk("presentations/fetchPresentations", async () => {
+  console.log("Fetching presentations");
+  const res = await fetchRequest('/store', 'get', null, localStorage.getItem('token'), null);
+  console.log(res.store);
+  return res.store.presentations;
+});
+
+export const savePresentations = createAsyncThunk("presentations/savePresentations", async (_, { dispatch, getState }) => {
+  const { presentations } = getState().presentations;
+  if (presentations === null) {
+    console.log("Aborting save");
+    return;
+  }
+  console.log("Saving:", presentations);
+
+  dispatch(startSaving());
+  const userStore = {
+    store: {
+      presentations: presentations
+    }
+  };
+
+  console.log('saving', userStore);
+  await fetchRequest('/store', 'put', userStore, localStorage.getItem('token'), null);
+
+  dispatch(finishSaving());
+});
+
+const presentationsSlice = createSlice({
+  name: 'presentations',
+  initialState,
+  reducers: {
+    setPresentations: (state, action) => {
+      console.log("setPresentations", action.payload);
+      state.presentations = action.payload;
+    },
+    createNewPresentation: (state, action) => {
+      const newPresentation = {
+        id: Date.now(),
+        title: action.payload,
+        thumbnail: "Default thumbnail", // TODO: fix thumbnail format
+        defaultBackground: "Default background", // TODO: fix background format
+        versionHistory: [],
+        slides: [
+          {
+            slideNum: 1,
+            background: null,
+            contents: []
+          }
+        ]
+      };
+
+      state.presentations = [...state.presentations, newPresentation];
+    },
+    addNewSlide: (state) => {
+      const slides = getSlides(state.presentations);
+      const newSlide = {
+        slideNum: slides.length + 1,
+        background: null,
+        contents: []
+      }
+      const newSlides = [...slides, newSlide];
+
+      state.presentations.find((presentation) => presentation.id == location.pathname.split("/")[2]).slides = newSlides;
+    },
+    deleteSlide: () => {
+      console.log("deleteSlide");
+      // state.value -= 1;
+    },
+    updateSlide: (state, action) => {
+      console.log("updateSlide", state, action);
+      // state.value = action.payload;
+    }
+  },
+  extraReducers: (builder) => {
+    builder.addCase(fetchPresentations.pending, (state) => {
+      state.loading = true;
+    })
+    builder.addCase(fetchPresentations.fulfilled, (state, action) => {
+      state.loading = false;
+      state.presentations = action.payload;
+      state.error = '';
+    })
+    builder.addCase(fetchPresentations.rejected, (state, action) => {
+      state.loading = false;
+      state.presentations = [];
+      state.error = action.error.message;
+    })
+
+    builder.addCase(savePresentations.pending, (state) => {
+      state.loading = true;
+    })
+    builder.addCase(savePresentations.fulfilled, (state) => {
+      state.loading = false;
+      state.error = '';
+    })
+    builder.addCase(savePresentations.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.error.message;
+    });
+  }
+});
+
+export const { addNewSlide, deleteSlide, updateSlide, setPresentations, createNewPresentation } = presentationsSlice.actions;
+export default presentationsSlice.reducer;
