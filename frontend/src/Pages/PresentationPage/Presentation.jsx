@@ -1,23 +1,24 @@
 import { Typography, CssBaseline, Box, IconButton, Divider } from '@mui/material';
 import { useEffect, useState, useRef } from 'react';
 import { Notes, Image, VideoLibrary, Code, KeyboardDoubleArrowLeft, Settings, Delete } from '@mui/icons-material';
-import { fetchRequest } from '../../HelperFiles/helper';
+import { getPresentationTitle } from '../../HelperFiles/helper';
 import { useNavigate } from 'react-router-dom';
 import BackButton from '../../Components/BackButton';
 import SlidesBar from './PresentationComponents/SlidesBar';
+import { useSelector, useDispatch } from 'react-redux';
+import { savePresentations } from '../../State/presentationsSlice';
 
 const PresentationPage = () => {
-  const [presentations, setPresentations] = useState([]);
-  const [presentation, setPresentation] = useState(null);
-  const [presentationTitle, setPresentationTitle] = useState("");
-  const [saveStatus, setSaveStatus] = useState("Saved");
   const [slideWidth, setSlideWidth] = useState(100);
   const [slideHeight, setSlideHeight] = useState(100);
   const slideContainerRef = useRef(null);
   const slideRef = useRef(null);
   const navigate = useNavigate();
+  const saveStatus = useSelector((state) => state.saveStatus) ? "Saved" : "Saving...";
+  const presentations = useSelector((state) => state.presentations.presentations);
+  const dispatch = useDispatch();
 
-  const updateDimensions = (e) => {
+  const updateDimensions = () => {
     if (slideRef.current) {
       const padding = parseFloat(window.getComputedStyle(slideContainerRef.current).padding);
 
@@ -38,38 +39,18 @@ const PresentationPage = () => {
     updateDimensions();
 
     window.addEventListener("resize", (e) => updateDimensions(e));
-    return (e) => window.removeEventListener("resize", (e) => updateDimensions(e));
+    return () => window.removeEventListener("resize", (e) => updateDimensions(e));
   }, []);
 
   useEffect(() => {
-    const fetchStore = async () => {
-      const res = await fetchRequest('/store', 'get', null, localStorage.getItem('token'), null);
-      setPresentations(res.store.presentations);
-      setPresentation(res.store.presentations.find(pres => pres.id == location.pathname.split('/')[2]));
-      setPresentationTitle(res.store.presentations.find(pres => pres.id == location.pathname.split('/')[2]).title);
-    }
-
-    fetchStore();
-  }, []);
-
-  const buildPresentations = () => {};
-
-  useEffect(() => {
-    setSaveStatus("Saving...");
-    const savePresentation = async () => {
-      buildPresentations();
-      console.log('hi');
-      setSaveStatus("Saved");
-    }
-
-    savePresentation();
-  }, [presentationTitle]);
+    dispatch(savePresentations());
+  }, [presentations, dispatch]);
 
   return (
     <>
       <CssBaseline />
 
-      <Box sx={{display: "flex", flexDirection: "column", justifyContent: "space-between", height: "100vh", justifyContent: "center", backgroundColor: "#f5f5f5"}}>
+      <Box sx={{display: "flex", flexDirection: "column", height: "100vh", justifyContent: "center", backgroundColor: "#f5f5f5"}}>
         {/* Header */}
         <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", p: 2, backgroundColor: 'primary.main', color: 'white', gap: 2, minHeight: 100 }}>
           <Box sx={{display: "flex", alignItems: "center", gap: 2}}>
@@ -79,7 +60,7 @@ const PresentationPage = () => {
             </Image>
             <Box sx={{display: "flex", flexDirection: "column"}}>
               <Box sx={{display: "flex", gap: 0.5}}>
-                <Typography variant="h5" sx={{ fontWeight: 'bold' }}>{presentationTitle}</Typography>
+                <Typography variant="h5" sx={{ fontWeight: 'bold' }}>{getPresentationTitle(presentations)}</Typography>
                 <IconButton size="small" sx={{color: "white"}}>
                   <Settings />
                 </IconButton>
@@ -131,14 +112,14 @@ const PresentationPage = () => {
 
         {/* Central Box */}
         <Box p={2} ref={slideContainerRef} sx={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100%", overflowY: 'auto', overflowX: 'auto' }}>
-          <Box ref={slideRef} height={slideHeight} width={slideWidth} border={1} sx={{ backgroundColor: "white"}}>
+          <Box ref={slideRef} height={slideHeight} width={slideWidth} border={1} sx={{ position: "relative", backgroundColor: "white"}}>
             <Typography sx={{position: "relative", top: "50%", left: "50%", width: "50%", height: "50%", backgroundColor: "green"}}>
               Hello
             </Typography>
           </Box>
         </Box>
 
-        <SlidesBar slides={presentation?.slides} />
+        <SlidesBar />
       </Box>
     </>
   );

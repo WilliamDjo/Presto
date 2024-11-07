@@ -135,4 +135,13 @@ export async function logoutFetch(path, token) {
   }
 }
 
+
+export const getSlides = (presentations) => {
+  return presentations?.find((presentation) => presentation.id == location.pathname.split("/")[2]).slides;
+};
+
+export const getPresentationTitle = (presentations) => {
+  return presentations?.find((presentation) => presentation.id == location.pathname.split("/")[2]).title;
+};
+
 export default { isValidEmail, isValidName, isValidPassword, isValidConfirmPassword };

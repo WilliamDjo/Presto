@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import CustomButton from "../../Components/CustomButton";
-import { fetchRequest, logoutFetch } from "../../HelperFiles/helper";
+import { logoutFetch } from "../../HelperFiles/helper";
 import Grid from '@mui/material/Grid2';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import {
@@ -15,53 +15,26 @@ import {
   Typography,
   Box,
   Container,
-  Alert
+  Alert,
+  CssBaseline
 } from '@mui/material';
+import { useDispatch, useSelector } from 'react-redux';
+import { setPresentations, savePresentations, createNewPresentation } from '../../State/presentationsSlice';
 
 const DashboardPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [presentationTitle, setPresentationTitle] = useState('');
-  const [presentations, setPresentations] = useState([]);
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const presentations = useSelector((state) => state.presentations.presentations);
 
-  useEffect(() => {
-    const fetchStore = async () => {
-      const res = await fetchRequest('/store', 'get', null, localStorage.getItem('token'), null);
-      setPresentations(res.store.presentations);
-    }
-
-    fetchStore();
-  }, [])
-
-  const handleCreatePresentation = (e) => {
+  const handleCreateNewPresentation = (e) => {
     e.preventDefault();
     setError('');
 
     if (presentationTitle.trim()) {
-      const newPresentation = {
-        id: Date.now(),
-        title: presentationTitle,
-        thumbnail: "Default thumbnail", // TODO: fix thumbnail format
-        defaultBackground: "Default background", // TODO: fix background format
-        versionHistory: [],
-        slides: [
-          {
-            slideNum: 1,
-            background: null,
-            contents: []
-          }
-        ]
-      };
-
-      const userStore = {
-        store: {
-          presentations: [...presentations, newPresentation]
-        }
-      }
-
-      fetchRequest('/store', 'put', userStore, localStorage.getItem('token'), null);
-      setPresentations([...presentations, newPresentation]);
+      dispatch(createNewPresentation(presentationTitle));
       setPresentationTitle('');
       setIsModalOpen(false);
     } else {
@@ -76,6 +49,7 @@ const DashboardPage = () => {
 
       if (res.success) {
         localStorage.removeItem('token');
+        dispatch(setPresentations(null));
         navigate('/');
       } else {
         console.error('Logout failed:', res.error);
@@ -85,8 +59,13 @@ const DashboardPage = () => {
     }
   };
 
+  useEffect(() => {
+    dispatch(savePresentations());
+  }, [presentations, dispatch]);
+
   return (
     <>
+      <CssBaseline />
       <Container maxWidth="lg" tabIndex={-1}>
         <Box sx={{ py: 4 }}>
           <Box
@@ -118,7 +97,7 @@ const DashboardPage = () => {
           >
             <DialogTitle>Create New Presentation</DialogTitle>
             {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
-            <Box component="form" onSubmit={handleCreatePresentation}>
+            <Box component="form" onSubmit={handleCreateNewPresentation}>
               <DialogContent>
                 <TextField
                   autoFocus
@@ -134,7 +113,7 @@ const DashboardPage = () => {
               </DialogContent>
               <DialogActions sx={{ px: 3, pb: 3 }}>
                 <CustomButton
-                  onClick={handleCreatePresentation}
+                  onClick={handleCreateNewPresentation}
                   variant="contained"
                   disabled={!presentationTitle.trim()}
                   text="Create"
@@ -146,7 +125,7 @@ const DashboardPage = () => {
             </DialogActions>
           </Dialog>
           <Grid container spacing={3}>
-            {presentations.map((presentation) => (
+            {presentations?.map((presentation) => (
               <Grid xs={12} sm={6} md={4} key={presentation.id} sx={{ cursor: 'pointer' }} onClick={() => {navigate(`/presentation/${presentation.id}#/1`)}}>
                 <Card
                   sx={{

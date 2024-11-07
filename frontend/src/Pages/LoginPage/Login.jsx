@@ -8,6 +8,8 @@ import CustomButton from '../../Components/CustomButton';
 import CustomLink from '../../Components/CustomLink'
 import CentralPanel from '../../Components/CentralPanel';
 import BackButton from '../../Components/BackButton';
+import { useDispatch } from 'react-redux';
+import { fetchPresentations } from '../../State/presentationsSlice';
 
 
 const Login = () => {
@@ -15,6 +17,7 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   // Handle form submission
   const handleLoginClick = async (e) => {  // make this async
@@ -26,6 +29,7 @@ const Login = () => {
 
       if (res.success) {
         localStorage.setItem('token', res.data.token);
+        dispatch(fetchPresentations());
         navigate('/dashboard');
       } else {
         setError(res.error);

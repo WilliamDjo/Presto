@@ -6,16 +6,19 @@ import BackButton from '../../Components/BackButton';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { authFetch, fetchRequest } from '../../HelperFiles/helper';
+import { useDispatch } from 'react-redux';
+import { fetchPresentations } from '../../State/presentationsSlice';
 
 
-const SignUpPage = () => {
+const RegisterPage = () => {
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
-
+  const dispatch = useDispatch();
+  
   const handleRegisterClick = async (e) => {
     e.preventDefault();
     try {
@@ -32,6 +35,7 @@ const SignUpPage = () => {
 
         await fetchRequest('/store', 'put', newUserStore, res.data.token, null);
 
+        dispatch(fetchPresentations());
         navigate('/dashboard');
       } else {
         setError(res.error);
@@ -54,7 +58,7 @@ const SignUpPage = () => {
 
         <Box display="flex" flexDirection="column" gap={2} component="form" onSubmit={handleRegisterClick}>
           <Typography variant="h5" align="center">
-            Sign Up
+            Register
           </Typography>
           {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
           <TextField
@@ -101,4 +105,4 @@ const SignUpPage = () => {
   );
 }
 
-export default SignUpPage;
+export default RegisterPage;

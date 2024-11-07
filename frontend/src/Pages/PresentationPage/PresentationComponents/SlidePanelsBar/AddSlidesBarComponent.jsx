@@ -1,10 +1,12 @@
 import { Box } from '@mui/material';
 import { Add } from '@mui/icons-material';
+import { useDispatch } from 'react-redux';
+import { addNewSlide } from '../../../../State/presentationsSlice';
 
-const AddSlidesBarComponent = ({ onClick, index, sx = { 
+const AddSlidesBarComponent = ({ sx = { 
   height: "60%",
   minWidth: "8%", 
-  backgroundColor: "white", 
+  backgroundColor: "white",
   display: "flex", 
   justifyContent: "center", 
   alignItems: "center", 
@@ -16,8 +18,10 @@ const AddSlidesBarComponent = ({ onClick, index, sx = {
     boxShadow: "0px 6px 12px rgba(0, 0, 0, 0.15)",
   }
 }}) => {
+  const dispatch = useDispatch();
+
   return (
-    <Box onClick={onClick} sx={{ ...sx }}>
+    <Box onClick={() => {dispatch(addNewSlide())}} sx={{ ...sx }}>
       <Add />
     </Box>
   );
