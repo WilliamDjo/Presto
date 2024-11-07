@@ -1,15 +1,20 @@
-import { Button, IconButton } from '@mui/material';
+import { IconButton } from '@mui/material';
 import { ArrowBackIosNew } from '@mui/icons-material';
 
 const BackButton = ({ onClick, color="white", sx = {} }) => {
   return (
-    <Button
+    <IconButton
       color={color}
       onClick={onClick}
-      sx={{ ...sx }}
+      sx={{ 
+        ...sx,
+        color: {color},
+        '&:hover': { 
+          backgroundColor: '#f0f0f0'
+        }}}
     >
-        <ArrowBackIosNew />
-    </Button>
+      <ArrowBackIosNew />
+    </IconButton>
   );
 };
 
