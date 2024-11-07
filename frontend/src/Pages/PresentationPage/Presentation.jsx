@@ -8,6 +8,7 @@ import SlidesBar from './PresentationComponents/SlidesBar';
 import DeleteDialog from './PresentationComponents/DeleteDialog';
 import SettingsDialog from './PresentationComponents/SettingsDialog';
 import Header from './PresentationComponents/Header';
+import Block from '../../Components/Block';
 
 
 const PresentationPage = () => {
@@ -147,10 +148,19 @@ const PresentationPage = () => {
 
         {/* Central Box */}
         <Box p={2} ref={slideContainerRef} sx={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100%", overflowY: 'auto', overflowX: 'auto' }}>
-          <Box ref={slideRef} height={slideHeight} width={slideWidth} border={1} sx={{ backgroundColor: "white"}}>
-            <Typography sx={{position: "relative", top: "50%", left: "50%", width: "50%", height: "50%", backgroundColor: "green"}}>
+          <Box ref={slideRef} height={slideHeight} width={slideWidth} border={1} sx={{ backgroundColor: "white",  position: "relative" }}>
+            <Block
+              initialWidth={100} initialHeight={100} initialX={150} initialY={205} styles={{ backgroundColor: "lightblue" }}
+        
+            ><p>Text Block</p></Block>
+            <Block
+              initialWidth={100} initialHeight={100} initialX={150} initialY={205} styles={{ backgroundColor: "lightblue" }}
+        
+            ><p>Text Block</p></Block>
+      
+            {/* <Typography sx={{position: "relative", top: "50%", left: "50%", width: "50%", height: "50%", backgroundColor: "green"}}>
               Hello
-            </Typography>
+            </Typography> */}
           </Box>
         </Box>
 
