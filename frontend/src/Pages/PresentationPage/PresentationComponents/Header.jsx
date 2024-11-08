@@ -1,14 +1,16 @@
 import { Box, Typography, IconButton } from '@mui/material';
 import { Settings, Delete, Image } from '@mui/icons-material';
 import BackButton from '../../../Components/BackButton';
+import { useSelector } from 'react-redux';
+import { getPresentationTitle } from '../../../HelperFiles/helper';
 
 const Header = ({ 
-  title, 
-  saveStatus, 
-  onBackClick, 
-  onSettingsClick, 
-  onDeleteClick 
+  onSettingsClick,
+  onDeleteClick
 }) => {
+  const presentations = useSelector((state) => state.presentations.presentations);
+  const saveStatus = useSelector((state) => state.saveStatus) ? "Saved" : "Saving...";
+
   return (
     <Box sx={{ 
       display: "flex", 
@@ -21,11 +23,11 @@ const Header = ({
       minHeight: 100 
     }}>
       <Box sx={{display: "flex", alignItems: "center", gap: 2}}>
-        <BackButton onClick={onBackClick} />
+        <BackButton onClick={() => navigate("/dashboard")} />
         <Image />
         <Box sx={{display: "flex", flexDirection: "column"}}>
           <Box sx={{display: "flex", gap: 0.5}}>
-            <Typography variant="h5" sx={{ fontWeight: 'bold' }}>{title}</Typography>
+            <Typography variant="h5" sx={{ fontWeight: 'bold' }}>{getPresentationTitle(presentations)}</Typography>
             <IconButton size="small" sx={{color: "white"}} onClick={onSettingsClick}>
               <Settings />
             </IconButton>

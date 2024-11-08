@@ -22,7 +22,6 @@ const PresentationPage = () => {
   const [newTitle, setNewTitle] = useState(getPresentationTitle(presentations));
   const [previewThumbnail, setPreviewThumbnail] = useState("");
   const navigate = useNavigate();
-  const saveStatus = useSelector((state) => state.saveStatus) ? "Saved" : "Saving...";
   const dispatch = useDispatch();
 
   const updateDimensions = () => {
@@ -81,34 +80,7 @@ const PresentationPage = () => {
       <CssBaseline />
 
       <Box sx={{display: "flex", flexDirection: "column", height: "100vh", justifyContent: "center", backgroundColor: "#f5f5f5"}}>
-        {/* Header */}
-        {/* <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", p: 2, backgroundColor: 'primary.main', color: 'white', gap: 2, minHeight: 100 }}>
-          <Box sx={{display: "flex", alignItems: "center", gap: 2}}>
-            <BackButton onClick={() => navigate("/dashboard")} />
-            <Image>
-
-            </Image>
-            <Box sx={{display: "flex", flexDirection: "column"}}>
-              <Box sx={{display: "flex", gap: 0.5}}>
-                <Typography variant="h5" sx={{ fontWeight: 'bold' }}>{getPresentationTitle(presentations)}</Typography>
-                <IconButton size="small" sx={{color: "white"}}>
-                  <Settings />
-                </IconButton>
-              </Box>
-              <Typography variant="body2" sx={{ fontWeight: "semi-bold" }}>{saveStatus}</Typography>
-            </Box>
-          </Box>
-
-          <Box>
-            <IconButton>
-              <Delete sx={{color: "white"}}/>
-            </IconButton>
-          </Box>
-        </Box> */}
-        <Header 
-          title={getPresentationTitle(presentations)}
-          saveStatus={saveStatus}
-          onBackClick={() => navigate("/dashboard")}
+        <Header
           onSettingsClick={() => setShowSettingsDialog(true)}
           onDeleteClick={() => setShowDeleteDialog(true)}
         />
