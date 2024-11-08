@@ -6,7 +6,7 @@ import DeleteDialog from './PresentationComponents/Dialogs/DeleteDialog';
 import SettingsDialog from './PresentationComponents/Dialogs/SettingsDialog';
 import Header from './PresentationComponents/Header/Header';
 import { useSelector, useDispatch } from 'react-redux';
-import { savePresentations, updatePresentationTitle, updatePresentationThumbnail, deletePresentation  } from '../../State/presentationsSlice';
+import { savePresentations, updatePresentationTitle, updatePresentationThumbnail , updatePresentationTitle, updatePresentationThumbnail, deletePresentation  } from '../../State/presentationsSlice';
 import Toolbar from './Toolbar/Toolbar';
 import SlideDisplay from './SlideDisplay/SlideDisplay';
 import { useNavigate } from 'react-router-dom';
@@ -19,6 +19,7 @@ const PresentationPage = () => {
   const [showSettingsDialog, setShowSettingsDialog] = useState(false);
   const [newTitle, setNewTitle] = useState(getPresentationTitle(presentations));
   const [previewThumbnail, setPreviewThumbnail] = useState("");
+  const presentationId = parseInt(location.pathname.split("/")[2]);
   // const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -35,20 +36,12 @@ const PresentationPage = () => {
   };
 
   const handleSave = () => {
-    // Validate inputs
-    if (!newTitle.trim()) {
-      alert("Please enter a title");
-      return;
-    }
-
-    // Update title
     dispatch(updatePresentationTitle({
       id: presentationId,
-      title: newTitle.trim()
+      title: newTitle
     }));
     
-    // Update thumbnail only if changed
-    if (previewThumbnail !== currentPresentation?.thumbnail) {
+    if (previewThumbnail) {
       dispatch(updatePresentationThumbnail({
         id: presentationId,
         thumbnail: previewThumbnail
@@ -81,16 +74,9 @@ const PresentationPage = () => {
 
   // When the dialog opens, initialize with current values
   const handleSettingsClick = () => {
-    setNewTitle(currentPresentation?.title || "");
-    setPreviewThumbnail(currentPresentation?.thumbnail || "");
+    setNewTitle(getPresentationTitle(presentations));
+    setPreviewThumbnail(presentations.find(p => p.id === presentationId)?.thumbnail || "");
     setShowSettingsDialog(true);
-  };
-
-  // Handle dialog close - reset states
-  const handleClose = () => {
-    setNewTitle(currentPresentation?.title || "");
-    setPreviewThumbnail(currentPresentation?.thumbnail || "");
-    setShowSettingsDialog(false);
   };
 
   return (
