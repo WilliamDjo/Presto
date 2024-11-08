@@ -1,9 +1,9 @@
 import { Box, IconButton } from "@mui/material";
 import { ArrowRight, ArrowLeft } from '@mui/icons-material';
-import SlidesBarComponent from "./SlidePanelsBar/SlidesBarComponent";
-import AddSlidesBarComponent from "./SlidePanelsBar/AddSlidesBarComponent";
+import SlidesBarComponent from "./SlidesBarComponent";
+import AddSlidesBarComponent from "./AddSlidesBarComponent";
 import { useSelector } from 'react-redux';
-import { getSlides } from "../../../HelperFiles/helper";
+import { getSlides } from "../../../../HelperFiles/helper";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 

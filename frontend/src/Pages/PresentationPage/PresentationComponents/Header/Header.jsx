@@ -1,8 +1,8 @@
 import { Box, Typography, IconButton } from '@mui/material';
 import { Settings, Delete, Image } from '@mui/icons-material';
-import BackButton from '../../../Components/BackButton';
+import BackButton from '../../../../Components/BackButton';
 import { useSelector } from 'react-redux';
-import { getPresentationTitle } from '../../../HelperFiles/helper';
+import { getPresentationTitle } from '../../../../HelperFiles/helper';
 
 const Header = ({ 
   onSettingsClick,
