@@ -63,6 +63,10 @@ const presentationsSlice = createSlice({
 
       state.presentations = [...state.presentations, newPresentation];
     },
+    deletePresentation: (state, action) => {
+      const id = action.payload;
+      state.presentations = state.presentations.filter(presentation => presentation.id != id);
+    },
     addNewSlide: (state) => {
       const slides = getSlides(state.presentations);
       const newSlide = {
@@ -127,5 +131,5 @@ const presentationsSlice = createSlice({
   }
 });
 
-export const { addNewSlide, deleteSlide, updateSlide, setPresentations, createNewPresentation, updatePresentationTitle, updatePresentationThumbnail  } = presentationsSlice.actions;
+export const { addNewSlide, deleteSlide, updateSlide, setPresentations, createNewPresentation, deletePresentation, updatePresentationTitle, updatePresentationThumbnail  } = presentationsSlice.actions;
 export default presentationsSlice.reducer;

@@ -6,9 +6,10 @@ import DeleteDialog from './PresentationComponents/Dialogs/DeleteDialog';
 import SettingsDialog from './PresentationComponents/Dialogs/SettingsDialog';
 import Header from './PresentationComponents/Header/Header';
 import { useSelector, useDispatch } from 'react-redux';
-import { savePresentations, updatePresentationTitle, updatePresentationThumbnail  } from '../../State/presentationsSlice';
+import { savePresentations, updatePresentationTitle, updatePresentationThumbnail, deletePresentation  } from '../../State/presentationsSlice';
 import Toolbar from './Toolbar/Toolbar';
 import SlideDisplay from './SlideDisplay/SlideDisplay';
+import { useNavigate } from 'react-router-dom';
 
 const PresentationPage = () => {
   const presentations = useSelector((state) => state.presentations.presentations);
@@ -19,7 +20,7 @@ const PresentationPage = () => {
   const [newTitle, setNewTitle] = useState(currentPresentation?.title || "");
   const [previewThumbnail, setPreviewThumbnail] = useState(currentPresentation?.thumbnail || "");
 
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -27,9 +28,11 @@ const PresentationPage = () => {
   }, [presentations, dispatch]);
 
   const handleDelete = () => {
-
+    dispatch(deletePresentation(presentationId));
+    // This will trigger the useEffect that saves to backend
+    // since presentations state changes
     setShowDeleteDialog(false);
-    // onDelete();
+    navigate('/dashboard');
   };
 
   const handleSave = () => {
