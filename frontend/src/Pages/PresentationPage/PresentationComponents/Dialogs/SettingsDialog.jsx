@@ -15,6 +15,7 @@ import {
   Typography
 } from '@mui/material';
 import { Image } from '@mui/icons-material';
+import { useRef } from 'react';
 
 const SettingsDialog = ({ 
   open, 
@@ -25,6 +26,19 @@ const SettingsDialog = ({
   onTitleChange,
   onThumbnailChange 
 }) => {
+
+  // Add a reference to the hidden file input
+  const fileInputRef = useRef(null);
+
+  // Function to handle card click
+  const handleCardClick = () => {
+    // Find the native input element inside the MUI Input wrapper
+    const inputElement = fileInputRef.current?.querySelector('input');
+    if (inputElement) {
+      inputElement.click();
+    }
+  };
+
   return (
     <Dialog 
       open={open} 
@@ -49,13 +63,14 @@ const SettingsDialog = ({
           <Stack spacing={1}>
             <InputLabel>Thumbnail</InputLabel>
             <Input
+              ref={fileInputRef}
               type="file"
               accept="image/*"
               onChange={onThumbnailChange}
               style={{ display: 'none' }}
-              id="thumbnail-upload"
             />
-            <label htmlFor="thumbnail-upload">
+      
+            <div onClick={handleCardClick} style={{ cursor: 'pointer' }}>
               <Card sx={{ width: '100%', maxWidth: 345 }}>
                 <CardActionArea>
                   {thumbnail ? (
@@ -85,7 +100,8 @@ const SettingsDialog = ({
                   )}
                 </CardActionArea>
               </Card>
-            </label>
+            </div>
+    
           </Stack>
         </Stack>
       </DialogContent>

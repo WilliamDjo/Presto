@@ -13,6 +13,12 @@ const Header = ({
   const saveStatus = useSelector((state) => state.saveStatus) ? "Saved" : "Saving...";
   const navigate = useNavigate();
 
+  // Get the current presentation's thumbnail
+  const currentPresentation = presentations?.find((presentation) => 
+    presentation.id == location.pathname.split("/")[2]
+  );
+  const thumbnail = currentPresentation?.thumbnail;
+
   return (
     <Box sx={{ 
       display: "flex", 
@@ -26,7 +32,20 @@ const Header = ({
     }}>
       <Box sx={{display: "flex", alignItems: "center", gap: 2}}>
         <BackButton onClick={() => navigate("/dashboard")} />
-        <Image />
+        {thumbnail ? (
+          <Box
+            component="img"
+            src={thumbnail}
+            sx={{
+              width: 40,
+              height: 40,
+              objectFit: 'cover',
+              borderRadius: 1
+            }}
+          />
+        ) : (
+          <Image />
+        )}
         <Box sx={{display: "flex", flexDirection: "column"}}>
           <Box sx={{display: "flex", gap: 0.5}}>
             <Typography variant="h5" sx={{ fontWeight: 'bold' }}>{getPresentationTitle(presentations)}</Typography>
