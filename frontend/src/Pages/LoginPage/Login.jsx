@@ -1,7 +1,6 @@
 // Import necessary modules
 import { useState } from 'react';
 import { TextField, Typography, Box, Avatar, IconButton, Alert, CssBaseline } from '@mui/material';
-import { TextField, Typography, Box, Avatar, IconButton, Alert, CssBaseline } from '@mui/material';
 import { LockOutlined } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { authFetch } from '../../HelperFiles/helper';
