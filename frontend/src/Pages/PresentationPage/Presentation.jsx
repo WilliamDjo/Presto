@@ -1,13 +1,10 @@
-import { CssBaseline, Box, IconButton, Divider } from '@mui/material';
-import { useEffect, useState, useRef } from 'react';
-import { Notes, Image, VideoLibrary, Code, KeyboardDoubleArrowLeft } from '@mui/icons-material';
+import { CssBaseline, Box } from '@mui/material';
+import { useEffect, useState } from 'react';
 import { getPresentationTitle } from '../../HelperFiles/helper';
-import { useNavigate } from 'react-router-dom';
 import SlidesBar from './PresentationComponents/SlidesBar/SlidesBar';
 import DeleteDialog from './PresentationComponents/Dialogs/DeleteDialog';
 import SettingsDialog from './PresentationComponents/Dialogs/SettingsDialog';
 import Header from './PresentationComponents/Header/Header';
-import Block from '../../Components/Block';
 import { useSelector, useDispatch } from 'react-redux';
 import { savePresentations } from '../../State/presentationsSlice';
 import Toolbar from './Toolbar/Toolbar';

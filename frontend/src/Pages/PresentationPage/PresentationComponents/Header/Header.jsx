@@ -3,6 +3,7 @@ import { Settings, Delete, Image } from '@mui/icons-material';
 import BackButton from '../../../../Components/BackButton';
 import { useSelector } from 'react-redux';
 import { getPresentationTitle } from '../../../../HelperFiles/helper';
+import { useNavigate } from 'react-router-dom';
 
 const Header = ({ 
   onSettingsClick,
@@ -10,6 +11,7 @@ const Header = ({
 }) => {
   const presentations = useSelector((state) => state.presentations.presentations);
   const saveStatus = useSelector((state) => state.saveStatus) ? "Saved" : "Saving...";
+  const navigate = useNavigate();
 
   return (
     <Box sx={{ 
