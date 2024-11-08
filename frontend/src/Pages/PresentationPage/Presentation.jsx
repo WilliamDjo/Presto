@@ -6,7 +6,7 @@ import DeleteDialog from './PresentationComponents/Dialogs/DeleteDialog';
 import SettingsDialog from './PresentationComponents/Dialogs/SettingsDialog';
 import Header from './PresentationComponents/Header/Header';
 import { useSelector, useDispatch } from 'react-redux';
-import { savePresentations } from '../../State/presentationsSlice';
+import { savePresentations, updatePresentationTitle, updatePresentationThumbnail  } from '../../State/presentationsSlice';
 import Toolbar from './Toolbar/Toolbar';
 import SlideDisplay from './SlideDisplay/SlideDisplay';
 
@@ -16,6 +16,7 @@ const PresentationPage = () => {
   const [showSettingsDialog, setShowSettingsDialog] = useState(false);
   const [newTitle, setNewTitle] = useState(getPresentationTitle(presentations));
   const [previewThumbnail, setPreviewThumbnail] = useState("");
+  const presentationId = parseInt(location.pathname.split("/")[2]);
   // const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -30,8 +31,18 @@ const PresentationPage = () => {
   };
 
   const handleSave = () => {
-    // onTitleChange(newTitle);
-    // onThumbnailChange(previewThumbnail);
+    dispatch(updatePresentationTitle({
+      id: presentationId,
+      title: newTitle
+    }));
+    
+    if (previewThumbnail) {
+      dispatch(updatePresentationThumbnail({
+        id: presentationId,
+        thumbnail: previewThumbnail
+      }));
+    }
+    
     setShowSettingsDialog(false);
   };
 
@@ -46,13 +57,20 @@ const PresentationPage = () => {
     }
   };
 
+  // When the dialog opens, initialize with current values
+  const handleSettingsClick = () => {
+    setNewTitle(getPresentationTitle(presentations));
+    setPreviewThumbnail(presentations.find(p => p.id === presentationId)?.thumbnail || "");
+    setShowSettingsDialog(true);
+  };
+
   return (
     <>
       <CssBaseline />
 
       <Box sx={{display: "flex", flexDirection: "column", height: "100vh", justifyContent: "center", backgroundColor: "#f5f5f5"}}>
         <Header
-          onSettingsClick={() => setShowSettingsDialog(true)}
+          onSettingsClick={handleSettingsClick}
           onDeleteClick={() => setShowDeleteDialog(true)}
         />
 

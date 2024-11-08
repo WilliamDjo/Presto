@@ -81,6 +81,21 @@ const presentationsSlice = createSlice({
     updateSlide: (state, action) => {
       console.log("updateSlide", state, action);
       // state.value = action.payload;
+    },
+    updatePresentationTitle: (state, action) => {
+      const { id, title } = action.payload;
+      const presentation = state.presentations.find(p => p.id == id);
+      if (presentation) {
+        presentation.title = title;
+      }
+    },
+    
+    updatePresentationThumbnail: (state, action) => {
+      const { id, thumbnail } = action.payload;
+      const presentation = state.presentations.find(p => p.id == id);
+      if (presentation) {
+        presentation.thumbnail = thumbnail;
+      }
     }
   },
   extraReducers: (builder) => {
@@ -112,5 +127,5 @@ const presentationsSlice = createSlice({
   }
 });
 
-export const { addNewSlide, deleteSlide, updateSlide, setPresentations, createNewPresentation } = presentationsSlice.actions;
+export const { addNewSlide, deleteSlide, updateSlide, setPresentations, createNewPresentation, updatePresentationTitle, updatePresentationThumbnail  } = presentationsSlice.actions;
 export default presentationsSlice.reducer;
