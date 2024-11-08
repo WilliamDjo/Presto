@@ -58,27 +58,31 @@ const SettingsDialog = ({
             <label htmlFor="thumbnail-upload">
               <Card sx={{ width: '100%', maxWidth: 345 }}>
                 <CardActionArea>
-                  <CardMedia
-                    component={thumbnail ? "img" : "div"}
-                    sx={{
-                      height: 194,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      bgcolor: 'grey.100'
-                    }}
-                    image={thumbnail}
-                    title="Presentation thumbnail"
-                  >
-                    {!thumbnail && (
+                  {thumbnail ? (
+                    <CardMedia
+                      component="img"
+                      sx={{ height: 194 }}
+                      image={thumbnail}
+                      title="Presentation thumbnail"
+                    />
+                  ) : (
+                    <CardMedia
+                      sx={{
+                        height: 194,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        bgcolor: 'grey.100'
+                      }}
+                    >
                       <Stack alignItems="center" spacing={1}>
                         <Image color="action" sx={{ fontSize: 40 }} />
                         <Typography variant="body2" color="text.secondary">
-                            Click to add thumbnail
+                          Click to add thumbnail
                         </Typography>
                       </Stack>
-                    )}
-                  </CardMedia>
+                    </CardMedia>
+                  )}
                 </CardActionArea>
               </Card>
             </label>

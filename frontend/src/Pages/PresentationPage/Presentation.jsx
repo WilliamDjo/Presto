@@ -1,6 +1,6 @@
 import { CssBaseline, Box } from '@mui/material';
 import { useEffect, useState } from 'react';
-import { getPresentationTitle } from '../../HelperFiles/helper';
+// import { getPresentationTitle } from '../../HelperFiles/helper';
 import SlidesBar from './PresentationComponents/SlidesBar/SlidesBar';
 import DeleteDialog from './PresentationComponents/Dialogs/DeleteDialog';
 import SettingsDialog from './PresentationComponents/Dialogs/SettingsDialog';
@@ -12,11 +12,13 @@ import SlideDisplay from './SlideDisplay/SlideDisplay';
 
 const PresentationPage = () => {
   const presentations = useSelector((state) => state.presentations.presentations);
+  const presentationId = parseInt(location.pathname.split("/")[2]);
+  const currentPresentation = presentations?.find(p => p.id === presentationId);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [showSettingsDialog, setShowSettingsDialog] = useState(false);
-  const [newTitle, setNewTitle] = useState(getPresentationTitle(presentations));
-  const [previewThumbnail, setPreviewThumbnail] = useState("");
-  const presentationId = parseInt(location.pathname.split("/")[2]);
+  const [newTitle, setNewTitle] = useState(currentPresentation?.title || "");
+  const [previewThumbnail, setPreviewThumbnail] = useState(currentPresentation?.thumbnail || "");
+
   // const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -31,12 +33,20 @@ const PresentationPage = () => {
   };
 
   const handleSave = () => {
+    // Validate inputs
+    if (!newTitle.trim()) {
+      alert("Please enter a title");
+      return;
+    }
+
+    // Update title
     dispatch(updatePresentationTitle({
       id: presentationId,
-      title: newTitle
+      title: newTitle.trim()
     }));
     
-    if (previewThumbnail) {
+    // Update thumbnail only if changed
+    if (previewThumbnail !== currentPresentation?.thumbnail) {
       dispatch(updatePresentationThumbnail({
         id: presentationId,
         thumbnail: previewThumbnail
@@ -49,9 +59,19 @@ const PresentationPage = () => {
   const handleThumbnailChange = (event) => {
     const file = event.target.files[0];
     if (file) {
+      // Add file size check
+      if (file.size > 5000000) { // 5MB limit
+        alert("File is too large. Please choose an image under 5MB.");
+        return;
+      }
+
       const reader = new FileReader();
       reader.onload = (e) => {
         setPreviewThumbnail(e.target.result);
+      };
+      reader.onerror = (e) => {
+        console.error("Error reading file:", e);
+        alert("Error reading file. Please try again.");
       };
       reader.readAsDataURL(file);
     }
@@ -59,9 +79,16 @@ const PresentationPage = () => {
 
   // When the dialog opens, initialize with current values
   const handleSettingsClick = () => {
-    setNewTitle(getPresentationTitle(presentations));
-    setPreviewThumbnail(presentations.find(p => p.id === presentationId)?.thumbnail || "");
+    setNewTitle(currentPresentation?.title || "");
+    setPreviewThumbnail(currentPresentation?.thumbnail || "");
     setShowSettingsDialog(true);
+  };
+
+  // Handle dialog close - reset states
+  const handleClose = () => {
+    setNewTitle(currentPresentation?.title || "");
+    setPreviewThumbnail(currentPresentation?.thumbnail || "");
+    setShowSettingsDialog(false);
   };
 
   return (
@@ -89,7 +116,7 @@ const PresentationPage = () => {
 
       <SettingsDialog 
         open={showSettingsDialog}
-        onClose={() => setShowSettingsDialog(false)}
+        onClose={handleClose}  // Use new handleClose
         onSave={handleSave}
         title={newTitle}
         thumbnail={previewThumbnail}
