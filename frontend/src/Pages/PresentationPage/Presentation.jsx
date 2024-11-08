@@ -17,10 +17,9 @@ const PresentationPage = () => {
   const currentPresentation = presentations?.find(p => p.id === presentationId);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [showSettingsDialog, setShowSettingsDialog] = useState(false);
-  const [newTitle, setNewTitle] = useState(currentPresentation?.title || "");
-  const [previewThumbnail, setPreviewThumbnail] = useState(currentPresentation?.thumbnail || "");
-
-  const navigate = useNavigate();
+  const [newTitle, setNewTitle] = useState(getPresentationTitle(presentations));
+  const [previewThumbnail, setPreviewThumbnail] = useState("");
+  // const navigate = useNavigate();
   const dispatch = useDispatch();
 
   useEffect(() => {
