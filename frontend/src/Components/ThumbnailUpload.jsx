@@ -12,6 +12,9 @@ const ThumbnailUpload = ({ thumbnail, onThumbnailChange }) => {
     }
   };
 
+  // Check if thumbnail is empty or default
+  const showDefaultImage = !thumbnail || thumbnail === "Default thumbnail";
+
   return (
     <Stack spacing={1}>
       <InputLabel>Thumbnail</InputLabel>
@@ -25,7 +28,7 @@ const ThumbnailUpload = ({ thumbnail, onThumbnailChange }) => {
       
       <Card sx={{ width: '100%', maxWidth: 345 }}>
         <CardActionArea onClick={handleCardClick}>
-          {thumbnail ? (
+          {!showDefaultImage ? (
             <CardMedia
               component="img"
               sx={{ height: 194 }}
