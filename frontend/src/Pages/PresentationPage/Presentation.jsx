@@ -6,7 +6,7 @@ import DeleteDialog from './PresentationComponents/Dialogs/DeleteDialog';
 import SettingsDialog from './PresentationComponents/Dialogs/SettingsDialog';
 import Header from './PresentationComponents/Header/Header';
 import { useSelector, useDispatch } from 'react-redux';
-import { savePresentations, updatePresentationTitle, updatePresentationThumbnail , updatePresentationTitle, updatePresentationThumbnail, deletePresentation  } from '../../State/presentationsSlice';
+import { savePresentations, updatePresentationTitle, updatePresentationThumbnail, deletePresentation  } from '../../State/presentationsSlice';
 import Toolbar from './Toolbar/Toolbar';
 import SlideDisplay from './SlideDisplay/SlideDisplay';
 import { useNavigate } from 'react-router-dom';
@@ -17,10 +17,10 @@ const PresentationPage = () => {
   const currentPresentation = presentations?.find(p => p.id === presentationId);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [showSettingsDialog, setShowSettingsDialog] = useState(false);
-  const [newTitle, setNewTitle] = useState(getPresentationTitle(presentations));
-  const [previewThumbnail, setPreviewThumbnail] = useState("");
-  const presentationId = parseInt(location.pathname.split("/")[2]);
-  // const navigate = useNavigate();
+  const [newTitle, setNewTitle] = useState(currentPresentation?.title || "");
+  const [previewThumbnail, setPreviewThumbnail] = useState(currentPresentation?.thumbnail || "");
+
+  const navigate = useNavigate();
   const dispatch = useDispatch();
 
   useEffect(() => {

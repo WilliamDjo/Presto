@@ -170,5 +170,5 @@ const presentationsSlice = createSlice({
   }
 });
 
-export const { addNewSlide, deleteSlide, updateSlide, setPresentations, createNewPresentation, updatePresentationTitle, updatePresentationThumbnail , addTextElement, updateElementPosition, updateElementSize } = presentationsSlice.actions;
+export const { addNewSlide, deleteSlide, updateSlide, setPresentations, createNewPresentation, deletePresentation, updatePresentationTitle, updatePresentationThumbnail , addTextElement, updateElementPosition, updateElementSize } = presentationsSlice.actions;
 export default presentationsSlice.reducer;
