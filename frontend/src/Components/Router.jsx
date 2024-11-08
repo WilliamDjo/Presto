@@ -15,7 +15,7 @@ const Router = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (!localStorage.getItem('token') && !['login', 'register', '', 'test'].includes(location.pathname.split("/")[1])) {
+    if (!localStorage.getItem('token') && !['login', 'register', ''].includes(location.pathname.split("/")[1])) {
       navigate('/');
     }
     
@@ -37,7 +37,6 @@ const Router = () => {
       <Route path="/register" element={<Register />} />
       <Route path="/dashboard" element={<DashboardPage />} />
       <Route path="/presentation/*" element={<PresentationPage />} />
-      <Route path="/test" element={<TestPage />} />
     </Routes>
   );
 };

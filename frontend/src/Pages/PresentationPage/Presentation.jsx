@@ -16,6 +16,7 @@ const PresentationPage = () => {
   const [showSettingsDialog, setShowSettingsDialog] = useState(false);
   const [newTitle, setNewTitle] = useState(getPresentationTitle(presentations));
   const [previewThumbnail, setPreviewThumbnail] = useState("");
+  // const navigate = useNavigate();
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -78,7 +79,6 @@ const PresentationPage = () => {
         onThumbnailChange={handleThumbnailChange}
       />
     </>
-  
   );
 };
 
