@@ -29,11 +29,12 @@
                     background: null || string,
                     contents: [
                         {
+                            index: int,
                             type: 'text',
                             attributes: {
                                 elementSize: {
-                                    x: int,
-                                    y, int
+                                    x: float,
+                                    y: float
                                 },
                                 textContent: string,
                                 fontSize: float,
@@ -41,58 +42,57 @@
                                 fontFamily: string
                             },
                             position: {
-                                x: int,
-                                y: int
+                                x: float,
+                                y: float
                             },
-                            layer: int
                         },
                         {
+                            index: int,
                             type: 'image',
                             attributes: {
                                 elementSize: {
-                                    x: int,
-                                    y, int
+                                    x: float,
+                                    y: float
                                 },
                                 imageURL: string,
                                 altText: string,
                             },
                             position: {
-                                x: int,
-                                y: int
+                                x: float,
+                                y: float
                             },
-                            layer: int
                         },
                         {
+                            index: int,
                             type: 'video',
                             attributes: {
                                 elementSize: {
-                                    x: int,
-                                    y, int
+                                    x: float,
+                                    y: float
                                 },
                                 videoURL: string,
                                 autoPlay: bool,
                             },
                             position: {
-                                x: int,
-                                y: int
+                                x: float,
+                                y: float
                             },
-                            layer: int
                         },
                         {
+                            index: int,
                             type: 'code',
                             attributes: {
                                 elementSize: {
-                                    x: int,
-                                    y, int
+                                    x: float,
+                                    y: float
                                 },
                                 textContent: string,
                                 fontSize: float
                             },
                             position: {
-                                x: int,
-                                y: int
+                                x: float,
+                                y: float
                             },
-                            layer: int
                         }
                     ]
                 }
