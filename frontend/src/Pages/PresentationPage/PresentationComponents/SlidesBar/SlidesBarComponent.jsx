@@ -74,6 +74,7 @@ const SlidesBarComponent = ({ index, sx = {
               console.log('Prompt user to delete presentation');
               // TODO: Add modal to prompt user if they want to delete the presentation
             }
+            // TODO: Add modal to confirm if the user really wants to delete the slide
           }}
         >
           <Delete />
