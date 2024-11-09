@@ -78,6 +78,11 @@ const presentationsSlice = createSlice({
 
       state.presentations.find((presentation) => presentation.id == location.pathname.split("/")[2]).slides = newSlides;
     },
+    deleteSlide: (state, action) => {
+      state.presentations.find((presentation) => presentation.id == location.pathname.split("/")[2]).slides = state.presentations.find((presentation) => presentation.id == location.pathname.split("/")[2]).slides.filter((_, index) => index !== (action.payload - 1));
+      
+      state.presentations.find((presentation) => presentation.id == location.pathname.split("/")[2]).slides.forEach((slide, index) => slide.slideNum = index + 1);
+    },
     addTextElement: (state, action) => {
       const slide = getSlides(state.presentations)[parseInt(location.hash.split("/")[1]) - 1];
 
@@ -100,10 +105,6 @@ const presentationsSlice = createSlice({
     },
     updateElementSize: (state, action) => {
       state.presentations.find((presentation) => presentation.id == location.pathname.split("/")[2]).slides[parseInt(location.hash.split("/")[1]) - 1].contents[action.payload.index].attributes.elementSize = action.payload.size;
-    },
-    deleteSlide: () => {
-      console.log("deleteSlide");
-      // state.value -= 1;
     },
     updateSlide: (state, action) => {
       console.log("updateSlide", state, action);
