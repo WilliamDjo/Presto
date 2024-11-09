@@ -78,6 +78,29 @@ const presentationsSlice = createSlice({
 
       state.presentations.find((presentation) => presentation.id == location.pathname.split("/")[2]).slides = newSlides;
     },
+    addTextElement: (state, action) => {
+      const slide = getSlides(state.presentations)[parseInt(location.hash.split("/")[1]) - 1];
+
+      const textElement = {
+        index: slide.contents.length,
+        type: "text",
+        attributes: action.payload,
+        position: {
+          x: 0,
+          y: 0
+        }
+      }
+
+      const newSlideContents = [...slide.contents, textElement];
+
+      state.presentations.find((presentation) => presentation.id == location.pathname.split("/")[2]).slides[parseInt(location.hash.split("/")[1]) - 1].contents = newSlideContents;
+    },
+    updateElementPosition: (state, action) => {
+      state.presentations.find((presentation) => presentation.id == location.pathname.split("/")[2]).slides[parseInt(location.hash.split("/")[1]) - 1].contents[action.payload.index].position = action.payload.position;
+    },
+    updateElementSize: (state, action) => {
+      state.presentations.find((presentation) => presentation.id == location.pathname.split("/")[2]).slides[parseInt(location.hash.split("/")[1]) - 1].contents[action.payload.index].attributes.elementSize = action.payload.size;
+    },
     deleteSlide: () => {
       console.log("deleteSlide");
       // state.value -= 1;
@@ -131,5 +154,5 @@ const presentationsSlice = createSlice({
   }
 });
 
-export const { addNewSlide, deleteSlide, updateSlide, setPresentations, createNewPresentation, deletePresentation, updatePresentationTitle, updatePresentationThumbnail  } = presentationsSlice.actions;
+export const { addNewSlide, deleteSlide, updateSlide, setPresentations, createNewPresentation, deletePresentation, updatePresentationTitle, updatePresentationThumbnail , addTextElement, updateElementPosition, updateElementSize } = presentationsSlice.actions;
 export default presentationsSlice.reducer;
