@@ -1,5 +1,7 @@
-import { Box, Typography } from '@mui/material';
+import { Box, Typography, IconButton } from '@mui/material';
+import { Settings, Delete } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
+import { useTheme } from '@mui/material/styles';
 
 const SlidesBarComponent = ({ index, sx = { 
   height: "60%", 
@@ -18,9 +20,39 @@ const SlidesBarComponent = ({ index, sx = {
   border: index == location.hash.split("/")[1] ? "2px solid black" : ""
 }}) => {
   const navigate = useNavigate();
+  const theme = useTheme();
 
   return (
-    <Box onClick={() => navigate(`${location.pathname}#/${index}`)} sx={{ ...sx }}>
+    <Box 
+      onClick={() => navigate(`${location.pathname}#/${index}`)} 
+      sx={{ 
+        ...sx, 
+        position: "relative", 
+        '&:hover .icon-buttons': { // Show buttons on hover
+          opacity: 1 
+        }
+      }}
+    >
+      <Box 
+        className="icon-buttons" 
+        sx={{ 
+          position: "absolute", 
+          top: 0, 
+          right: 0, 
+          display: "flex", 
+          justifyContent: "space-between", 
+          width: "100%", 
+          opacity: 0, // Initially hidden
+          transition: "opacity 0.3s ease" // Smooth transition
+        }}
+      >
+        <IconButton size="small" sx={{ color: theme.palette.primary.main }}>
+          <Settings />
+        </IconButton>
+        <IconButton size="small" sx={{ color: "red" }}>
+          <Delete />
+        </IconButton>
+      </Box>
       <Typography>
         {index}
       </Typography>
