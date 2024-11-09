@@ -140,6 +140,14 @@ export const getSlides = (presentations) => {
   return presentations?.find((presentation) => presentation.id == location.pathname.split("/")[2]).slides;
 };
 
+export const getSlide = (presentations) => {
+  return presentations?.find((presentation) => presentation.id == location.pathname.split("/")[2]).slides[parseInt(location.hash.split("/")[1]) - 1];
+}
+
+export const getElementByIndex = (presentations, index) => {
+  return presentations?.find((presentation) => presentation.id == location.pathname.split("/")[2]).slides[parseInt(location.hash.split("/")[1]) - 1].contents[index];
+};
+
 export const getPresentationTitle = (presentations) => {
   return presentations?.find((presentation) => presentation.id == location.pathname.split("/")[2]).title;
 };
