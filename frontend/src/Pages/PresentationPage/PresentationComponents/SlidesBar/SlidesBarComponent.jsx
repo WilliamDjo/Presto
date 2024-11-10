@@ -51,55 +51,51 @@ const SlidesBarComponent = ({ index, sx = {
   };
 
   return (
-    <Box 
-      onClick={handleBoxClick} 
-      sx={{ 
-        ...sx, 
-        position: "relative", 
-        '&:hover .icon-buttons': { // Show buttons on hover
-          opacity: 1 
-        }
-      }}
-    >
+    <>
       <Box 
-        className="icon-buttons" 
+        onClick={handleBoxClick} 
         sx={{ 
-          position: "absolute", 
-          top: 0, 
-          right: 0, 
-          display: "flex", 
-          justifyContent: "space-between", 
-          width: "100%", 
-          opacity: 0, // Initially hidden
-          transition: "opacity 0.3s ease" // Smooth transition
+          ...sx, 
+          position: "relative", 
+          '&:hover .icon-buttons': { // Show buttons on hover
+            opacity: 1 
+          }
         }}
       >
-        {/* Prevent propagation for button clicks */}
-        <IconButton size="small" sx={{ color: theme.palette.primary.main }} onClick={(e) => e.stopPropagation()}>
-          <Settings />
-        </IconButton>
-        <IconButton 
-          size="small" 
-          sx={{ color: "red" }} 
-          onClick={(e) => 
-          { 
-            e.stopPropagation();
-            setDeleteSlideDialogOpen(true);
-            // dispatch(deleteSlide(index));
-            // if (index <= parseInt(location.hash.split("/")[1]) && parseInt(location.hash.split("/")[1]) !== 1) {
-            //   navigate(`${location.pathname}#/${parseInt(location.hash.split("/")[1]) - 1}`);
-            // }
-            // if (getSlides(presentations).length === 1) {
-            //   console.log('Prompt user to delete presentation');
-            //   // TODO: Add modal to prompt user if they want to delete the presentation
-            // }
-            // // TODO: Add modal to confirm if the user really wants to delete the slide
-          }
-          }
+        <Box 
+          className="icon-buttons" 
+          sx={{ 
+            position: "absolute", 
+            top: 0, 
+            right: 0, 
+            display: "flex", 
+            justifyContent: "space-between", 
+            width: "100%", 
+            opacity: 0, // Initially hidden
+            transition: "opacity 0.3s ease" // Smooth transition
+          }}
         >
-          <Delete />
-        </IconButton>
+          {/* Prevent propagation for button clicks */}
+          <IconButton size="small" sx={{ color: theme.palette.primary.main }} onClick={(e) => e.stopPropagation()}>
+            <Settings />
+          </IconButton>
+          <IconButton 
+            size="small" 
+            sx={{ color: "red" }} 
+            onClick={(e) => { 
+              e.stopPropagation();
+              setDeleteSlideDialogOpen(true);
+            }}
+          >
+            <Delete />
+          </IconButton>
+        </Box>
+
+        <Typography>
+          {index}
+        </Typography>
       </Box>
+
       {/* Delete Slide Confirmation Dialog */}
       <Dialog
         open={deleteSlideDialogOpen}
@@ -127,10 +123,37 @@ const SlidesBarComponent = ({ index, sx = {
         </DialogActions>
       </Dialog>
 
-      <Typography>
-        {index}
-      </Typography>
-    </Box>
+      {/* Delete Presentation Confirmation Dialog */}
+      <Dialog
+        open={deletePresentationDialogOpen}
+        onClose={() => setDeletePresentationDialogOpen(false)}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <DialogTitle>Delete Presentation</DialogTitle>
+        <DialogContent>
+          This is the last slide in your presentation. Deleting it will remove the entire presentation. Do you want to proceed?
+        </DialogContent>
+        <DialogActions>
+          <Button 
+            onClick={() => setDeletePresentationDialogOpen(false)}
+            color="primary"
+          >
+            Cancel
+          </Button>
+          <Button 
+            onClick={() => {
+              // Add your presentation deletion logic here
+              setDeletePresentationDialogOpen(false);
+            }}
+            color="error"
+            variant="contained"
+          >
+            Delete Presentation
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </>
+  
   );
 };
 
