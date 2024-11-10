@@ -125,21 +125,6 @@ const presentationsSlice = createSlice({
         presentation.thumbnail = thumbnail;
       }
     },
-    updatePresentationTitle: (state, action) => {
-      const { id, title } = action.payload;
-      const presentation = state.presentations.find(p => p.id == id);
-      if (presentation) {
-        presentation.title = title;
-      }
-    },
-    
-    updatePresentationThumbnail: (state, action) => {
-      const { id, thumbnail } = action.payload;
-      const presentation = state.presentations.find(p => p.id == id);
-      if (presentation) {
-        presentation.thumbnail = thumbnail;
-      }
-    }
   },
   extraReducers: (builder) => {
     builder.addCase(fetchPresentations.pending, (state) => {

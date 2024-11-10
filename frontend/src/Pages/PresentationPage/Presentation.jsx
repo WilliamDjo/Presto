@@ -36,12 +36,20 @@ const PresentationPage = () => {
   };
 
   const handleSave = () => {
+    // Validate inputs
+    if (!newTitle.trim()) {
+      alert("Please enter a title");
+      return;
+    }
+
+    // Update title
     dispatch(updatePresentationTitle({
       id: presentationId,
-      title: newTitle
+      title: newTitle.trim()
     }));
     
-    if (previewThumbnail) {
+    // Update thumbnail only if changed
+    if (previewThumbnail !== currentPresentation?.thumbnail) {
       dispatch(updatePresentationThumbnail({
         id: presentationId,
         thumbnail: previewThumbnail
@@ -74,9 +82,16 @@ const PresentationPage = () => {
 
   // When the dialog opens, initialize with current values
   const handleSettingsClick = () => {
-    setNewTitle(getPresentationTitle(presentations));
-    setPreviewThumbnail(presentations.find(p => p.id === presentationId)?.thumbnail || "");
+    setNewTitle(currentPresentation?.title || "");
+    setPreviewThumbnail(currentPresentation?.thumbnail || "");
     setShowSettingsDialog(true);
+  };
+
+  // Handle dialog close - reset states
+  const handleClose = () => {
+    setNewTitle(currentPresentation?.title || "");
+    setPreviewThumbnail(currentPresentation?.thumbnail || "");
+    setShowSettingsDialog(false);
   };
 
   return (
