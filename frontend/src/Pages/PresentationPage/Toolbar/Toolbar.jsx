@@ -3,13 +3,12 @@ import { Notes, Image, VideoLibrary, Code, KeyboardDoubleArrowLeft } from "@mui/
 // import { useDispatch } from "react-redux";
 // import { addTextElement } from "../../../State/presentationsSlice";
 import TextModal from "../PresentationComponents/Dialogs/TextModal";
+import ImageModal from "../PresentationComponents/Dialogs/ImageModal";
 import { useState } from "react";
 
 const Toolbar = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const handleOpenModal = () => setIsModalOpen(true);
-  const handleCloseModal = () => setIsModalOpen(false);
+  const [textModalOpen, setTextModalOpen] = useState(false);
+  const [imageModalOpen, setImageModalOpen] = useState(false);
 
   return (
     <>
@@ -30,13 +29,15 @@ const Toolbar = () => {
         }}
       >
         <IconButton 
-          onClick={handleOpenModal}
+          onClick={() => setTextModalOpen(true)}
           sx={{ color: 'primary.main' }}
           title="Add Text Element"
         >
           <Notes />
         </IconButton>
-        <IconButton sx={{ color: 'primary.main' }}>
+        <IconButton 
+          onClick={() => setImageModalOpen(true)}
+          sx={{ color: 'primary.main' }}>
           <Image />
         </IconButton>
         <IconButton sx={{ color: 'primary.main' }}>
@@ -51,8 +52,12 @@ const Toolbar = () => {
         </IconButton>
       </Box>
       <TextModal 
-        open={isModalOpen}
-        handleClose={handleCloseModal}
+        open={textModalOpen}
+        handleClose={() => setTextModalOpen(false)}
+      />
+      <ImageModal 
+        open={imageModalOpen}
+        handleClose={() => setImageModalOpen(false)}
       />
     </>
   )
