@@ -1,4 +1,4 @@
-import { Box, Typography, IconButton } from '@mui/material';
+import { Box, Typography, IconButton, Dialog, DialogTitle, DialogContent, DialogActions, Button } from '@mui/material';
 import { Settings, Delete } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from '@mui/material/styles';
@@ -6,6 +6,7 @@ import { useDispatch } from 'react-redux';
 import { deleteSlide } from '../../../../State/presentationsSlice';
 import { getSlides } from '../../../../HelperFiles/helper';
 import { useSelector } from 'react-redux';
+import { useState } from 'react';
 
 const SlidesBarComponent = ({ index, sx = { 
   height: "60%", 
@@ -28,9 +29,25 @@ const SlidesBarComponent = ({ index, sx = {
   const dispatch = useDispatch();
   const theme = useTheme();
 
+  // State for managing dialog visibility
+  const [deleteSlideDialogOpen, setDeleteSlideDialogOpen] = useState(false);
+  const [deletePresentationDialogOpen, setDeletePresentationDialogOpen] = useState(false);
+
   // Function to handle box click and navigate
   const handleBoxClick = () => {
     navigate(`${location.pathname}#/${index}`);
+  };
+
+  // Function to handle slide deletion
+  const handleDeleteSlide = () => {
+    dispatch(deleteSlide(index));
+    if (index <= parseInt(location.hash.split("/")[1]) && parseInt(location.hash.split("/")[1]) !== 1) {
+      navigate(`${location.pathname}#/${parseInt(location.hash.split("/")[1]) - 1}`);
+    }
+    if (getSlides(presentations).length === 1) {
+      setDeletePresentationDialogOpen(true);
+    }
+    setDeleteSlideDialogOpen(false);
   };
 
   return (
@@ -64,22 +81,52 @@ const SlidesBarComponent = ({ index, sx = {
         <IconButton 
           size="small" 
           sx={{ color: "red" }} 
-          onClick={(e) => { 
+          onClick={(e) => 
+          { 
             e.stopPropagation();
-            dispatch(deleteSlide(index));
-            if (index <= parseInt(location.hash.split("/")[1]) && parseInt(location.hash.split("/")[1]) !== 1) {
-              navigate(`${location.pathname}#/${parseInt(location.hash.split("/")[1]) - 1}`);
-            }
-            if (getSlides(presentations).length === 1) {
-              console.log('Prompt user to delete presentation');
-              // TODO: Add modal to prompt user if they want to delete the presentation
-            }
-            // TODO: Add modal to confirm if the user really wants to delete the slide
-          }}
+            setDeleteSlideDialogOpen(true);
+            // dispatch(deleteSlide(index));
+            // if (index <= parseInt(location.hash.split("/")[1]) && parseInt(location.hash.split("/")[1]) !== 1) {
+            //   navigate(`${location.pathname}#/${parseInt(location.hash.split("/")[1]) - 1}`);
+            // }
+            // if (getSlides(presentations).length === 1) {
+            //   console.log('Prompt user to delete presentation');
+            //   // TODO: Add modal to prompt user if they want to delete the presentation
+            // }
+            // // TODO: Add modal to confirm if the user really wants to delete the slide
+          }
+          }
         >
           <Delete />
         </IconButton>
       </Box>
+      {/* Delete Slide Confirmation Dialog */}
+      <Dialog
+        open={deleteSlideDialogOpen}
+        onClose={() => setDeleteSlideDialogOpen(false)}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <DialogTitle>Delete Slide</DialogTitle>
+        <DialogContent>
+          Are you sure you want to delete slide {index}? This action cannot be undone.
+        </DialogContent>
+        <DialogActions>
+          <Button 
+            onClick={() => setDeleteSlideDialogOpen(false)}
+            color="primary"
+          >
+            Cancel
+          </Button>
+          <Button 
+            onClick={handleDeleteSlide}
+            color="error"
+            variant="contained"
+          >
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
+
       <Typography>
         {index}
       </Typography>
