@@ -4,11 +4,13 @@ import { Notes, Image, VideoLibrary, Code, KeyboardDoubleArrowLeft } from "@mui/
 // import { addTextElement } from "../../../State/presentationsSlice";
 import TextModal from "../PresentationComponents/Dialogs/TextModal";
 import ImageModal from "../PresentationComponents/Dialogs/ImageModal";
+import VideoModal from "../PresentationComponents/Dialogs/VideoModal";
 import { useState } from "react";
 
 const Toolbar = () => {
   const [textModalOpen, setTextModalOpen] = useState(false);
   const [imageModalOpen, setImageModalOpen] = useState(false);
+  const [videoModalOpen, setVideoModalOpen] = useState(false);
 
   return (
     <>
@@ -40,7 +42,10 @@ const Toolbar = () => {
           sx={{ color: 'primary.main' }}>
           <Image />
         </IconButton>
-        <IconButton sx={{ color: 'primary.main' }}>
+        <IconButton         
+          onClick={() => setVideoModalOpen(true)}
+          sx={{ color: 'primary.main' }}
+          title="Add Video Element">
           <VideoLibrary />
         </IconButton>
         <IconButton sx={{ color: 'primary.main' }}>
@@ -58,6 +63,11 @@ const Toolbar = () => {
       <ImageModal 
         open={imageModalOpen}
         handleClose={() => setImageModalOpen(false)}
+      />
+
+      <VideoModal 
+        open={videoModalOpen}
+        handleClose={() => setVideoModalOpen(false)}
       />
     </>
   )
