@@ -49,6 +49,8 @@ export default function TextModal({ open, handleClose }) {
       textColor: formData.color,
       fontFamily: "Arial"
     }));
+    console.log('Text uploaded');
+    
     handleClose();
     // Reset form
     setFormData({

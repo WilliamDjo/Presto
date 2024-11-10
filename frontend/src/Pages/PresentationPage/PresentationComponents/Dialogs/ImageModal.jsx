@@ -107,15 +107,18 @@ export default function ImageModal({ open, handleClose }) {
     //   altText: formData.altText
     // }));
   
+    console.log('Image uploaded');
+    
+
     handleClose();
-    // Reset form
-    setFormData({
-      width: 0.5,
-      height: 0.5,
-      imageSource: '',
-      altText: '',
-      uploadMethod: 'url'
-    });
+    // // Reset form
+    // setFormData({
+    //   width: 0.5,
+    //   height: 0.5,
+    //   imageSource: '',
+    //   altText: '',
+    //   uploadMethod: 'url'
+    // });
     setPreviewUrl('');
     setError('');
   };

@@ -14,7 +14,6 @@ import {
   Alert
 } from '@mui/material';
 
-// // Assuming you have an action for adding videos
 // const addVideoElement = (videoData) => ({
 //     type: 'presentations/addVideoElement',
 //     payload: videoData
@@ -112,15 +111,17 @@ export default function VideoModal({ open, handleClose }) {
     //   videoUrl: finalUrl,
     //   autoplay: formData.autoplay
     // }));
+    console.log('Video uploaded');
+    
   
     handleClose();
-    // Reset form
-    setFormData({
-      width: 0.5,
-      height: 0.5,
-      videoUrl: '',
-      autoplay: false
-    });
+    // // Reset form
+    // setFormData({
+    //   width: 0.5,
+    //   height: 0.5,
+    //   videoUrl: '',
+    //   autoplay: false
+    // });
     setPreview(null);
     setError('');
   };
