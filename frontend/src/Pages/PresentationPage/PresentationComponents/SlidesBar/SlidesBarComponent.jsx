@@ -1,4 +1,4 @@
-import { Box, Typography, IconButton, Dialog, DialogTitle, DialogContent, DialogActions, Button } from '@mui/material';
+import { Box, Typography, IconButton } from '@mui/material';
 import { Settings, Delete } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from '@mui/material/styles';
@@ -7,6 +7,7 @@ import { deleteSlide } from '../../../../State/presentationsSlice';
 import { getSlides } from '../../../../HelperFiles/helper';
 import { useSelector } from 'react-redux';
 import { useState } from 'react';
+import { DeleteConfirmDialog } from '../Dialogs/DeleteConfirmDialog';
 
 const SlidesBarComponent = ({ index, sx = { 
   height: "60%", 
@@ -98,37 +99,14 @@ const SlidesBarComponent = ({ index, sx = {
         </Typography>
       </Box>
 
-      {/* Smart Delete Confirmation Dialog */}
-      <Dialog
+
+      <DeleteConfirmDialog
         open={deleteDialogOpen}
         onClose={() => setDeleteDialogOpen(false)}
-        onClick={(e) => e.stopPropagation()}
-      >
-        <DialogTitle>
-          {isLastSlide ? "Delete Presentation" : "Delete Slide"}
-        </DialogTitle>
-        <DialogContent>
-          {isLastSlide 
-            ? "This is the last slide in your presentation. Deleting it will remove the entire presentation. Do you want to proceed?"
-            : `Are you sure you want to delete slide ${index}? This action cannot be undone.`
-          }
-        </DialogContent>
-        <DialogActions>
-          <Button 
-            onClick={() => setDeleteDialogOpen(false)}
-            color="primary"
-          >
-            Cancel
-          </Button>
-          <Button 
-            onClick={handleDeleteSlide}
-            color="error"
-            variant="contained"
-          >
-            {isLastSlide ? "Delete Presentation" : "Delete Slide"}
-          </Button>
-        </DialogActions>
-      </Dialog>
+        onConfirm={handleDeleteSlide}
+        slideIndex={index}
+        isLastSlide={isLastSlide}
+      />
     </>
   
   );
