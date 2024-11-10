@@ -30,8 +30,10 @@ const SlidesBarComponent = ({ index, sx = {
   const theme = useTheme();
 
   // State for managing dialog visibility
-  const [deleteSlideDialogOpen, setDeleteSlideDialogOpen] = useState(false);
-  const [deletePresentationDialogOpen, setDeletePresentationDialogOpen] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+
+  // Check if this is the last slide
+  const isLastSlide = getSlides(presentations).length === 1;
 
   // Function to handle box click and navigate
   const handleBoxClick = () => {
@@ -44,10 +46,10 @@ const SlidesBarComponent = ({ index, sx = {
     if (index <= parseInt(location.hash.split("/")[1]) && parseInt(location.hash.split("/")[1]) !== 1) {
       navigate(`${location.pathname}#/${parseInt(location.hash.split("/")[1]) - 1}`);
     }
-    if (getSlides(presentations).length === 1) {
-      setDeletePresentationDialogOpen(true);
-    }
-    setDeleteSlideDialogOpen(false);
+    // if (getSlides(presentations).length === 1) {
+    //   setDeletePresentationDialogOpen(true);
+    // }
+    setDeleteDialogOpen(false);
   };
 
   return (
@@ -84,7 +86,7 @@ const SlidesBarComponent = ({ index, sx = {
             sx={{ color: "red" }} 
             onClick={(e) => { 
               e.stopPropagation();
-              setDeleteSlideDialogOpen(true);
+              setDeleteDialogOpen(true);
             }}
           >
             <Delete />
@@ -96,19 +98,24 @@ const SlidesBarComponent = ({ index, sx = {
         </Typography>
       </Box>
 
-      {/* Delete Slide Confirmation Dialog */}
+      {/* Smart Delete Confirmation Dialog */}
       <Dialog
-        open={deleteSlideDialogOpen}
-        onClose={() => setDeleteSlideDialogOpen(false)}
+        open={deleteDialogOpen}
+        onClose={() => setDeleteDialogOpen(false)}
         onClick={(e) => e.stopPropagation()}
       >
-        <DialogTitle>Delete Slide</DialogTitle>
+        <DialogTitle>
+          {isLastSlide ? "Delete Presentation" : "Delete Slide"}
+        </DialogTitle>
         <DialogContent>
-          Are you sure you want to delete slide {index}? This action cannot be undone.
+          {isLastSlide 
+            ? "This is the last slide in your presentation. Deleting it will remove the entire presentation. Do you want to proceed?"
+            : `Are you sure you want to delete slide ${index}? This action cannot be undone.`
+          }
         </DialogContent>
         <DialogActions>
           <Button 
-            onClick={() => setDeleteSlideDialogOpen(false)}
+            onClick={() => setDeleteDialogOpen(false)}
             color="primary"
           >
             Cancel
@@ -118,37 +125,7 @@ const SlidesBarComponent = ({ index, sx = {
             color="error"
             variant="contained"
           >
-            Delete
-          </Button>
-        </DialogActions>
-      </Dialog>
-
-      {/* Delete Presentation Confirmation Dialog */}
-      <Dialog
-        open={deletePresentationDialogOpen}
-        onClose={() => setDeletePresentationDialogOpen(false)}
-        onClick={(e) => e.stopPropagation()}
-      >
-        <DialogTitle>Delete Presentation</DialogTitle>
-        <DialogContent>
-          This is the last slide in your presentation. Deleting it will remove the entire presentation. Do you want to proceed?
-        </DialogContent>
-        <DialogActions>
-          <Button 
-            onClick={() => setDeletePresentationDialogOpen(false)}
-            color="primary"
-          >
-            Cancel
-          </Button>
-          <Button 
-            onClick={() => {
-              // Add your presentation deletion logic here
-              setDeletePresentationDialogOpen(false);
-            }}
-            color="error"
-            variant="contained"
-          >
-            Delete Presentation
+            {isLastSlide ? "Delete Presentation" : "Delete Slide"}
           </Button>
         </DialogActions>
       </Dialog>

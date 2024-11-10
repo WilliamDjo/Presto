@@ -49,7 +49,7 @@ const Block = ({ parentHeight, parentWidth, index }) => {
     }));
   };
 
-  const handleResizeStop = (e, direction, ref, delta, position) => {
+  const handleResizeStop = (ref, position) => {
     dispatch(updateElementSize({
       index: index,
       size: {
