@@ -53,22 +53,30 @@ const Block = ({ parentHeight, parentWidth, index }) => {
     }));
   };
 
-  const handleResizeStop = (ref) => {
-    const position = element?.position 
+  const handleResizeStop = (e, direction, ref, delta, position) => {
+    // Calculate new relative sizes
+    const newSizeX = ref.offsetWidth / parentWidth;
+    const newSizeY = ref.offsetHeight / parentHeight;
+
+    // Calculate new relative positions
+    const newPositionX = position.x / parentWidth;
+    const newPositionY = position.y / parentHeight;
+
+    // Update size
     dispatch(updateElementSize({
       index: index,
       size: {
-        x: ref.offsetWidth / parentWidth,
-        y: ref.offsetHeight / parentHeight
+        x: newSizeX,
+        y: newSizeY
       }
     }));
-    console.log('position', position);
-    
+
+    // Update position
     dispatch(updateElementPosition({
       index: index,
       position: {
-        x: position.x / parentWidth,
-        y: position.y / parentHeight
+        x: newPositionX,
+        y: newPositionY
       }
     }));
   };
