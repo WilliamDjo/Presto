@@ -13,11 +13,12 @@ import {
   Tabs,
   Paper
 } from '@mui/material';
-// import { useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { CloudUpload } from '@mui/icons-material';
+import { addImageElement } from '../../../../State/presentationsSlice';
 
 export default function ImageModal({ open, handleClose }) {
-//   const dispatch = useDispatch();
+  const dispatch = useDispatch();
   
   const [formData, setFormData] = useState({
     width: 0.5,
@@ -98,27 +99,24 @@ export default function ImageModal({ open, handleClose }) {
   const handleSubmit = () => {
     if (!validateForm()) return;
   
-    // dispatch(addImageElement({
-    //   elementSize: {
-    //     x: formData.width,
-    //     y: formData.height
-    //   },
-    //   imageSource: formData.imageSource,
-    //   altText: formData.altText
-    // }));
+    dispatch(addImageElement({
+      elementSize: {
+        x: formData.width,
+        y: formData.height
+      },
+      imageSource: formData.imageSource,
+      altText: formData.altText
+    }));
   
-    console.log('Image uploaded');
-    
-
     handleClose();
-    // // Reset form
-    // setFormData({
-    //   width: 0.5,
-    //   height: 0.5,
-    //   imageSource: '',
-    //   altText: '',
-    //   uploadMethod: 'url'
-    // });
+    // Reset form
+    setFormData({
+      width: 0.5,
+      height: 0.5,
+      imageSource: '',
+      altText: '',
+      uploadMethod: 'url'
+    });
     setPreviewUrl('');
     setError('');
   };
