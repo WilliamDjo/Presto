@@ -40,14 +40,18 @@ export default function TextModal({ open, handleClose }) {
   
   const handleSubmit = () => {
     dispatch(addTextElement({
+      text: formData.text,
       elementSize: {
         x: formData.width,
         y: formData.height
       },
-      textContent: formData.text,
-      fontSize: formData.fontSize,
-      textColor: formData.color,
-      fontFamily: "Arial"
+      fontSize: `${formData.fontSize}em`,
+      color: formData.color,
+      fontFamily: "Arial",
+      fontWeight: "normal",
+      fontStyle: "normal",
+      textDecoration: "none",
+      textAlign: "left"
     }));
     console.log('Text uploaded');
     

@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { updateElementPosition, updateElementSize } from "../../../../State/presentationsSlice";
 import { getElementByIndex } from "../../../../HelperFiles/helper";
 
-const Block = ({ parentHeight, parentWidth, index }) => {
+const Block = ({ parentHeight, parentWidth, index, children }) => {
   const [showHandles, setShowHandles] = useState(false);
   const rndRef = useRef(null);
   const dispatch = useDispatch();
@@ -17,9 +17,9 @@ const Block = ({ parentHeight, parentWidth, index }) => {
   const width = element.attributes.elementSize.x * parentWidth;
   const height = element.attributes.elementSize.y * parentHeight;
 
-  const handleDoubleClick = () => {
-    console.log('Double click');
-  };
+  // const handleDoubleClick = () => {
+  //   console.log('Double click');
+  // };
     
   const handleSingleClick = () => {
     setShowHandles(true);
@@ -75,7 +75,7 @@ const Block = ({ parentHeight, parentWidth, index }) => {
       minHeight="1%"
       bounds="parent"
       enableResizing={showHandles}
-      onDoubleClick={handleDoubleClick}
+      // onDoubleClick={handleDoubleClick}
       onMouseDown={handleSingleClick}
       onDragStop={handleDragStop}
       onResizeStop={handleResizeStop}
@@ -87,6 +87,7 @@ const Block = ({ parentHeight, parentWidth, index }) => {
       }}
     >
       <Box style={{ width: "100%", height: "100%", position: "absolute" }}>
+        {children}
         {showHandles &&
           ["top-left", "top-right", "bottom-left", "bottom-right"].map(
             (corner) => (
