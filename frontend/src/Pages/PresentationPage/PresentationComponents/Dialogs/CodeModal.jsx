@@ -19,10 +19,10 @@ import 'prismjs/components/prism-c';
 import 'prismjs/themes/prism.css';
 
 
-const addCodeElement = (codeData) => ({
-  type: 'presentations/addCodeElement',
-  payload: codeData
-});
+// const addCodeElement = (codeData) => ({
+//   type: 'presentations/addCodeElement',
+//   payload: codeData
+// });
 
 export default function CodeModal({ open, handleClose }) {
 //   const dispatch = useDispatch();
@@ -76,7 +76,7 @@ export default function CodeModal({ open, handleClose }) {
     const maxScore = Math.max(...Object.values(scores));
     if (maxScore === 0) return null;
       
-    return Object.entries(scores).find(([_, score]) => score === maxScore)[0];
+    return Object.entries(scores).find(([, score]) => score === maxScore)[0];
   };
   
   // Update preview with syntax highlighting
@@ -144,6 +144,106 @@ export default function CodeModal({ open, handleClose }) {
   };
   
   return (
-    <div>CodeModal</div>
+    <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
+      <DialogTitle>Add Code Element</DialogTitle>
+      <DialogContent>
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, mt: 2 }}>
+          <TextField
+            fullWidth
+            multiline
+            rows={8}
+            label="Code"
+            value={formData.code}
+            onChange={handleChange('code')}
+            error={!!error}
+            helperText={error}
+            sx={{
+              '& .MuiInputBase-input': {
+                fontFamily: 'monospace',
+                whiteSpace: 'pre-wrap',
+              }
+            }}
+          />
+
+          {detectedLanguage && (
+            <Alert severity="info">
+              Detected Language: {detectedLanguage.charAt(0).toUpperCase() + detectedLanguage.slice(1)}
+            </Alert>
+          )}
+
+          {preview && (
+            <Box sx={{ 
+              p: 2, 
+              bgcolor: 'grey.100', 
+              borderRadius: 1,
+              overflow: 'auto'
+            }}>
+              <Typography 
+                component="pre" 
+                sx={{ 
+                  m: 0,
+                  fontFamily: 'monospace',
+                  fontSize: `${formData.fontSize}em`
+                }}
+              >
+                <code 
+                  dangerouslySetInnerHTML={{ __html: preview }}
+                  style={{ whiteSpace: 'pre-wrap' }}
+                />
+              </Typography>
+            </Box>
+          )}
+
+          <Box>
+            <Box sx={{ mb: 1 }}>Width (relative to slide)</Box>
+            <Slider
+              value={formData.width}
+              onChange={handleSliderChange('width')}
+              min={0.1}
+              max={1}
+              step={0.1}
+              marks
+              valueLabelDisplay="auto"
+            />
+          </Box>
+          
+          <Box>
+            <Box sx={{ mb: 1 }}>Height (relative to slide)</Box>
+            <Slider
+              value={formData.height}
+              onChange={handleSliderChange('height')}
+              min={0.1}
+              max={1}
+              step={0.1}
+              marks
+              valueLabelDisplay="auto"
+            />
+          </Box>
+
+          <Box>
+            <Box sx={{ mb: 1 }}>Font Size (em)</Box>
+            <Slider
+              value={formData.fontSize}
+              onChange={handleSliderChange('fontSize')}
+              min={0.5}
+              max={2}
+              step={0.1}
+              marks
+              valueLabelDisplay="auto"
+            />
+          </Box>
+        </Box>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={handleClose}>Cancel</Button>
+        <Button 
+          onClick={handleSubmit}
+          variant="contained"
+          disabled={!formData.code.trim()}
+        >
+          Add Code Block
+        </Button>
+      </DialogActions>
+    </Dialog>
   )
 }
