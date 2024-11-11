@@ -103,6 +103,18 @@ const Block = ({ parentHeight, parentWidth, index }) => {
           {element.attributes.text || ""}
         </Typography>
       );
+    } else if (element.type === "image") {
+      return (
+        <img
+          src={element.attributes.imageSource}
+          alt={element.attributes.altText}
+          style={{
+            width: "100%",
+            height: "100%",
+            objectFit: "contain"
+          }}
+        />
+      );
     }
   };
 
