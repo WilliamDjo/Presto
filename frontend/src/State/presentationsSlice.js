@@ -96,7 +96,8 @@ const presentationsSlice = createSlice({
         // }
         position: action.payload.position
       }
-
+      console.log('position', action.payload.position);
+      
       const newSlideContents = [...slide.contents, textElement];
 
       state.presentations.find((presentation) => presentation.id == location.pathname.split("/")[2]).slides[parseInt(location.hash.split("/")[1]) - 1].contents = newSlideContents;

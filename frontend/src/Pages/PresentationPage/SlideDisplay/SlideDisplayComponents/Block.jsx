@@ -12,10 +12,6 @@ const Block = ({ parentHeight, parentWidth, index }) => {
   const presentations = useSelector(state => state.presentations.presentations);
 
   const element = getElementByIndex(presentations, index);
-  // const x = element.position.x * parentWidth;
-  // const y = element.position.y * parentHeight;
-  // const width = element.attributes.elementSize.x * parentWidth;
-  // const height = element.attributes.elementSize.y * parentHeight;
 
   // Safely access position and size with fallbacks
   const position = element?.position 
@@ -24,8 +20,7 @@ const Block = ({ parentHeight, parentWidth, index }) => {
   const y = (position.y || 0) * parentHeight;
   const width = (size.x || 0.5) * parentWidth;
   const height = (size.y || 0.5) * parentHeight;
-
-  console.log("pos x", position.x);
+  
   // const handleDoubleClick = () => {
   //   console.log('Double click');
   // };
@@ -58,7 +53,8 @@ const Block = ({ parentHeight, parentWidth, index }) => {
     }));
   };
 
-  const handleResizeStop = (ref, position) => {
+  const handleResizeStop = (ref) => {
+    const position = element?.position 
     dispatch(updateElementSize({
       index: index,
       size: {
@@ -66,16 +62,15 @@ const Block = ({ parentHeight, parentWidth, index }) => {
         y: ref.offsetHeight / parentHeight
       }
     }));
-    // Only update position if it actually changed
-    if (position.x !== x || position.y !== y) {
-      dispatch(updateElementPosition({
-        index: index,
-        position: {
-          x: position.x / parentWidth,
-          y: position.y / parentHeight
-        }
-      }));
-    }
+    console.log('position', position);
+    
+    dispatch(updateElementPosition({
+      index: index,
+      position: {
+        x: position.x / parentWidth,
+        y: position.y / parentHeight
+      }
+    }));
   };
 
   const renderContent = () => {

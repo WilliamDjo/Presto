@@ -58,7 +58,7 @@ const SlideDisplay = () => {
       <Box ref={slideRef} height={slideHeight} width={slideWidth} border={1} sx={{ position: "relative", backgroundColor: "white"}}>
         <Box sx={{height: "100%", width: "100%"}}>
           {getSlide(presentations)?.contents.map((element) => (
-            <Block parentHeight={slideHeight} parentWidth={slideWidth} key={element.index} index={element.index}> 
+            <Block parentHeight={slideHeight - 2} parentWidth={slideWidth - 2} key={element.index} index={element.index}> 
               {renderTextContent(element)}
             </Block>
           ))}
