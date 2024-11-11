@@ -32,12 +32,35 @@ const SlideDisplay = () => {
     return () => window.removeEventListener("resize", () => updateDimensions());
   }, [slideHeight, slideWidth]);
 
+  const renderTextContent = (element) => {
+    if (!element.attributes) return null;
+    
+    return (
+      <Typography
+        sx={{
+          width: '100%',
+          height: '100%',
+          padding: '8px',
+          fontSize: `${element.attributes.fontSize}em`,
+          color: element.attributes.textColor,
+          fontFamily: element.attributes.fontFamily || 'Arial',
+          wordBreak: 'break-word',
+          overflow: 'hidden'
+        }}
+      >
+        {element.attributes.textContent}
+      </Typography>
+    );
+  };
+
   return (
     <Box p={2} ref={slideContainerRef} sx={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100%", overflowY: 'auto', overflowX: 'auto' }}>
       <Box ref={slideRef} height={slideHeight} width={slideWidth} border={1} sx={{ position: "relative", backgroundColor: "white"}}>
         <Box sx={{height: "100%", width: "100%"}}>
           {getSlide(presentations)?.contents.map((element) => (
-            <Block parentHeight={slideHeight - 2} parentWidth={slideWidth - 2} key={element.index} index={element.index} />
+            <Block parentHeight={slideHeight - 2} parentWidth={slideWidth - 2} key={element.index} index={element.index}> 
+              {renderTextContent(element)}
+            </Block>
           ))}
 
           <Typography m={1} sx={{

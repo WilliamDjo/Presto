@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { Rnd } from "react-rnd";
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { updateElementPosition, updateElementSize } from "../../../../State/presentationsSlice";
 import { getElementByIndex } from "../../../../HelperFiles/helper";
@@ -16,6 +16,10 @@ const Block = ({ parentHeight, parentWidth, index, children }) => {
   const y = element.position.y * parentHeight;
   const width = element.attributes.elementSize.x * parentWidth;
   const height = element.attributes.elementSize.y * parentHeight;
+
+  // Calculate minimum sizes in pixels (1% of parent dimensions)
+  const minWidth = parentWidth * 0.01;
+  const minHeight = parentHeight * 0.01;
 
   // const handleDoubleClick = () => {
   //   console.log('Double click');
@@ -66,6 +70,32 @@ const Block = ({ parentHeight, parentWidth, index, children }) => {
     }));
   };
 
+  const renderContent = () => {
+    if (element.type === "text") {
+      return (
+        <Typography
+          style={{
+            width: "100%",
+            height: "100%",
+            padding: "8px",
+            fontSize: element.attributes.fontSize || "16px",
+            fontFamily: element.attributes.fontFamily || "Arial",
+            color: element.attributes.color || "#000000",
+            fontWeight: element.attributes.fontWeight || "normal",
+            fontStyle: element.attributes.fontStyle || "normal",
+            textDecoration: element.attributes.textDecoration || "none",
+            textAlign: element.attributes.textAlign || "left",
+            overflow: "hidden",
+            wordWrap: "break-word"
+          }}
+        >
+          {element.attributes.text || ""}
+        </Typography>
+      );
+    }
+    return children;
+  };
+
   return (
     <Rnd
       ref={rndRef}
@@ -87,7 +117,7 @@ const Block = ({ parentHeight, parentWidth, index, children }) => {
       }}
     >
       <Box style={{ width: "100%", height: "100%", position: "absolute" }}>
-        {children}
+        {renderContent()}
         {showHandles &&
           ["top-left", "top-right", "bottom-left", "bottom-right"].map(
             (corner) => (
