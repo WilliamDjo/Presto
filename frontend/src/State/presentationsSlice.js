@@ -90,10 +90,11 @@ const presentationsSlice = createSlice({
         index: slide.contents.length,
         type: "text",
         attributes: action.payload,
-        position: {
-          x: 0,
-          y: 0
-        }
+        // position: {
+        //   x: 0,
+        //   y: 0
+        // }
+        position: action.payload.position
       }
 
       const newSlideContents = [...slide.contents, textElement];

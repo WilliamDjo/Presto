@@ -45,6 +45,10 @@ export default function TextModal({ open, handleClose }) {
         x: formData.width,
         y: formData.height
       },
+      position: {
+        x: 0.1,  // 10% from left
+        y: 0.1   // 10% from top
+      },
       fontSize: `${formData.fontSize}em`,
       color: formData.color,
       fontFamily: "Arial",

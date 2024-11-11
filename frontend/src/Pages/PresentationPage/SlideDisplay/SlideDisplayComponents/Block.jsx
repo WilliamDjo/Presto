@@ -5,22 +5,27 @@ import { useDispatch, useSelector } from "react-redux";
 import { updateElementPosition, updateElementSize } from "../../../../State/presentationsSlice";
 import { getElementByIndex } from "../../../../HelperFiles/helper";
 
-const Block = ({ parentHeight, parentWidth, index, children }) => {
+const Block = ({ parentHeight, parentWidth, index }) => {
   const [showHandles, setShowHandles] = useState(false);
   const rndRef = useRef(null);
   const dispatch = useDispatch();
   const presentations = useSelector(state => state.presentations.presentations);
 
   const element = getElementByIndex(presentations, index);
-  const x = element.position.x * parentWidth;
-  const y = element.position.y * parentHeight;
-  const width = element.attributes.elementSize.x * parentWidth;
-  const height = element.attributes.elementSize.y * parentHeight;
+  // const x = element.position.x * parentWidth;
+  // const y = element.position.y * parentHeight;
+  // const width = element.attributes.elementSize.x * parentWidth;
+  // const height = element.attributes.elementSize.y * parentHeight;
 
-  // Calculate minimum sizes in pixels (1% of parent dimensions)
-  const minWidth = parentWidth * 0.01;
-  const minHeight = parentHeight * 0.01;
+  // Safely access position and size with fallbacks
+  const position = element?.position 
+  const size = element?.attributes?.elementSize // Calculate dimensions with safety checks
+  const x = (position.x || 0) * parentWidth;
+  const y = (position.y || 0) * parentHeight;
+  const width = (size.x || 0.5) * parentWidth;
+  const height = (size.y || 0.5) * parentHeight;
 
+  console.log("pos x", position.x);
   // const handleDoubleClick = () => {
   //   console.log('Double click');
   // };
@@ -61,13 +66,16 @@ const Block = ({ parentHeight, parentWidth, index, children }) => {
         y: ref.offsetHeight / parentHeight
       }
     }));
-    dispatch(updateElementPosition({
-      index: index,
-      position: {
-        x: position.x / parentWidth,
-        y: position.y / parentHeight
-      }
-    }));
+    // Only update position if it actually changed
+    if (position.x !== x || position.y !== y) {
+      dispatch(updateElementPosition({
+        index: index,
+        position: {
+          x: position.x / parentWidth,
+          y: position.y / parentHeight
+        }
+      }));
+    }
   };
 
   const renderContent = () => {
@@ -93,7 +101,6 @@ const Block = ({ parentHeight, parentWidth, index, children }) => {
         </Typography>
       );
     }
-    return children;
   };
 
   return (
