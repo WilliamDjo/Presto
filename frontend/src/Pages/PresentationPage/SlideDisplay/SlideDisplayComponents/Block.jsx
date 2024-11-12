@@ -131,11 +131,7 @@ const Block = ({ parentHeight, parentWidth, index }) => {
       }
       if (element.attributes.muted) {
         params.set('mute', '1');
-      }
-      if (!element.attributes.controls) {
-        params.set('controls', '0');
-      }
-      
+      }      
       // Additional parameters for better integration
       params.set('enablejsapi', '1');
       params.set('rel', '0'); // Don't show related videos

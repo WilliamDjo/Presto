@@ -282,23 +282,7 @@ export default function VideoModal({ open, handleClose }) {
                 </Box>
               }
             />
-            
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={formData.controls}
-                  onChange={handleChange('controls')}
-                />
-              }
-              label={
-                <Box>
-                  <Typography>Show Controls</Typography>
-                  <Typography variant="caption" color="text.secondary">
-                    Display YouTube player controls
-                  </Typography>
-                </Box>
-              }
-            />
+          
           </Box>
         </Box>
       </DialogContent>
