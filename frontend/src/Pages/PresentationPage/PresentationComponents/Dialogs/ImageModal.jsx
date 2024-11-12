@@ -130,3 +130,112 @@ export default function ImageModal({ open, handleClose }) {
             onChange={handleTabChange}
             sx={{ borderBottom: 1, borderColor: 'divider' }}
           >
+            <Tab label="Image URL" value="url" />
+            <Tab label="Upload File" value="file" />
+          </Tabs>
+
+          {formData.uploadMethod === 'url' ? (
+            <TextField
+              fullWidth
+              label="Image URL"
+              value={formData.imageSource}
+              onChange={handleChange('imageSource')}
+              error={!!error}
+              helperText={error}
+            />
+          ) : (
+            <Box sx={{ textAlign: 'center' }}>
+              <input
+                accept="image/*"
+                type="file"
+                id="image-upload"
+                onChange={handleFileUpload}
+                style={{ display: 'none' }}
+              />
+              <label htmlFor="image-upload">
+                <Button
+                  component="span"
+                  variant="outlined"
+                  startIcon={<CloudUpload />}
+                  sx={{ mb: 2 }}
+                >
+                  Choose Image File
+                </Button>
+              </label>
+              {error && (
+                <Typography color="error" sx={{ mt: 1 }}>
+                  {error}
+                </Typography>
+              )}
+            </Box>
+          )}
+
+          {previewUrl && (
+            <Paper 
+              elevation={2} 
+              sx={{ 
+                p: 2, 
+                textAlign: 'center',
+                bgcolor: 'grey.100'
+              }}
+            >
+              <img
+                src={previewUrl}
+                alt="Preview"
+                style={{
+                  maxWidth: '100%',
+                  maxHeight: '200px',
+                  objectFit: 'contain'
+                }}
+              />
+            </Paper>
+          )}
+
+          <Box>
+            <Box sx={{ mb: 1 }}>Width (relative to slide)</Box>
+            <Slider
+              value={formData.width}
+              onChange={handleSliderChange('width')}
+              min={0.1}
+              max={1}
+              step={0.1}
+              marks
+              valueLabelDisplay="auto"
+            />
+          </Box>
+          
+          <Box>
+            <Box sx={{ mb: 1 }}>Height (relative to slide)</Box>
+            <Slider
+              value={formData.height}
+              onChange={handleSliderChange('height')}
+              min={0.1}
+              max={1}
+              step={0.1}
+              marks
+              valueLabelDisplay="auto"
+            />
+          </Box>
+
+          <TextField
+            fullWidth
+            label="Alt Text"
+            value={formData.altText}
+            onChange={handleChange('altText')}
+            helperText="Describe the image for accessibility"
+          />
+        </Box>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={handleClose}>Cancel</Button>
+        <Button 
+          onClick={handleSubmit}
+          variant="contained"
+          disabled={!formData.imageSource || !formData.altText.trim()}
+        >
+          Add Image
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
+}
