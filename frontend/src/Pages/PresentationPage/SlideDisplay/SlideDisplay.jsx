@@ -1,10 +1,13 @@
 import { Box, Typography } from "@mui/material";
 import Block from "./SlideDisplayComponents/Block";
+import { Box, Typography } from "@mui/material";
+import Block from "./SlideDisplayComponents/Block";
 import { useRef, useState, useEffect } from "react";
 import { getSlideByPosition, getSlides } from "../../../HelperFiles/helper";
 import { useSelector } from "react-redux";
 
 const SlideDisplay = () => {
+  const presentations = useSelector((state) => state.presentations.presentations);
   const presentations = useSelector((state) => state.presentations.presentations);
   const slideContainerRef = useRef(null);
   const slideRef = useRef(null);
@@ -31,6 +34,27 @@ const SlideDisplay = () => {
     window.addEventListener("resize", () => updateDimensions());
     return () => window.removeEventListener("resize", () => updateDimensions());
   }, [slideHeight, slideWidth]);
+
+  const renderTextContent = (element) => {
+    if (!element.attributes) return null;
+    
+    return (
+      <Typography
+        sx={{
+          width: '100%',
+          height: '100%',
+          padding: '8px',
+          fontSize: `${element.attributes.fontSize}em`,
+          color: element.attributes.textColor,
+          fontFamily: element.attributes.fontFamily || 'Arial',
+          wordBreak: 'break-word',
+          overflow: 'hidden'
+        }}
+      >
+        {element.attributes.textContent}
+      </Typography>
+    );
+  };
 
   return (
     <Box p={2} ref={slideContainerRef} sx={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100%", overflowY: 'auto', overflowX: 'auto' }}>
