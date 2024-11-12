@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { 
   Dialog,
   DialogTitle,
@@ -8,76 +8,79 @@ import {
   Button,
   Box,
   Slider,
-  Switch,
   FormControlLabel,
   Typography,
+  Checkbox,
+  Paper,
   Alert
 } from '@mui/material';
-
-// const addVideoElement = (videoData) => ({
-//     type: 'presentations/addVideoElement',
-//     payload: videoData
-//   });
-  
+import { useDispatch } from 'react-redux';
+import { addVideoElement } from '../../../../State/presentationsSlice';
 
 export default function VideoModal({ open, handleClose }) {
-//   const dispatch = useDispatch();
+  const dispatch = useDispatch();
   
   const [formData, setFormData] = useState({
     width: 0.5,
     height: 0.5,
-    videoUrl: '',
-    autoplay: false
+    videoSource: '',
+    altText: '',
+    autoplay: false,
+    muted: true,
+    controls: true
   });
   
   const [error, setError] = useState('');
-  const [preview, setPreview] = useState(null);
   
-  const validateYoutubeUrl = (url) => {
-    // Check if it's already in embed format
-    const embedPattern = /^https?:\/\/(?:www\.)?youtube\.com\/embed\/[\w-]+/;
-    if (embedPattern.test(url)) {
-      return url;
-    }
-  
-    // Convert regular YouTube URL to embed URL
-    const patterns = [
-      /(?:https?:\/\/)?(?:www\.)?youtube\.com\/watch\?v=([\w-]+)/,
-      /(?:https?:\/\/)?(?:www\.)?youtu\.be\/([\w-]+)/
-    ];
-  
-    for (const pattern of patterns) {
-      const match = url.match(pattern);
-      if (match) {
-        return `https://www.youtube.com/embed/${match[1]}`;
+  const getYouTubeVideoId = (url) => {
+    try {
+      // Handle different YouTube URL formats
+      let videoId = null;
+      
+      // Handle youtu.be format
+      if (url.includes('youtu.be')) {
+        videoId = url.split('youtu.be/')[1]?.split('?')[0];
       }
+      // Handle youtube.com/embed format
+      else if (url.includes('/embed/')) {
+        videoId = url.split('/embed/')[1]?.split('?')[0];
+      }
+      // Handle youtube.com/watch format
+      else if (url.includes('youtube.com/watch')) {
+        const urlParams = new URLSearchParams(new URL(url).search);
+        videoId = urlParams.get('v');
+      }
+      // Handle youtube.com/v format
+      else if (url.includes('youtube.com/v/')) {
+        videoId = url.split('youtube.com/v/')[1]?.split('?')[0];
+      }
+      console.log('videoId', videoId);
+      
+      return videoId;
+    } catch (e) {
+      return e;
     }
-  
-    return null;
   };
+  
   
   const handleChange = (field) => (event) => {
-    const value = field === 'autoplay' ? event.target.checked : event.target.value;
-    setFormData({
-      ...formData,
-      [field]: value
-    });
-  
-    if (field === 'videoUrl') {
-      setError('');
-      const embedUrl = validateYoutubeUrl(value);
-      if (embedUrl) {
-        setPreview(embedUrl);
-        setFormData(prev => ({
-          ...prev,
-          videoUrl: embedUrl
-        }));
-      } else if (value) {
+    const value = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
+    
+    if (field === 'videoSource') {
+      const videoId = getYouTubeVideoId(value);
+      if (value && !videoId) {
         setError('Please enter a valid YouTube URL');
-        setPreview(null);
+      } else {
+        setError('');
       }
     }
+    
+    setFormData(prev => ({
+      ...prev,
+      [field]: value
+    }));
   };
+  
   
   const handleSliderChange = (field) => (event, newValue) => {
     setFormData({
@@ -85,91 +88,128 @@ export default function VideoModal({ open, handleClose }) {
       [field]: newValue
     });
   };
+
+  // Ensure autoplay has muted enabled (browser requirement)
+  useEffect(() => {
+    if (formData.autoplay && !formData.muted) {
+      setFormData(prev => ({
+        ...prev,
+        muted: true
+      }));
+    }
+  }, [formData.autoplay]);
+
+  const convertToEmbedUrl = (id) => {
+    return  `https://www.youtube.com/embed/${id}`;
+  }
   
   const handleSubmit = () => {
-    if (!formData.videoUrl) {
+    if (!formData.videoSource) {
       setError('Please provide a video URL');
       return;
     }
-  
-    const embedUrl = validateYoutubeUrl(formData.videoUrl);
-    if (!embedUrl) {
+    
+    const videoId = getYouTubeVideoId(formData.videoSource);
+    if (!videoId) {
       setError('Please enter a valid YouTube URL');
       return;
     }
-  
-    // // Add autoplay parameter to URL if enabled
-    // const finalUrl = formData.autoplay 
-    //   ? `${embedUrl}${embedUrl.includes('?') ? '&' : '?'}autoplay=1`
-    //   : embedUrl;
-  
-    // dispatch(addVideoElement({
-    //   elementSize: {
-    //     x: formData.width,
-    //     y: formData.height
-    //   },
-    //   videoUrl: finalUrl,
-    //   autoplay: formData.autoplay
-    // }));
-    console.log('Video uploaded');
     
+    if (!formData.altText.trim()) {
+      setError('Please provide alt text for accessibility');
+      return;
+    }
+  
+    // Convert any YouTube URL to embed format
+    const embedUrl = convertToEmbedUrl(videoId);
+    console.log('embedUrl', embedUrl);
+    
+    dispatch(addVideoElement({
+      elementSize: {
+        x: formData.width,
+        y: formData.height
+      },
+      videoSource: embedUrl,
+      altText: formData.altText,
+      autoplay: formData.autoplay,
+      muted: formData.muted,
+      controls: formData.controls
+    }));
   
     handleClose();
-    // // Reset form
-    // setFormData({
-    //   width: 0.5,
-    //   height: 0.5,
-    //   videoUrl: '',
-    //   autoplay: false
-    // });
-    setPreview(null);
+    setFormData({
+      width: 0.5,
+      height: 0.5,
+      videoSource: '',
+      altText: '',
+      autoplay: false,
+      muted: true,
+      controls: true
+    });
     setError('');
   };
+
+  const previewVideoId = getYouTubeVideoId(formData.videoSource);
 
   return (
     <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
       <DialogTitle>Add Video Element</DialogTitle>
       <DialogContent>
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, mt: 2 }}>
+          <Alert severity="info" sx={{ mb: 2 }}>
+            Supported YouTube URL formats:
+            <ul style={{ marginTop: '8px', marginBottom: '0' }}>
+              <li>youtube.com/watch?v=VIDEO_ID</li>
+              <li>youtu.be/VIDEO_ID</li>
+              <li>youtube.com/embed/VIDEO_ID</li>
+            </ul>
+          </Alert>
           <TextField
             fullWidth
-            label="YouTube Video URL"
-            value={formData.videoUrl}
-            onChange={handleChange('videoUrl')}
+            label="Video URL"
+            value={formData.videoSource}
+            onChange={handleChange('videoSource')}
             error={!!error}
-            helperText={error || "Enter either a standard YouTube URL or embed URL"}
+            helperText={error || "Enter YouTube embed URL or direct video URL"}
+            placeholder="https://www.youtube.com/embed/..."
           />
 
-          <Alert severity="info" sx={{ mt: 1 }}>
-            Supported formats:
-            <Box component="ul" sx={{ mt: 1, mb: 0 }}>
-              <li>Standard: https://www.youtube.com/watch?v=dQw4w9WgXcQ</li>
-              <li>Short: https://youtu.be/dQw4w9WgXcQ</li>
-              <li>Embed: https://www.youtube.com/embed/dQw4w9WgXcQ</li>
-            </Box>
-          </Alert>
-
-          {preview && (
-            <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
-              <Box 
-                sx={{ 
-                  width: '100%', 
-                  maxWidth: '560px',
+          {formData.videoSource && previewVideoId && (
+            <Paper 
+              elevation={2} 
+              sx={{ 
+                p: 2, 
+                textAlign: 'center',
+                bgcolor: 'grey.100',
+                overflow: 'hidden'
+              }}
+            >
+              {/* <Typography variant="subtitle2" sx={{ mb: 1 }}>Preview</Typography>
+              <iframe
+                src={convertToEmbedUrl(previewVideoId)}
+                style={{
+                  width: '100%',
                   aspectRatio: '16/9',
-                  bgcolor: 'grey.100'
+                  border: 'none'
                 }}
-              >
-                <iframe
-                  src={preview}
-                  width="100%"
-                  height="100%"
-                  frameBorder="0"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                  title="YouTube video preview"
-                />
-              </Box>
-            </Box>
+                allowFullScreen
+              /> */}
+              <Typography variant="subtitle2" color="success.main" sx={{ mb: 1 }}>
+                ✓ Valid YouTube URL
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                Video ID: {previewVideoId}
+              </Typography>
+              <iframe
+                src={convertToEmbedUrl(previewVideoId)}
+                style={{
+                  width: '100%',
+                  aspectRatio: '16/9',
+                  border: 'none'
+                }}
+                allowFullScreen
+              /> 
+            </Paper>
           )}
 
           <Box>
@@ -198,22 +238,52 @@ export default function VideoModal({ open, handleClose }) {
             />
           </Box>
 
-          <FormControlLabel
-            control={
-              <Switch
-                checked={formData.autoplay}
-                onChange={handleChange('autoplay')}
-              />
-            }
-            label={
-              <Box>
-                <Typography>Autoplay</Typography>
-                <Typography variant="caption" color="text.secondary">
-                  Note: Autoplay may be blocked by browser settings
-                </Typography>
-              </Box>
-            }
+          <TextField
+            fullWidth
+            label="Alt Text"
+            value={formData.altText}
+            onChange={handleChange('altText')}
+            helperText="Describe the video for accessibility"
           />
+
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+            <Typography variant="subtitle2" sx={{ mb: 1 }}>Video Options</Typography>
+            
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={formData.autoplay}
+                  onChange={handleChange('autoplay')}
+                />
+              }
+              label={
+                <Box>
+                  <Typography>Autoplay</Typography>
+                  <Typography variant="caption" color="text.secondary">
+                    Note: Autoplay requires muted to be enabled due to browser policies
+                  </Typography>
+                </Box>
+              }
+            />
+            
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={formData.muted}
+                  onChange={handleChange('muted')}
+                />
+              }
+              label={
+                <Box>
+                  <Typography>Muted</Typography>
+                  <Typography variant="caption" color="text.secondary">
+                    Start video without sound (can be unmuted by viewer)
+                  </Typography>
+                </Box>
+              }
+            />
+          
+          </Box>
         </Box>
       </DialogContent>
       <DialogActions>
@@ -221,7 +291,7 @@ export default function VideoModal({ open, handleClose }) {
         <Button 
           onClick={handleSubmit}
           variant="contained"
-          disabled={!formData.videoUrl || !!error}
+          disabled={!formData.videoSource || !formData.altText.trim()}
         >
           Add Video
         </Button>
