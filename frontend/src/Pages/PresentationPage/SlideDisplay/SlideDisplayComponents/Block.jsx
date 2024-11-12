@@ -111,8 +111,12 @@ const Block = ({ parentHeight, parentWidth, index }) => {
           style={{
             width: "100%",
             height: "100%",
-            objectFit: "contain"
+            objectFit: "contain",
+            pointerEvents: "none", 
+            userSelect: "none",
+            WebkitUserDrag: "none", // Prevents image dragging in webkit browsers
           }}
+          draggable={false}
         />
       );
     }
