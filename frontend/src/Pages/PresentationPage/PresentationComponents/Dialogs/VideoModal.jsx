@@ -31,18 +31,44 @@ export default function VideoModal({ open, handleClose }) {
   
   const [error, setError] = useState('');
   
-  const validateYouTubeUrl = (url) => {
-    // Check if it's a valid YouTube embed URL
-    const youtubeEmbedPattern = /^https:\/\/www\.youtube\.com\/embed\/[a-zA-Z0-9_-]+/;
-    return youtubeEmbedPattern.test(url);
+  const getYouTubeVideoId = (url) => {
+    try {
+      // Handle different YouTube URL formats
+      let videoId = null;
+      
+      // Handle youtu.be format
+      if (url.includes('youtu.be')) {
+        videoId = url.split('youtu.be/')[1]?.split('?')[0];
+      }
+      // Handle youtube.com/embed format
+      else if (url.includes('/embed/')) {
+        videoId = url.split('/embed/')[1]?.split('?')[0];
+      }
+      // Handle youtube.com/watch format
+      else if (url.includes('youtube.com/watch')) {
+        const urlParams = new URLSearchParams(new URL(url).search);
+        videoId = urlParams.get('v');
+      }
+      // Handle youtube.com/v format
+      else if (url.includes('youtube.com/v/')) {
+        videoId = url.split('youtube.com/v/')[1]?.split('?')[0];
+      }
+      console.log('videoId', videoId);
+      
+      return videoId;
+    } catch (e) {
+      return e;
+    }
   };
+  
   
   const handleChange = (field) => (event) => {
     const value = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
     
     if (field === 'videoSource') {
-      if (value && !validateYouTubeUrl(value)) {
-        setError('Please enter a valid YouTube embed URL (https://www.youtube.com/embed/...)');
+      const videoId = getYouTubeVideoId(value);
+      if (value && !videoId) {
+        setError('Please enter a valid YouTube URL');
       } else {
         setError('');
       }
@@ -61,28 +87,38 @@ export default function VideoModal({ open, handleClose }) {
       [field]: newValue
     });
   };
-  
-  const validateForm = () => {
-    if (!formData.videoSource) {
-      setError('Please provide a video URL');
-      return false;
-    }
-    if (!formData.altText.trim()) {
-      setError('Please provide alt text for accessibility');
-      return false;
-    }
-    return true;
-  };
+
+  const convertToEmbedUrl = (id) => {
+    return  `https://www.youtube.com/embed/${id}`;
+  }
   
   const handleSubmit = () => {
-    if (!validateForm()) return;
+    if (!formData.videoSource) {
+      setError('Please provide a video URL');
+      return;
+    }
+    
+    const videoId = getYouTubeVideoId(formData.videoSource);
+    if (!videoId) {
+      setError('Please enter a valid YouTube URL');
+      return;
+    }
+    
+    if (!formData.altText.trim()) {
+      setError('Please provide alt text for accessibility');
+      return;
+    }
   
+    // Convert any YouTube URL to embed format
+    const embedUrl = convertToEmbedUrl(videoId);
+    console.log('embedUrl', embedUrl);
+    
     dispatch(addVideoElement({
       elementSize: {
         x: formData.width,
         y: formData.height
       },
-      videoSource: formData.videoSource,
+      videoSource: embedUrl,
       altText: formData.altText,
       autoplay: formData.autoplay,
       muted: formData.muted,
@@ -90,7 +126,6 @@ export default function VideoModal({ open, handleClose }) {
     }));
   
     handleClose();
-    // Reset form
     setFormData({
       width: 0.5,
       height: 0.5,
@@ -102,6 +137,8 @@ export default function VideoModal({ open, handleClose }) {
     });
     setError('');
   };
+
+  const previewVideoId = getYouTubeVideoId(formData.videoSource);
 
   return (
     <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
@@ -118,7 +155,7 @@ export default function VideoModal({ open, handleClose }) {
             placeholder="https://www.youtube.com/embed/..."
           />
 
-          {formData.videoSource && (
+          {formData.videoSource && previewVideoId && (
             <Paper 
               elevation={2} 
               sx={{ 
@@ -130,7 +167,7 @@ export default function VideoModal({ open, handleClose }) {
             >
               <Typography variant="subtitle2" sx={{ mb: 1 }}>Preview</Typography>
               <iframe
-                src={formData.videoSource}
+                src={convertToEmbedUrl(previewVideoId)}
                 style={{
                   width: '100%',
                   aspectRatio: '16/9',
