@@ -1,8 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { Box, IconButton, IconButton } from '@mui/material';
-import { Settings, Delete } from '@mui/icons-material';
+import { Box, IconButton } from '@mui/material';
 import { Settings, Delete } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from '@mui/material/styles';

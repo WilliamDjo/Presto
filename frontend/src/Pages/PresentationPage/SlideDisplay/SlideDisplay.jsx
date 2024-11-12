@@ -1,7 +1,5 @@
 import { Box, Typography } from "@mui/material";
 import Block from "./SlideDisplayComponents/Block";
-import { Box, Typography } from "@mui/material";
-import Block from "./SlideDisplayComponents/Block";
 import { useRef, useState, useEffect } from "react";
 import { getSlideByPosition, getSlides } from "../../../HelperFiles/helper";
 import { useSelector } from "react-redux";
