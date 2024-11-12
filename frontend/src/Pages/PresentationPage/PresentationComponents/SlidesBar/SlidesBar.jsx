@@ -41,7 +41,18 @@ const SlidesBar = () => {
 
     const activeIndex = getSlidePositionById(presentations, e.active.id) - 1;
     const overIndex = getSlidePositionById(presentations, e.over.id) - 1;
+    arrayMove(getSlides(presentations), activeIndex, overIndex);
+
+    if (activeIndex === parseInt(location.hash.split("/")[1]) - 1) {
+      navigate(`${location.pathname}#/${overIndex + 1}`);
+    } else if (activeIndex < parseInt(location.hash.split("/")[1]) - 1 && overIndex >= parseInt(location.hash.split("/")[1]) - 1) {
+      navigate(`${location.pathname}#/${parseInt(location.hash.split("/")[1]) - 1}`);
+    } else if (activeIndex > parseInt(location.hash.split("/")[1]) - 1 && overIndex <= parseInt(location.hash.split("/")[1]) - 1) {
+      navigate(`${location.pathname}#/${parseInt(location.hash.split("/")[1]) + 1}`);
+    }
     
+    console.log(activeIndex, parseInt(location.hash.split("/")[1]) - 1, overIndex);
+
     dispatch(updateSlidesBarOrder({ active: e.active.id, over: e.over.id }));
   };
 
