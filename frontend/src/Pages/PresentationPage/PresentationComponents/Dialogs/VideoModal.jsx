@@ -13,71 +13,35 @@ import {
   Typography,
   Alert
 } from '@mui/material';
-
-// const addVideoElement = (videoData) => ({
-//     type: 'presentations/addVideoElement',
-//     payload: videoData
-//   });
-  
+import { useDispatch } from 'react-redux';
+import { addVideoElement } from '../../../../State/presentationsSlice';
 
 export default function VideoModal({ open, handleClose }) {
-//   const dispatch = useDispatch();
+  const dispatch = useDispatch();
   
   const [formData, setFormData] = useState({
     width: 0.5,
     height: 0.5,
-    videoUrl: '',
-    autoplay: false
+    videoSource: '',
+    altText: '',
+    autoplay: false,
+    muted: true,
+    controls: true
   });
   
   const [error, setError] = useState('');
-  const [preview, setPreview] = useState(null);
-  
-  const validateYoutubeUrl = (url) => {
-    // Check if it's already in embed format
-    const embedPattern = /^https?:\/\/(?:www\.)?youtube\.com\/embed\/[\w-]+/;
-    if (embedPattern.test(url)) {
-      return url;
-    }
-  
-    // Convert regular YouTube URL to embed URL
-    const patterns = [
-      /(?:https?:\/\/)?(?:www\.)?youtube\.com\/watch\?v=([\w-]+)/,
-      /(?:https?:\/\/)?(?:www\.)?youtu\.be\/([\w-]+)/
-    ];
-  
-    for (const pattern of patterns) {
-      const match = url.match(pattern);
-      if (match) {
-        return `https://www.youtube.com/embed/${match[1]}`;
-      }
-    }
-  
-    return null;
-  };
   
   const handleChange = (field) => (event) => {
-    const value = field === 'autoplay' ? event.target.checked : event.target.value;
     setFormData({
       ...formData,
-      [field]: value
+      [field]: event.target.type === 'checkbox' ? event.target.checked : event.target.value
     });
-  
-    if (field === 'videoUrl') {
+    
+    if (field === 'videoSource') {
       setError('');
-      const embedUrl = validateYoutubeUrl(value);
-      if (embedUrl) {
-        setPreview(embedUrl);
-        setFormData(prev => ({
-          ...prev,
-          videoUrl: embedUrl
-        }));
-      } else if (value) {
-        setError('Please enter a valid YouTube URL');
-        setPreview(null);
-      }
     }
   };
+  
   
   const handleSliderChange = (field) => (event, newValue) => {
     setFormData({
@@ -86,43 +50,44 @@ export default function VideoModal({ open, handleClose }) {
     });
   };
   
-  const handleSubmit = () => {
-    if (!formData.videoUrl) {
+  const validateForm = () => {
+    if (!formData.videoSource) {
       setError('Please provide a video URL');
-      return;
+      return false;
     }
-  
-    const embedUrl = validateYoutubeUrl(formData.videoUrl);
-    if (!embedUrl) {
-      setError('Please enter a valid YouTube URL');
-      return;
+    if (!formData.altText.trim()) {
+      setError('Please provide alt text for accessibility');
+      return false;
     }
+    return true;
+  };
   
-    // // Add autoplay parameter to URL if enabled
-    // const finalUrl = formData.autoplay 
-    //   ? `${embedUrl}${embedUrl.includes('?') ? '&' : '?'}autoplay=1`
-    //   : embedUrl;
+  const handleSubmit = () => {
+    if (!validateForm()) return;
   
-    // dispatch(addVideoElement({
-    //   elementSize: {
-    //     x: formData.width,
-    //     y: formData.height
-    //   },
-    //   videoUrl: finalUrl,
-    //   autoplay: formData.autoplay
-    // }));
-    console.log('Video uploaded');
-    
+    dispatch(addVideoElement({
+      elementSize: {
+        x: formData.width,
+        y: formData.height
+      },
+      videoSource: formData.videoSource,
+      altText: formData.altText,
+      autoplay: formData.autoplay,
+      muted: formData.muted,
+      controls: formData.controls
+    }));
   
     handleClose();
-    // // Reset form
-    // setFormData({
-    //   width: 0.5,
-    //   height: 0.5,
-    //   videoUrl: '',
-    //   autoplay: false
-    // });
-    setPreview(null);
+    // Reset form
+    setFormData({
+      width: 0.5,
+      height: 0.5,
+      videoSource: '',
+      altText: '',
+      autoplay: false,
+      muted: true,
+      controls: true
+    });
     setError('');
   };
 

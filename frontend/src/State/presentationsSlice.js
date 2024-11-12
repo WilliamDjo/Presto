@@ -125,6 +125,33 @@ const presentationsSlice = createSlice({
         (presentation) => presentation.id == location.pathname.split("/")[2]
       ).slides[parseInt(location.hash.split("/")[1]) - 1].contents = newSlideContents;
     },
+    addVideoElement: (state, action) => {
+      const slide = getSlides(state.presentations)[parseInt(location.hash.split("/")[1]) - 1];
+      
+      const videoElement = {
+        index: slide.contents.length,
+        type: "video",
+        attributes: {
+          elementSize: action.payload.elementSize,
+          videoSource: action.payload.videoSource,
+          altText: action.payload.altText,
+          autoplay: action.payload.autoplay,
+          muted: action.payload.muted,
+          controls: action.payload.controls
+        },
+        position: {
+          x: 0.1,  // 10% from left
+          y: 0.1   // 10% from top
+        }
+      };
+      
+      const newSlideContents = [...slide.contents, videoElement];
+      
+      state.presentations.find(
+        (presentation) => presentation.id == location.pathname.split("/")[2]
+      ).slides[parseInt(location.hash.split("/")[1]) - 1].contents = newSlideContents;
+    }
+    ,
     updateElementPosition: (state, action) => {
       state.presentations.find((presentation) => presentation.id == location.pathname.split("/")[2]).slides[parseInt(location.hash.split("/")[1]) - 1].contents[action.payload.index].position = action.payload.position;
     },
@@ -180,5 +207,5 @@ const presentationsSlice = createSlice({
   }
 });
 
-export const { addNewSlide, deleteSlide, updateSlide, setPresentations, createNewPresentation, deletePresentation, updatePresentationTitle, updatePresentationThumbnail , addTextElement, addImageElement, updateElementPosition, updateElementSize } = presentationsSlice.actions;
+export const { addNewSlide, deleteSlide, updateSlide, setPresentations, createNewPresentation, deletePresentation, updatePresentationTitle, updatePresentationThumbnail , addTextElement, addImageElement, addVideoElement, updateElementPosition, updateElementSize } = presentationsSlice.actions;
 export default presentationsSlice.reducer;
