@@ -1,4 +1,5 @@
 import config from '../../backend.config.json'
+import { useSelector } from 'react-redux';
 
 const genQueryString = (queryJSON) => {
   let queryString = '';
@@ -154,6 +155,23 @@ export const getElementByIndex = (presentations, elementIndex, slideNum) => {
 
 export const getPresentationTitle = (presentations) => {
   return presentations?.find((presentation) => presentation.id == location.pathname.split("/")[2]).title;
+};
+
+export const usePresentation = () => {
+  const presentations = useSelector((state) => state.presentations.presentations);
+  const saveStatus = useSelector((state) => state.saveStatus) ? "Saved" : "Saving...";
+  const presentationId = parseInt(location.pathname.split("/")[2]);
+  
+  const currentPresentation = presentations?.find(p => p.id === presentationId);
+  
+  return {
+    presentationId,
+    currentPresentation,
+    presentations,
+    saveStatus,
+    title: getPresentationTitle(presentations),
+    thumbnail: currentPresentation?.thumbnail
+  };
 };
 
 export default { isValidEmail, isValidName, isValidPassword, isValidConfirmPassword };

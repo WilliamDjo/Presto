@@ -151,6 +151,8 @@ const DashboardPage = () => {
           </Grid>
         </Box>
         <CustomButton text="Log out" onClick={handleLogout} />
+ 
+    
       </Container>
 
     </>
