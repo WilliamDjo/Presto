@@ -64,6 +64,10 @@ const presentationsSlice = createSlice({
 
       state.presentations = [...state.presentations, newPresentation];
     },
+    deletePresentation: (state, action) => {
+      const id = action.payload;
+      state.presentations = state.presentations.filter(presentation => presentation.id != id);
+    },
     addNewSlide: (state) => {
       const slides = getSlides(state.presentations);
       const newSlide = {
@@ -77,9 +81,57 @@ const presentationsSlice = createSlice({
       state.presentations.find((presentation) => presentation.id === location.pathname.split("/")[2]).slides = newSlides;
     },
     deleteSlide: (state, action) => {
-      state.presentations.find((presentation) => presentation.id === location.pathname.split("/")[2]).slides = state.presentations.find((presentation) => presentation.id === location.pathname.split("/")[2]).slides.filter((_, index) => index !== (action.payload - 1));
+      state.presentations.find((presentation) => presentation.id == location.pathname.split("/")[2]).slides = state.presentations.find((presentation) => presentation.id == location.pathname.split("/")[2]).slides.filter((_, index) => index !== (action.payload - 1));
       
-      state.presentations.find((presentation) => presentation.id === location.pathname.split("/")[2]).slides.forEach((slide, index) => slide.slideNum = index + 1);
+      state.presentations.find((presentation) => presentation.id == location.pathname.split("/")[2]).slides.forEach((slide, index) => slide.slideNum = index + 1);
+    },
+    addTextElement: (state, action) => {
+      const slide = getSlides(state.presentations)[parseInt(location.hash.split("/")[1]) - 1];
+
+      const textElement = {
+        index: slide.contents.length,
+        type: "text",
+        attributes: action.payload,
+        // position: {
+        //   x: 0,
+        //   y: 0
+        // }
+        position: action.payload.position
+      }
+      console.log('position', action.payload.position);
+      
+      const newSlideContents = [...slide.contents, textElement];
+
+      state.presentations.find((presentation) => presentation.id == location.pathname.split("/")[2]).slides[parseInt(location.hash.split("/")[1]) - 1].contents = newSlideContents;
+    },
+    addImageElement: (state, action) => {
+      const slide = getSlides(state.presentations)[parseInt(location.hash.split("/")[1]) - 1];
+      
+      const imageElement = {
+        index: slide.contents.length,
+        type: "image",
+        attributes: {
+          elementSize: action.payload.elementSize,
+          imageSource: action.payload.imageSource,
+          altText: action.payload.altText
+        },
+        position: {
+          x: 0.1,  // 10% from left
+          y: 0.1   // 10% from top
+        }
+      };
+      
+      const newSlideContents = [...slide.contents, imageElement];
+      
+      state.presentations.find(
+        (presentation) => presentation.id == location.pathname.split("/")[2]
+      ).slides[parseInt(location.hash.split("/")[1]) - 1].contents = newSlideContents;
+    },
+    updateElementPosition: (state, action) => {
+      state.presentations.find((presentation) => presentation.id == location.pathname.split("/")[2]).slides[parseInt(location.hash.split("/")[1]) - 1].contents[action.payload.index].position = action.payload.position;
+    },
+    updateElementSize: (state, action) => {
+      state.presentations.find((presentation) => presentation.id == location.pathname.split("/")[2]).slides[parseInt(location.hash.split("/")[1]) - 1].contents[action.payload.index].attributes.elementSize = action.payload.size;
     },
     updateSlidesBarOrder: (state, action) => {
       const activeIndex = getSlidePositionById(state.presentations, action.payload.active) - 1;
@@ -111,7 +163,22 @@ const presentationsSlice = createSlice({
     },
     updateElementSize: (state, action) => {
       state.presentations.find((presentation) => presentation.id === location.pathname.split("/")[2]).slides[parseInt(location.hash.split("/")[1]) - 1].contents[action.payload.index].attributes.elementSize = action.payload.size;
-    }
+    },
+    updatePresentationTitle: (state, action) => {
+      const { id, title } = action.payload;
+      const presentation = state.presentations.find(p => p.id == id);
+      if (presentation) {
+        presentation.title = title;
+      }
+    },
+    
+    updatePresentationThumbnail: (state, action) => {
+      const { id, thumbnail } = action.payload;
+      const presentation = state.presentations.find(p => p.id == id);
+      if (presentation) {
+        presentation.thumbnail = thumbnail;
+      }
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchPresentations.pending, (state) => {
@@ -142,5 +209,5 @@ const presentationsSlice = createSlice({
   }
 });
 
-export const { addNewSlide, deleteSlide, updateSlidesBarOrder, setPresentations, createNewPresentation, addTextElement, updateElementPosition, updateElementSize } = presentationsSlice.actions;
+export const { addNewSlide, deleteSlide, updateSlidesBarOrder, setPresentations, createNewPresentation, addTextElement, updateElementPosition, updateElementSize, deletePresentation, updatePresentationTitle, updatePresentationThumbnail , addTextElement, addImageElement, updateElementPosition, updateElementSize } = presentationsSlice.actions;
 export default presentationsSlice.reducer;
