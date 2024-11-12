@@ -119,6 +119,29 @@ const Block = ({ parentHeight, parentWidth, index }) => {
           draggable={false}
         />
       );
+    } else if (element.type === "video") {
+      return (
+        <Box
+          style={{
+            width: "100%",
+            height: "100%",
+            pointerEvents: showHandles ? "none" : "auto", // Allow video controls when not dragging
+            userSelect: "none"
+          }}
+        >
+          <iframe
+            src={element.attributes.videoSource}
+            style={{
+              width: "100%",
+              height: "100%",
+              border: "none",
+              pointerEvents: showHandles ? "none" : "auto",
+            }}
+            allow={`accelerometer; ${element.attributes.autoplay ? 'autoplay; ' : ''}clipboard-write; encrypted-media; gyroscope; picture-in-picture`}
+            allowFullScreen
+          />
+        </Box>
+      );
     }
   };
 
