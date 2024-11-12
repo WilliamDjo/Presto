@@ -31,15 +31,27 @@ export default function VideoModal({ open, handleClose }) {
   
   const [error, setError] = useState('');
   
+  const validateYouTubeUrl = (url) => {
+    // Check if it's a valid YouTube embed URL
+    const youtubeEmbedPattern = /^https:\/\/www\.youtube\.com\/embed\/[a-zA-Z0-9_-]+/;
+    return youtubeEmbedPattern.test(url);
+  };
+  
   const handleChange = (field) => (event) => {
-    setFormData({
-      ...formData,
-      [field]: event.target.type === 'checkbox' ? event.target.checked : event.target.value
-    });
+    const value = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
     
     if (field === 'videoSource') {
-      setError('');
+      if (value && !validateYouTubeUrl(value)) {
+        setError('Please enter a valid YouTube embed URL (https://www.youtube.com/embed/...)');
+      } else {
+        setError('');
+      }
     }
+    
+    setFormData(prev => ({
+      ...prev,
+      [field]: value
+    }));
   };
   
   
