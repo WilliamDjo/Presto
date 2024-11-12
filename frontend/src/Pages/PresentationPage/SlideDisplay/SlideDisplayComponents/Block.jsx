@@ -120,6 +120,29 @@ const Block = ({ parentHeight, parentWidth, index }) => {
         />
       );
     } else if (element.type === "video") {
+      // Construct YouTube URL with parameters
+      const videoUrl = new URL(element.attributes.videoSource);
+      
+      // Add parameters to URL
+      const params = new URLSearchParams(videoUrl.search);
+      
+      if (element.attributes.autoplay) {
+        params.set('autoplay', '1');
+      }
+      if (element.attributes.muted) {
+        params.set('mute', '1');
+      }
+      if (!element.attributes.controls) {
+        params.set('controls', '0');
+      }
+      
+      // Additional parameters for better integration
+      params.set('enablejsapi', '1');
+      params.set('rel', '0'); // Don't show related videos
+      
+      // Combine URL and parameters
+      const finalUrl = `${videoUrl.origin}${videoUrl.pathname}?${params.toString()}`;
+
       return (
         <Box
           style={{
@@ -130,7 +153,7 @@ const Block = ({ parentHeight, parentWidth, index }) => {
           }}
         >
           <iframe
-            src={element.attributes.videoSource}
+            src={finalUrl}
             style={{
               width: "100%",
               height: "100%",

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { 
   Dialog,
   DialogTitle,
@@ -11,7 +11,8 @@ import {
   FormControlLabel,
   Typography,
   Checkbox,
-  Paper
+  Paper,
+  Alert
 } from '@mui/material';
 import { useDispatch } from 'react-redux';
 import { addVideoElement } from '../../../../State/presentationsSlice';
@@ -88,6 +89,16 @@ export default function VideoModal({ open, handleClose }) {
     });
   };
 
+  // Ensure autoplay has muted enabled (browser requirement)
+  useEffect(() => {
+    if (formData.autoplay && !formData.muted) {
+      setFormData(prev => ({
+        ...prev,
+        muted: true
+      }));
+    }
+  }, [formData.autoplay]);
+
   const convertToEmbedUrl = (id) => {
     return  `https://www.youtube.com/embed/${id}`;
   }
@@ -145,6 +156,14 @@ export default function VideoModal({ open, handleClose }) {
       <DialogTitle>Add Video Element</DialogTitle>
       <DialogContent>
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, mt: 2 }}>
+          <Alert severity="info" sx={{ mb: 2 }}>
+            Supported YouTube URL formats:
+            <ul style={{ marginTop: '8px', marginBottom: '0' }}>
+              <li>youtube.com/watch?v=VIDEO_ID</li>
+              <li>youtu.be/VIDEO_ID</li>
+              <li>youtube.com/embed/VIDEO_ID</li>
+            </ul>
+          </Alert>
           <TextField
             fullWidth
             label="Video URL"
@@ -165,7 +184,7 @@ export default function VideoModal({ open, handleClose }) {
                 overflow: 'hidden'
               }}
             >
-              <Typography variant="subtitle2" sx={{ mb: 1 }}>Preview</Typography>
+              {/* <Typography variant="subtitle2" sx={{ mb: 1 }}>Preview</Typography>
               <iframe
                 src={convertToEmbedUrl(previewVideoId)}
                 style={{
@@ -174,7 +193,22 @@ export default function VideoModal({ open, handleClose }) {
                   border: 'none'
                 }}
                 allowFullScreen
-              />
+              /> */}
+              <Typography variant="subtitle2" color="success.main" sx={{ mb: 1 }}>
+                ✓ Valid YouTube URL
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                Video ID: {previewVideoId}
+              </Typography>
+              <iframe
+                src={convertToEmbedUrl(previewVideoId)}
+                style={{
+                  width: '100%',
+                  aspectRatio: '16/9',
+                  border: 'none'
+                }}
+                allowFullScreen
+              /> 
             </Paper>
           )}
 
@@ -212,7 +246,9 @@ export default function VideoModal({ open, handleClose }) {
             helperText="Describe the video for accessibility"
           />
 
-          <Box sx={{ display: 'flex', gap: 2 }}>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+            <Typography variant="subtitle2" sx={{ mb: 1 }}>Video Options</Typography>
+            
             <FormControlLabel
               control={
                 <Checkbox
@@ -220,8 +256,16 @@ export default function VideoModal({ open, handleClose }) {
                   onChange={handleChange('autoplay')}
                 />
               }
-              label="Autoplay"
+              label={
+                <Box>
+                  <Typography>Autoplay</Typography>
+                  <Typography variant="caption" color="text.secondary">
+                    Note: Autoplay requires muted to be enabled due to browser policies
+                  </Typography>
+                </Box>
+              }
             />
+            
             <FormControlLabel
               control={
                 <Checkbox
@@ -229,8 +273,16 @@ export default function VideoModal({ open, handleClose }) {
                   onChange={handleChange('muted')}
                 />
               }
-              label="Muted"
+              label={
+                <Box>
+                  <Typography>Muted</Typography>
+                  <Typography variant="caption" color="text.secondary">
+                    Start video without sound (can be unmuted by viewer)
+                  </Typography>
+                </Box>
+              }
             />
+            
             <FormControlLabel
               control={
                 <Checkbox
@@ -238,7 +290,14 @@ export default function VideoModal({ open, handleClose }) {
                   onChange={handleChange('controls')}
                 />
               }
-              label="Show Controls"
+              label={
+                <Box>
+                  <Typography>Show Controls</Typography>
+                  <Typography variant="caption" color="text.secondary">
+                    Display YouTube player controls
+                  </Typography>
+                </Box>
+              }
             />
           </Box>
         </Box>
