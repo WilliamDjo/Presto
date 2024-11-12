@@ -155,3 +155,77 @@ export default function VideoModal({ open, handleClose }) {
                 sx={{ 
                   width: '100%', 
                   maxWidth: '560px',
+                  aspectRatio: '16/9',
+                  bgcolor: 'grey.100'
+                }}
+              >
+                <iframe
+                  src={preview}
+                  width="100%"
+                  height="100%"
+                  frameBorder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  title="YouTube video preview"
+                />
+              </Box>
+            </Box>
+          )}
+
+          <Box>
+            <Box sx={{ mb: 1 }}>Width (relative to slide)</Box>
+            <Slider
+              value={formData.width}
+              onChange={handleSliderChange('width')}
+              min={0.1}
+              max={1}
+              step={0.1}
+              marks
+              valueLabelDisplay="auto"
+            />
+          </Box>
+          
+          <Box>
+            <Box sx={{ mb: 1 }}>Height (relative to slide)</Box>
+            <Slider
+              value={formData.height}
+              onChange={handleSliderChange('height')}
+              min={0.1}
+              max={1}
+              step={0.1}
+              marks
+              valueLabelDisplay="auto"
+            />
+          </Box>
+
+          <FormControlLabel
+            control={
+              <Switch
+                checked={formData.autoplay}
+                onChange={handleChange('autoplay')}
+              />
+            }
+            label={
+              <Box>
+                <Typography>Autoplay</Typography>
+                <Typography variant="caption" color="text.secondary">
+                  Note: Autoplay may be blocked by browser settings
+                </Typography>
+              </Box>
+            }
+          />
+        </Box>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={handleClose}>Cancel</Button>
+        <Button 
+          onClick={handleSubmit}
+          variant="contained"
+          disabled={!formData.videoUrl || !!error}
+        >
+          Add Video
+        </Button>
+      </DialogActions>
+    </Dialog>
+  )
+}
