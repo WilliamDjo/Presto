@@ -8,10 +8,10 @@ import {
   Button,
   Box,
   Slider,
-  Switch,
   FormControlLabel,
   Typography,
-  Alert
+  Checkbox,
+  Paper
 } from '@mui/material';
 import { useDispatch } from 'react-redux';
 import { addVideoElement } from '../../../../State/presentationsSlice';
@@ -98,43 +98,35 @@ export default function VideoModal({ open, handleClose }) {
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, mt: 2 }}>
           <TextField
             fullWidth
-            label="YouTube Video URL"
-            value={formData.videoUrl}
-            onChange={handleChange('videoUrl')}
+            label="Video URL"
+            value={formData.videoSource}
+            onChange={handleChange('videoSource')}
             error={!!error}
-            helperText={error || "Enter either a standard YouTube URL or embed URL"}
+            helperText={error || "Enter YouTube embed URL or direct video URL"}
+            placeholder="https://www.youtube.com/embed/..."
           />
 
-          <Alert severity="info" sx={{ mt: 1 }}>
-            Supported formats:
-            <Box component="ul" sx={{ mt: 1, mb: 0 }}>
-              <li>Standard: https://www.youtube.com/watch?v=dQw4w9WgXcQ</li>
-              <li>Short: https://youtu.be/dQw4w9WgXcQ</li>
-              <li>Embed: https://www.youtube.com/embed/dQw4w9WgXcQ</li>
-            </Box>
-          </Alert>
-
-          {preview && (
-            <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
-              <Box 
-                sx={{ 
-                  width: '100%', 
-                  maxWidth: '560px',
+          {formData.videoSource && (
+            <Paper 
+              elevation={2} 
+              sx={{ 
+                p: 2, 
+                textAlign: 'center',
+                bgcolor: 'grey.100',
+                overflow: 'hidden'
+              }}
+            >
+              <Typography variant="subtitle2" sx={{ mb: 1 }}>Preview</Typography>
+              <iframe
+                src={formData.videoSource}
+                style={{
+                  width: '100%',
                   aspectRatio: '16/9',
-                  bgcolor: 'grey.100'
+                  border: 'none'
                 }}
-              >
-                <iframe
-                  src={preview}
-                  width="100%"
-                  height="100%"
-                  frameBorder="0"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                  title="YouTube video preview"
-                />
-              </Box>
-            </Box>
+                allowFullScreen
+              />
+            </Paper>
           )}
 
           <Box>
@@ -163,22 +155,43 @@ export default function VideoModal({ open, handleClose }) {
             />
           </Box>
 
-          <FormControlLabel
-            control={
-              <Switch
-                checked={formData.autoplay}
-                onChange={handleChange('autoplay')}
-              />
-            }
-            label={
-              <Box>
-                <Typography>Autoplay</Typography>
-                <Typography variant="caption" color="text.secondary">
-                  Note: Autoplay may be blocked by browser settings
-                </Typography>
-              </Box>
-            }
+          <TextField
+            fullWidth
+            label="Alt Text"
+            value={formData.altText}
+            onChange={handleChange('altText')}
+            helperText="Describe the video for accessibility"
           />
+
+          <Box sx={{ display: 'flex', gap: 2 }}>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={formData.autoplay}
+                  onChange={handleChange('autoplay')}
+                />
+              }
+              label="Autoplay"
+            />
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={formData.muted}
+                  onChange={handleChange('muted')}
+                />
+              }
+              label="Muted"
+            />
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={formData.controls}
+                  onChange={handleChange('controls')}
+                />
+              }
+              label="Show Controls"
+            />
+          </Box>
         </Box>
       </DialogContent>
       <DialogActions>
@@ -186,7 +199,7 @@ export default function VideoModal({ open, handleClose }) {
         <Button 
           onClick={handleSubmit}
           variant="contained"
-          disabled={!formData.videoUrl || !!error}
+          disabled={!formData.videoSource || !formData.altText.trim()}
         >
           Add Video
         </Button>
