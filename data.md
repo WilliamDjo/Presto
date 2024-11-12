@@ -1,7 +1,7 @@
 {
     presentations: [
         {
-            id: string,
+            id: int,
             title: string,
             thumbnail: null || string,
             defaultBackground: string,
@@ -19,6 +19,7 @@
             slides: [
                 {
                     slideNum: int,
+                    id: int,
                     background: null || string,
                     contents: [
 
@@ -26,6 +27,7 @@
                 },
                 {
                     slideNum: int,
+                    id: int,
                     background: null || string,
                     contents: [
                         {
