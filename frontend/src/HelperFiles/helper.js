@@ -140,12 +140,16 @@ export const getSlides = (presentations) => {
   return presentations?.find((presentation) => presentation.id == location.pathname.split("/")[2]).slides;
 };
 
-export const getSlide = (presentations) => {
-  return presentations?.find((presentation) => presentation.id == location.pathname.split("/")[2]).slides[parseInt(location.hash.split("/")[1]) - 1];
+export const getSlideByPosition = (presentations, slidePosition) => {
+  return presentations?.find((presentation) => presentation.id == location.pathname.split("/")[2]).slides.find((slide) => slide.slideNum === slidePosition);
 }
 
-export const getElementByIndex = (presentations, index) => {
-  return presentations?.find((presentation) => presentation.id == location.pathname.split("/")[2]).slides[parseInt(location.hash.split("/")[1]) - 1].contents[index];
+export const getSlidePositionById = (presentations, slideId) => {
+  return presentations?.find((presentation) => presentation.id == location.pathname.split("/")[2]).slides.findIndex((slide) => slide.id === slideId) + 1;
+};
+
+export const getElementByIndex = (presentations, elementIndex, slideNum) => {
+  return presentations?.find((presentation) => presentation.id == location.pathname.split("/")[2]).slides[slideNum - 1].contents[elementIndex];
 };
 
 export const getPresentationTitle = (presentations) => {

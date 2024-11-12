@@ -4,7 +4,6 @@ import { useDispatch } from 'react-redux';
 import { addNewSlide } from '../../../../State/presentationsSlice';
 
 const AddSlidesBarComponent = ({ sx = { 
-  height: "60%",
   minWidth: "8%", 
   backgroundColor: "white",
   display: "flex", 
@@ -21,7 +20,7 @@ const AddSlidesBarComponent = ({ sx = {
   const dispatch = useDispatch();
 
   return (
-    <Box onClick={() => {dispatch(addNewSlide())}} sx={{ ...sx }}>
+    <Box onClick={() => {dispatch(addNewSlide())}} sx={{ ...sx, 'aspectRatio': 16/9 }}>
       <Add />
     </Box>
   );
