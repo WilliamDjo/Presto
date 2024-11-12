@@ -8,7 +8,6 @@ import { useSelector } from "react-redux";
 
 const SlideDisplay = () => {
   const presentations = useSelector((state) => state.presentations.presentations);
-  const presentations = useSelector((state) => state.presentations.presentations);
   const slideContainerRef = useRef(null);
   const slideRef = useRef(null);
   const [slideWidth, setSlideWidth] = useState(100);
