@@ -222,3 +222,73 @@ const SettingsDialog = ({
                   type="color"
                   value={backgroundSetting.attributes.endingColor || "#FFFFFF"}
                   onChange={handleBackgroundChange('attributes', 'endingColor')}
+                />
+                <TextField
+                  fullWidth
+                  label="Gradient Angle"
+                  type="number"
+                  value={backgroundSetting.attributes.angle}
+                  onChange={handleBackgroundChange('attributes', 'angle')}
+                  inputProps={{
+                    min: 0,
+                    max: 360,
+                    step: 1
+                  }}
+                />
+              </>
+            }
+            {backgroundSetting.type === "image" &&
+              <Stack spacing={1}>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  onChange={onBackgroundImageChange}
+                  style={{ display: 'none' }}
+                />
+                <Card sx={{ width: '100%', maxWidth: 345 }}>
+                  <CardActionArea onClick={handleCardClick}>
+                    {!showDefaultImage ? (
+                      <CardMedia
+                        component="img"
+                        sx={{ height: 194 }}
+                        image={backgroundSetting.attributes.image}
+                        title="Background Image"
+                      />
+                    ) : (
+                      <CardMedia
+                        sx={{
+                          height: 194,
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          bgcolor: 'grey.100'
+                        }}
+                      >
+                        <Stack alignItems="center" spacing={1}>
+                          <Image color="action" sx={{ fontSize: 40 }} />
+                          <Typography variant="body2" color="text.secondary">
+                            Click to add background image
+                          </Typography>
+                        </Stack>
+                      </CardMedia>
+                    )}
+                  </CardActionArea>
+                </Card>
+              </Stack>
+            }
+          </Stack>
+        </Stack>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={() => {
+          setShowSettingsDialog(false);
+          setError('');
+        }}>Cancel</Button>
+        <Button onClick={handleSave} variant="contained">Save</Button>
+      </DialogActions>
+    </Dialog>
+  );
+};
+
+export default SettingsDialog;
