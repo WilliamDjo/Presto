@@ -7,11 +7,13 @@ import {
   Button,
   Stack,
   TextField,
-  Divider
+  Divider,
+  Alert
 } from '@mui/material';
 import ThumbnailUpload from '../../../../Components/ThumbnailUpload';
 
 const SettingsDialog = ({ 
+  error,
   open, 
   onClose, 
   onSave, 
@@ -29,6 +31,7 @@ const SettingsDialog = ({
     >
       <DialogTitle>Presentation Settings</DialogTitle>
       <DialogContent>
+        {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
         <Stack spacing={3} sx={{ mt: 1 }}>
           <TextField
             autoFocus
@@ -45,6 +48,10 @@ const SettingsDialog = ({
             thumbnail={thumbnail}
             onThumbnailChange={onThumbnailChange}
           />
+
+          <Divider />
+
+          <Alert>Background</Alert>
         </Stack>
       </DialogContent>
       <DialogActions>

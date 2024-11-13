@@ -14,11 +14,12 @@ import { useNavigate } from 'react-router-dom';
 const PresentationPage = () => {
   const presentations = useSelector((state) => state.presentations.presentations);
   const presentationId = parseInt(location.pathname.split("/")[2]);
-  const currentPresentation = presentations?.find(p => p.id === presentationId);
+  const currentPresentation = presentations?.find(p => p.id == presentationId);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [showSettingsDialog, setShowSettingsDialog] = useState(false);
   const [newTitle, setNewTitle] = useState(currentPresentation?.title || "");
   const [previewThumbnail, setPreviewThumbnail] = useState(currentPresentation?.thumbnail || "");
+  const [error, setError] = useState('');
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -38,7 +39,7 @@ const PresentationPage = () => {
   const handleSave = () => {
     // Validate inputs
     if (!newTitle.trim()) {
-      alert("Please enter a title");
+      setError("Please enter a title");
       return;
     }
 
@@ -64,7 +65,7 @@ const PresentationPage = () => {
     if (file) {
       // Add file size check
       if (file.size > 5000000) { // 5MB limit
-        alert("File is too large. Please choose an image under 5MB.");
+        setError("File is too large. Please choose an image under 5MB.");
         return;
       }
 
@@ -74,7 +75,7 @@ const PresentationPage = () => {
       };
       reader.onerror = (e) => {
         console.error("Error reading file:", e);
-        alert("Error reading file. Please try again.");
+        setError("Error reading file. Please try again.");
       };
       reader.readAsDataURL(file);
     }
@@ -82,6 +83,7 @@ const PresentationPage = () => {
 
   // When the dialog opens, initialize with current values
   const handleSettingsClick = () => {
+    setError("");
     setNewTitle(currentPresentation?.title || "");
     setPreviewThumbnail(currentPresentation?.thumbnail || "");
     setShowSettingsDialog(true);
@@ -118,8 +120,9 @@ const PresentationPage = () => {
       />
 
       <SettingsDialog 
+        error={error}
         open={showSettingsDialog}
-        onClose={handleClose}  // Use new handleClose
+        onClose={handleClose}
         onSave={handleSave}
         title={newTitle}
         thumbnail={previewThumbnail}

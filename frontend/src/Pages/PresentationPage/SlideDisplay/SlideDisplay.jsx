@@ -1,7 +1,7 @@
 import { Box, Typography } from "@mui/material";
 import Block from "./SlideDisplayComponents/Block";
 import { useRef, useState, useEffect } from "react";
-import { getSlideByPosition, getSlides } from "../../../HelperFiles/helper";
+import { getPresentationBackgroundSetting, getSlideByPosition, getSlides, renderBackground } from "../../../HelperFiles/helper";
 import { useSelector } from "react-redux";
 
 const SlideDisplay = () => {
@@ -55,7 +55,7 @@ const SlideDisplay = () => {
 
   return (
     <Box p={2} ref={slideContainerRef} sx={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100%", overflowY: 'auto', overflowX: 'auto' }}>
-      <Box ref={slideRef} height={slideHeight} width={slideWidth} border={1} sx={{ position: "relative", backgroundColor: "white"}}>
+      <Box ref={slideRef} height={slideHeight} width={slideWidth} border={1} sx={{ position: "relative", ...renderBackground(presentations)}}>
         <Box sx={{height: "100%", width: "100%"}}>
           {getSlideByPosition(presentations, parseInt(location.hash.split("/")[1]))?.contents.map((element) => (
             <Block interactable={true} parentHeight={slideHeight - 2} parentWidth={slideWidth - 2} key={element.index} index={element.index} slideNum={parseInt(location.hash.split("/")[1])} />

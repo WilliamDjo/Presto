@@ -157,12 +157,16 @@ export const getPresentationTitle = (presentations) => {
   return presentations?.find((presentation) => presentation.id == location.pathname.split("/")[2]).title;
 };
 
+export const getPresentationBackgroundSetting = (presentations) => {
+  return presentations?.find((presentation) => presentation.id == location.pathname.split("/")[2]).defaultBackground;
+}
+
 export const usePresentation = () => {
   const presentations = useSelector((state) => state.presentations.presentations);
   const saveStatus = useSelector((state) => state.saveStatus) ? "Saved" : "Saving...";
   const presentationId = parseInt(location.pathname.split("/")[2]);
   
-  const currentPresentation = presentations?.find(p => p.id === presentationId);
+  const currentPresentation = presentations?.find(p => p.id == presentationId);
   
   return {
     presentationId,
@@ -172,6 +176,31 @@ export const usePresentation = () => {
     title: getPresentationTitle(presentations),
     thumbnail: currentPresentation?.thumbnail
   };
+};
+
+export const renderBackground = (presentations) => {
+  const presentationBackground = getPresentationBackgroundSetting(presentations);
+  const slide = getSlideByPosition(presentations, parseInt(location.hash.split("/")[1]));
+
+  let backgroundStyle;
+
+  switch (slide?.background ? slide.background : presentationBackground?.type) {
+    case "solid":
+      backgroundStyle = {
+        backgroundColor: presentationBackground.attributes.color
+      }
+      break;
+    case "gradient":
+      backgroundStyle = {backgroundColor: "white"};
+      break;
+    case "image":
+      backgroundStyle = {backgroundColor: "white"};
+      break;
+    default:
+      backgroundStyle = {backgroundColor: "white"};
+  }
+
+  return backgroundStyle;
 };
 
 export default { isValidEmail, isValidName, isValidPassword, isValidConfirmPassword };

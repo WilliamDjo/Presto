@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { fetchRequest, getSlideByPosition, getSlidePositionById } from '../HelperFiles/helper';
+import { fetchRequest, getSlidePositionById } from '../HelperFiles/helper';
 import { startSaving, finishSaving } from './saveStatusSlice';
 import { getSlides } from '../HelperFiles/helper';
 
@@ -49,8 +49,13 @@ const presentationsSlice = createSlice({
       const newPresentation = {
         id: String(Date.now()),
         title: action.payload,
-        thumbnail: "Default thumbnail", // TODO: fix thumbnail format
-        defaultBackground: "Default background", // TODO: fix background format
+        thumbnail: null,
+        defaultBackground: {
+          type: "solid",
+          attributes: {
+            color: "#FFFFFF"
+          }
+        },
         versionHistory: [],
         slides: [
           {

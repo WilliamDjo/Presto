@@ -13,7 +13,7 @@ const ThumbnailUpload = ({ thumbnail, onThumbnailChange }) => {
   };
 
   // Check if thumbnail is empty or default
-  const showDefaultImage = !thumbnail || thumbnail === "Default thumbnail";
+  const showDefaultImage = !thumbnail;
 
   return (
     <Stack spacing={1}>

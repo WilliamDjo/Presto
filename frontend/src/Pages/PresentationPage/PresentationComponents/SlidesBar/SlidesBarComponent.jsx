@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTheme } from '@mui/material/styles';
 import { useDispatch, useSelector } from 'react-redux';
 import { deleteSlide, deletePresentation } from '../../../../State/presentationsSlice';
-import { getSlides, getSlideByPosition } from '../../../../HelperFiles/helper';
+import { getSlides, getSlideByPosition, renderBackground } from '../../../../HelperFiles/helper';
 import Block from '../../SlideDisplay/SlideDisplayComponents/Block';
 import { DeleteConfirmDialog } from '../Dialogs/DeleteConfirmDialog';
 
@@ -49,7 +49,6 @@ const SlidesBarComponent = ({ id, index }) => {
     cursor: isDraggingEvent ? 'grabbing' : 'pointer',
     position: 'relative',
     minWidth: "8%",
-    backgroundColor: "white", 
     display: "flex", 
     justifyContent: "center", 
     alignItems: "center", 
@@ -60,7 +59,8 @@ const SlidesBarComponent = ({ id, index }) => {
       backgroundColor: "#f0f0f0",
       boxShadow: "0px 6px 12px rgba(0, 0, 0, 0.15)",
     },
-    border: index === parseInt(location.hash.split("/")[1]) ? "2px solid black" : ""
+    border: index === parseInt(location.hash.split("/")[1]) ? "2px solid black" : "",
+    ...renderBackground(presentations)
   };
 
   useEffect(() => {

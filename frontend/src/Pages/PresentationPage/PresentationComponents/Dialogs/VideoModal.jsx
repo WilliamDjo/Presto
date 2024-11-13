@@ -54,7 +54,6 @@ export default function VideoModal({ open, handleClose }) {
       else if (url.includes('youtube.com/v/')) {
         videoId = url.split('youtube.com/v/')[1]?.split('?')[0];
       }
-      console.log('videoId', videoId);
       
       return videoId;
     } catch (e) {
