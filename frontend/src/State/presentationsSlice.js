@@ -152,8 +152,30 @@ const presentationsSlice = createSlice({
       state.presentations.find(
         (presentation) => presentation.id == location.pathname.split("/")[2]
       ).slides[parseInt(location.hash.split("/")[1]) - 1].contents = newSlideContents;
-    }
-    ,
+    },
+    addCodeElement: (state, action) => {
+      const slide = getSlides(state.presentations)[parseInt(location.hash.split("/")[1]) - 1];
+      
+      const codeElement = {
+        index: slide.contents.length,
+        type: "code",
+        attributes: {
+          elementSize: action.payload.elementSize,
+          textContent: action.payload.textContent,
+          fontSize: action.payload.fontSize,
+        },
+        position: {
+          x: 0.1,  // 10% from left
+          y: 0.1   // 10% from top
+        }
+      };
+      
+      const newSlideContents = [...slide.contents, codeElement];
+      
+      state.presentations.find(
+        (presentation) => presentation.id == location.pathname.split("/")[2]
+      ).slides[parseInt(location.hash.split("/")[1]) - 1].contents = newSlideContents;
+    },
     updateElementPosition: (state, action) => {
       state.presentations.find((presentation) => presentation.id == location.pathname.split("/")[2]).slides[parseInt(location.hash.split("/")[1]) - 1].contents[action.payload.index].position = action.payload.position;
     },
@@ -236,5 +258,5 @@ const presentationsSlice = createSlice({
   }
 });
 
-export const { addNewSlide, deleteSlide, updateSlidesBarOrder, setPresentations, createNewPresentation, addTextElement, updateElementPosition, updateElementSize, deletePresentation, updatePresentationTitle, updatePresentationThumbnail, addImageElement, addVideoElement } = presentationsSlice.actions;
+export const { addNewSlide, deleteSlide, updateSlidesBarOrder, setPresentations, createNewPresentation, addTextElement, updateElementPosition, updateElementSize, deletePresentation, updatePresentationTitle, updatePresentationThumbnail, addImageElement, addVideoElement, addCodeElement } = presentationsSlice.actions;
 export default presentationsSlice.reducer;

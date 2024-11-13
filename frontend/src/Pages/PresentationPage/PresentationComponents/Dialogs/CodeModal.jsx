@@ -17,20 +17,16 @@ import 'prismjs/components/prism-python';
 import 'prismjs/components/prism-javascript';
 import 'prismjs/components/prism-c';
 import 'prismjs/themes/prism.css';
-
-
-// const addCodeElement = (codeData) => ({
-//   type: 'presentations/addCodeElement',
-//   payload: codeData
-// });
+import { useDispatch } from 'react-redux';
+import { addCodeElement } from '../../../../State/presentationsSlice';
 
 export default function CodeModal({ open, handleClose }) {
-//   const dispatch = useDispatch();
+  const dispatch = useDispatch();
   
   const [formData, setFormData] = useState({
     width: 0.5,
     height: 0.5,
-    code: '',
+    textContent: '',
     fontSize: 1
   });
   
@@ -81,12 +77,12 @@ export default function CodeModal({ open, handleClose }) {
   
   // Update preview with syntax highlighting
   useEffect(() => {
-    if (formData.code) {
-      const language = detectLanguage(formData.code) || 'javascript';
+    if (formData.textContent) {
+      const language = detectLanguage(formData.textContent) || 'javascript';
       setDetectedLanguage(language);
         
       const highlighted = Prism.highlight(
-        formData.code,
+        formData.textContent,
         Prism.languages[language],
         language
       );
@@ -96,7 +92,7 @@ export default function CodeModal({ open, handleClose }) {
       setPreview('');
       setDetectedLanguage(null);
     }
-  }, [formData.code]);
+  }, [formData.textContent]);
   
   const handleChange = (field) => (event) => {
     const value = event.target.value;
@@ -115,33 +111,33 @@ export default function CodeModal({ open, handleClose }) {
   };
   
   const handleSubmit = () => {
-    if (!formData.code.trim()) {
+    if (!formData.textContent.trim()) {
       setError('Please enter some code');
       return;
     }
   
-    // dispatch(addCodeElement({
-    //   elementSize: {
-    //     x: formData.width,
-    //     y: formData.height
-    //   },
-    //   code: formData.code,
-    //   fontSize: formData.fontSize,
-    //   language: detectedLanguage || 'javascript'
-    // }));
+    dispatch(addCodeElement({
+      elementSize: {
+        x: formData.width,
+        y: formData.height
+      },
+      textContent: formData.textContent,
+      fontSize: formData.fontSize,
+    }));
   
     handleClose();
     // Reset form
-    // setFormData({
-    //   width: 0.5,
-    //   height: 0.5,
-    //   code: '',
-    //   fontSize: 1
-    // });
+    setFormData({
+      width: 0.5,
+      height: 0.5,
+      textContent: '',
+      fontSize: 1
+    });
     setDetectedLanguage(null);
     setPreview('');
     setError('');
   };
+
   
   return (
     <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
@@ -153,8 +149,8 @@ export default function CodeModal({ open, handleClose }) {
             multiline
             rows={8}
             label="Code"
-            value={formData.code}
-            onChange={handleChange('code')}
+            value={formData.textContent}
+            onChange={handleChange('textContent')}
             error={!!error}
             helperText={error}
             sx={{
@@ -239,7 +235,6 @@ export default function CodeModal({ open, handleClose }) {
         <Button 
           onClick={handleSubmit}
           variant="contained"
-          disabled={!formData.code.trim()}
         >
           Add Code Block
         </Button>

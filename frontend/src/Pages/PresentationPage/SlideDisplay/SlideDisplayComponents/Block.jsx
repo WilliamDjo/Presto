@@ -4,6 +4,7 @@ import { Box, Typography } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { updateElementPosition, updateElementSize } from "../../../../State/presentationsSlice";
 import { getElementByIndex } from "../../../../HelperFiles/helper";
+import Prism from "prismjs";
 
 const Block = ({ parentHeight, parentWidth, index, interactable, slideNum }) => {
   const [showHandles, setShowHandles] = useState(false);
@@ -169,6 +170,89 @@ const Block = ({ parentHeight, parentWidth, index, interactable, slideNum }) => 
           />
         </Box>
       );
+    } else if (element.type == 'code') {
+      // Detect the language
+      const detectLanguage = (code) => {
+        const indicators = {
+          python: {
+            keywords: ['def ', 'import ', 'class ', 'print(', '__init__', 'if __name__'],
+            syntax: [':', '    ', '#'],
+          },
+          javascript: {
+            keywords: ['function', 'const ', 'let ', 'var ', '=>', 'console.log'],
+            syntax: [';', '===', '}}'],
+          },
+          c: {
+            keywords: ['#include', 'int main', 'void', 'printf', 'scanf'],
+            syntax: ['{', '};', '#define'],
+          }
+        };
+      
+        let scores = {
+          python: 0,
+          javascript: 0,
+          c: 0
+        };
+      
+        Object.entries(indicators).forEach(([lang, { keywords, syntax }]) => {
+          keywords.forEach(keyword => {
+            if (code.includes(keyword)) scores[lang] += 2;
+          });
+          syntax.forEach(symbol => {
+            if (code.includes(symbol)) scores[lang] += 1;
+          });
+        });
+      
+        const maxScore = Math.max(...Object.values(scores));
+        if (maxScore === 0) return 'javascript'; // default to javascript if no matches
+          
+        return Object.entries(scores).find(([, score]) => score === maxScore)[0];
+      };
+
+      // Detect language and highlight the code
+      const language = detectLanguage(element.attributes.textContent);
+      const highlighted = Prism.highlight(
+        element.attributes.textContent,
+        Prism.languages[language],
+        language
+      );
+
+      return (
+        <Box
+          style={{
+            width: "100%",
+            height: "100%",
+            overflow: "auto",
+            backgroundColor: "#ffffff",
+            fontFamily: "monospace",
+            fontSize: (element.attributes.fontSize || 1) + "em",
+            position: "relative"
+          }}
+        >
+          <pre
+            style={{
+              margin: 0,
+              padding: "8px",
+              backgroundColor: "#f8f9fa",
+              borderRadius: "4px",
+              overflow: "visible",
+              whiteSpace: "pre-wrap",
+              wordBreak: "keep-all",
+              height: "100%"
+            }}
+          >
+            <code
+              dangerouslySetInnerHTML={{ __html: highlighted }}
+              style={{ 
+                fontFamily: "monospace",
+                position: "relative",
+                pointerEvents: "none"
+              }}
+            />
+          </pre>
+        </Box>
+      );
+
     }
   };
 
