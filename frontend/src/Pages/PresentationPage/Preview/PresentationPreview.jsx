@@ -196,7 +196,7 @@ export default function PresentationPreview() {
             >
               <IconButton
                 disabled={currentSlide === 1}
-                onClick={() => navigate(`#/${currentSlide - 1}`)}
+                onClick={(e) => {e.stopPropagation(); navigate(`#/${currentSlide - 1}`);}}
                 sx={{ color: 'white' }}
               >
                 <ArrowLeft />
@@ -206,7 +206,7 @@ export default function PresentationPreview() {
               </Box>
               <IconButton
                 disabled={currentSlide === getSlides(presentations)?.length}
-                onClick={() => navigate(`#/${currentSlide + 1}`)}
+                onClick={(e) => {e.stopPropagation(); navigate(`#/${currentSlide + 1}`);}}
                 sx={{ color: 'white' }}
               >
                 <ArrowRight />
