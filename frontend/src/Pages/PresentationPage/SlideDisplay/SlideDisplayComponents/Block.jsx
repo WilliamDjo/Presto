@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { Rnd } from "react-rnd";
 import { Box, Typography } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
-import { updateElementPosition, updateElementSize } from "../../../../State/presentationsSlice";
+import { updateElementPosition, updateElementSize, deleteElement } from "../../../../State/presentationsSlice";
 import { getElementByIndex } from "../../../../HelperFiles/helper";
 import Prism from "prismjs";
 
@@ -35,6 +35,15 @@ const Block = ({ parentHeight, parentWidth, index, interactable, slideNum }) => 
     }
 
     setShowHandles(true);
+  };
+
+  const handleRightClick = (e) => {
+    if (!interactable) {
+      return;
+    }
+
+    e.preventDefault();
+    dispatch(deleteElement(index));
   };
 
   useEffect(() => {
@@ -267,6 +276,7 @@ const Block = ({ parentHeight, parentWidth, index, interactable, slideNum }) => 
       enableResizing={showHandles}
       disableDragging={!interactable}
       onDoubleClick={handleDoubleClick}
+      onContextMenu={handleRightClick}
       onMouseDown={handleSingleClick}
       onDragStop={handleDragStop}
       onDrag={() => setIsDragging(true)}
