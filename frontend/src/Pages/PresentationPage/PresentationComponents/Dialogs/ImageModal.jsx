@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { 
   Dialog,
   DialogTitle,
@@ -9,27 +9,33 @@ import {
   Box,
   Slider,
   Typography,
-  Tab,
-  Tabs,
+  // Tab,
+  // Tabs,
   Paper
 } from '@mui/material';
 import { useDispatch } from 'react-redux';
 import { CloudUpload } from '@mui/icons-material';
-import { addImageElement } from '../../../../State/presentationsSlice';
+import { addImageElement, updateImageElement } from '../../../../State/presentationsSlice';
 
-export default function ImageModal({ open, handleClose }) {
+export default function ImageModal({ open, handleClose, initialData, isEditing = false }) {
   const dispatch = useDispatch();
   
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState(initialData || {
     width: 0.5,
     height: 0.5,
     imageSource: '',
     altText: '',
-    uploadMethod: 'url' // 'url' or 'file'
   });
   
   const [previewUrl, setPreviewUrl] = useState('');
   const [error, setError] = useState('');
+
+  // Set initial preview if editing
+  useEffect(() => {
+    if (isEditing && initialData?.imageSource) {
+      setPreviewUrl(initialData.imageSource);
+    }
+  }, [isEditing, initialData]);
   
   const handleChange = (field) => (event) => {
     setFormData({
@@ -37,7 +43,7 @@ export default function ImageModal({ open, handleClose }) {
       [field]: event.target.value
     });
   
-    if (field === 'imageSource' && formData.uploadMethod === 'url') {
+    if (field === 'imageSource') {
       setPreviewUrl(event.target.value);
       setError('');
     }
@@ -50,15 +56,15 @@ export default function ImageModal({ open, handleClose }) {
     });
   };
   
-  const handleTabChange = (event, newValue) => {
-    setFormData({
-      ...formData,
-      uploadMethod: newValue,
-      imageSource: ''
-    });
-    setPreviewUrl('');
-    setError('');
-  };
+  // const handleTabChange = (event, newValue) => {
+  //   setFormData({
+  //     ...formData,
+  //     uploadMethod: newValue,
+  //     imageSource: ''
+  //   });
+  //   setPreviewUrl('');
+  //   setError('');
+  // };
   
   const handleFileUpload = useCallback((event) => {
     const file = event.target.files[0];
@@ -83,12 +89,28 @@ export default function ImageModal({ open, handleClose }) {
       reader.readAsDataURL(file);
     }
   }, []);
-  
+
+  const validateUrl = (url) => {
+    try {
+      new URL(url);
+      return true;
+    } catch (e) {
+      console.log('From ImageModal.jsx -> validateUrl()', e);
+      return false;
+    }
+  };
+
   const validateForm = () => {
     if (!formData.imageSource) {
       setError('Please provide an image source');
       return false;
     }
+
+    if (!validateUrl(formData.imageSource)) {
+      setError('Please enter a valid URL');
+      return false;
+    }
+
     if (!formData.altText.trim()) {
       setError('Please provide alt text for accessibility');
       return false;
@@ -99,51 +121,61 @@ export default function ImageModal({ open, handleClose }) {
   const handleSubmit = () => {
     if (!validateForm()) return;
   
-    dispatch(addImageElement({
+    const elementData = {
       elementSize: {
         x: formData.width,
         y: formData.height
       },
       imageSource: formData.imageSource,
       altText: formData.altText
-    }));
+    };
+
+    if (isEditing) {
+      dispatch(updateImageElement({
+        index: formData.index,
+        attributes: elementData
+      }));
+    } else {
+      dispatch(addImageElement({
+        ...elementData,
+        position: {
+          x: 0.1,
+          y: 0.1
+        }
+      }));
+    }
   
     handleClose();
-    // Reset form
-    setFormData({
-      width: 0.5,
-      height: 0.5,
-      imageSource: '',
-      altText: '',
-      uploadMethod: 'url'
-    });
+    // Only reset if not editing
+    if (!isEditing) {
+      setFormData({
+        width: 0.5,
+        height: 0.5,
+        imageSource: '',
+        altText: ''
+      });
+    }
     setPreviewUrl('');
     setError('');
   };
   return (
     <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
-      <DialogTitle>Add Image Element</DialogTitle>
+      <DialogTitle>{isEditing ? 'Edit Image Element' : 'Add Image Element'}</DialogTitle>
       <DialogContent>
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, mt: 2 }}>
-          <Tabs
-            value={formData.uploadMethod}
-            onChange={handleTabChange}
-            sx={{ borderBottom: 1, borderColor: 'divider' }}
-          >
-            <Tab label="Image URL" value="url" />
-            <Tab label="Upload File" value="file" />
-          </Tabs>
-
-          {formData.uploadMethod === 'url' ? (
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
             <TextField
               fullWidth
               label="Image URL"
               value={formData.imageSource}
               onChange={handleChange('imageSource')}
               error={!!error}
-              helperText={error}
+              helperText={error || "Enter the URL of the image"}
+              placeholder="https://example.com/image.jpg"
             />
-          ) : (
+
+            <Typography align="center" sx={{ my: 1 }}>OR</Typography>
+
             <Box sx={{ textAlign: 'center' }}>
               <input
                 accept="image/*"
@@ -157,18 +189,15 @@ export default function ImageModal({ open, handleClose }) {
                   component="span"
                   variant="outlined"
                   startIcon={<CloudUpload />}
-                  sx={{ mb: 2 }}
                 >
-                  Choose Image File
+                Upload Image File
                 </Button>
               </label>
-              {error && (
-                <Typography color="error" sx={{ mt: 1 }}>
-                  {error}
-                </Typography>
-              )}
+              <Typography variant="caption" display="block" sx={{ mt: 1, color: 'text.secondary' }}>
+              Maximum file size: 5MB
+              </Typography>
             </Box>
-          )}
+          </Box>
 
           {previewUrl && (
             <Paper 
@@ -187,6 +216,7 @@ export default function ImageModal({ open, handleClose }) {
                   maxHeight: '200px',
                   objectFit: 'contain'
                 }}
+                onError={() => setError('Unable to load image')}
               />
             </Paper>
           )}
@@ -203,7 +233,7 @@ export default function ImageModal({ open, handleClose }) {
               valueLabelDisplay="auto"
             />
           </Box>
-          
+        
           <Box>
             <Box sx={{ mb: 1 }}>Height (relative to slide)</Box>
             <Slider
@@ -231,9 +261,9 @@ export default function ImageModal({ open, handleClose }) {
         <Button 
           onClick={handleSubmit}
           variant="contained"
-          disabled={!formData.imageSource || !formData.altText.trim()}
+          disabled={!formData.imageSource || !formData.altText.trim() || !!error}
         >
-          Add Image
+          {isEditing ? 'Save Changes' : 'Add Image'}
         </Button>
       </DialogActions>
     </Dialog>

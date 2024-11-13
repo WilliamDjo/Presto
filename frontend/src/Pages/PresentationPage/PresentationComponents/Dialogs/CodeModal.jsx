@@ -18,12 +18,12 @@ import 'prismjs/components/prism-javascript';
 import 'prismjs/components/prism-c';
 import 'prismjs/themes/prism.css';
 import { useDispatch } from 'react-redux';
-import { addCodeElement } from '../../../../State/presentationsSlice';
+import { addCodeElement, updateCodeElement } from '../../../../State/presentationsSlice';
 
-export default function CodeModal({ open, handleClose }) {
+export default function CodeModal({ open, handleClose, initialData, isEditing = false }) {
   const dispatch = useDispatch();
   
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState(initialData || {
     width: 0.5,
     height: 0.5,
     textContent: '',
@@ -33,6 +33,19 @@ export default function CodeModal({ open, handleClose }) {
   const [detectedLanguage, setDetectedLanguage] = useState(null);
   const [preview, setPreview] = useState('');
   const [error, setError] = useState('');
+
+  // Set initial data if editing
+  useEffect(() => {
+    if (isEditing && initialData) {
+      setFormData(initialData);
+      // Update preview for existing code
+      if (initialData.textContent) {
+        const language = detectLanguage(initialData.textContent) || 'javascript';
+        setDetectedLanguage(language);
+        updatePreview(initialData.textContent, language);
+      }
+    }
+  }, [isEditing, initialData]);
   
   // Detect programming language based on code content
   const detectLanguage = (code) => {
@@ -75,25 +88,34 @@ export default function CodeModal({ open, handleClose }) {
     return Object.entries(scores).find(([, score]) => score === maxScore)[0];
   };
   
+  const updatePreview = (code, language) => {
+    try {
+      const highlighted = Prism.highlight(
+        code,
+        Prism.languages[language],
+        language
+      );
+      setPreview(highlighted);
+    } catch (e) {
+      console.error('Error highlighting code:', e);
+      setPreview(code); // Fallback to plain text
+    }
+  };
+
   // Update preview with syntax highlighting
   useEffect(() => {
     if (formData.textContent) {
       const language = detectLanguage(formData.textContent) || 'javascript';
       setDetectedLanguage(language);
         
-      const highlighted = Prism.highlight(
-        formData.textContent,
-        Prism.languages[language],
-        language
-      );
-        
-      setPreview(highlighted);
+      updatePreview(formData.textContent, language);
     } else {
       setPreview('');
       setDetectedLanguage(null);
     }
   }, [formData.textContent]);
   
+
   const handleChange = (field) => (event) => {
     const value = event.target.value;
     setFormData(prev => ({
@@ -115,33 +137,50 @@ export default function CodeModal({ open, handleClose }) {
       setError('Please enter some code');
       return;
     }
-  
-    dispatch(addCodeElement({
+
+    const elementData = {
       elementSize: {
         x: formData.width,
         y: formData.height
       },
       textContent: formData.textContent,
-      fontSize: formData.fontSize,
-    }));
+      fontSize: formData.fontSize
+    };
+
+    if (isEditing) {
+      dispatch(updateCodeElement({
+        index: formData.index,
+        attributes: elementData
+      }));
+    } else {
+      dispatch(addCodeElement({
+        ...elementData,
+        position: {
+          x: 0.1,
+          y: 0.1
+        }
+      }));
+    }
   
     handleClose();
-    // Reset form
-    setFormData({
-      width: 0.5,
-      height: 0.5,
-      textContent: '',
-      fontSize: 1
-    });
-    setDetectedLanguage(null);
-    setPreview('');
+    // Only reset if not editing
+    if (!isEditing) {
+      setFormData({
+        width: 0.5,
+        height: 0.5,
+        textContent: '',
+        fontSize: 1
+      });
+      setDetectedLanguage(null);
+      setPreview('');
+    }
     setError('');
   };
 
   
   return (
     <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
-      <DialogTitle>Add Code Element</DialogTitle>
+      <DialogTitle>{isEditing ? 'Edit Code Element' : 'Add Code Element'}</DialogTitle>
       <DialogContent>
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, mt: 2 }}>
           <TextField
@@ -236,7 +275,7 @@ export default function CodeModal({ open, handleClose }) {
           onClick={handleSubmit}
           variant="contained"
         >
-          Add Code Block
+          {isEditing ? 'Save Changes' : 'Add Code Block'}
         </Button>
       </DialogActions>
     </Dialog>
