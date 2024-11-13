@@ -6,6 +6,7 @@ import { updateElementPosition, updateElementSize } from "../../../../State/pres
 import { getElementByIndex } from "../../../../HelperFiles/helper";
 import Prism from "prismjs";
 import TextModal from "../../PresentationComponents/Dialogs/TextModal";
+import ImageModal from "../../PresentationComponents/Dialogs/ImageModal";
 
 const Block = ({ parentHeight, parentWidth, index, interactable, slideNum }) => {
   const [showHandles, setShowHandles] = useState(false);
@@ -330,6 +331,22 @@ const Block = ({ parentHeight, parentWidth, index, interactable, slideNum }) => 
             text: element.attributes.text,
             fontSize: parseFloat(element.attributes.fontSize),
             color: element.attributes.color || '#000000',
+            index: element.index
+          }}
+          isEditing={true}
+        />
+      )}
+
+      {/* Add ImageModal for editing */}
+      {editModalOpen && element.type === 'image' && (
+        <ImageModal 
+          open={editModalOpen}
+          handleClose={handleCloseModal}
+          initialData={{
+            width: element.attributes.elementSize.x,
+            height: element.attributes.elementSize.y,
+            imageSource: element.attributes.imageSource,
+            altText: element.attributes.altText,
             index: element.index
           }}
           isEditing={true}

@@ -80,6 +80,7 @@ const presentationsSlice = createSlice({
 
       state.presentations.find((presentation) => presentation.id === location.pathname.split("/")[2]).slides = newSlides;
     },
+
     deleteSlide: (state, action) => {
       state.presentations.find((presentation) => presentation.id == location.pathname.split("/")[2]).slides = state.presentations.find((presentation) => presentation.id == location.pathname.split("/")[2]).slides.filter((_, index) => index !== (action.payload - 1));
       
