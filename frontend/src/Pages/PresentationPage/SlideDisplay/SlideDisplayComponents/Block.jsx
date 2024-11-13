@@ -161,6 +161,38 @@ const Block = ({ parentHeight, parentWidth, index }) => {
           />
         </Box>
       );
+    } else if (element.type == 'code') {
+      return (
+        <Box
+          style={{
+            width: "100%",
+            height: "100%",
+            overflow: "auto",
+            backgroundColor: "#f5f5f5",
+            borderRadius: "4px",
+            padding: "12px"
+          }}
+        >
+          <Typography
+            component="pre"
+            style={{
+              margin: 0,
+              fontFamily: "monospace",
+              fontSize: element.attributes.fontSize + "em",
+              pointerEvents: "none",
+              userSelect: "none"
+            }}
+          >
+            <code
+              // dangerouslySetInnerHTML={{ __html: highlighted }}
+              style={{ whiteSpace: "pre-wrap" }}
+            >
+              {element.attributes.textContent}
+              {console.log('code:', element.attributes.textContent)}
+            </code>
+          </Typography>
+        </Box>
+      );
     }
   };
 
