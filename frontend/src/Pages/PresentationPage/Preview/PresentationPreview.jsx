@@ -74,7 +74,7 @@ export default function PresentationPreview() {
   
   return (
     <>
-      <Box p={2} ref={slideContainerRef} sx={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100%", overflowY: 'auto', overflowX: 'auto' }}>
+      <Box p={2} ref={slideContainerRef} sx={{ display: "flex", alignItems: "center", justifyContent: "center", width: '95vw', height: "95vh" , overflowY: 'hidden', overflowX: 'hidden' }}>
         <Box ref={slideRef} height={slideHeight} width={slideWidth} sx={{ position: "relative", backgroundColor: "white"}}>
           <Box sx={{height: "100%", width: "100%"}}>
             {getSlideByPosition(presentations, currentSlide)?.contents.map((element) => (
