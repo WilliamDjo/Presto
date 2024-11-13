@@ -6,7 +6,7 @@ import { Settings, Delete } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from '@mui/material/styles';
 import { useDispatch, useSelector } from 'react-redux';
-import { deleteSlide } from '../../../../State/presentationsSlice';
+import { deleteSlide, deletePresentation } from '../../../../State/presentationsSlice';
 import { getSlides, getSlideByPosition } from '../../../../HelperFiles/helper';
 import Block from '../../SlideDisplay/SlideDisplayComponents/Block';
 import { DeleteConfirmDialog } from '../Dialogs/DeleteConfirmDialog';
@@ -24,14 +24,9 @@ const SlidesBarComponent = ({ id, index }) => {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const isLastSlide = getSlides(presentations).length === 1;
 
-  const handleDeleteSlide = () => {
-    dispatch(deleteSlide(index));
-    if (index <= parseInt(location.hash.split("/")[1]) && parseInt(location.hash.split("/")[1]) !== 1) {
-      navigate(`${location.pathname}#/${parseInt(location.hash.split("/")[1]) - 1}`);
-    }
-    // if (getSlides(presentations).length === 1) {
-    //   setDeletePresentationDialogOpen(true);
-    // }
+  const handleDeletePresentation = () => {
+    dispatch(deletePresentation(parseInt(location.pathname.split("/")[2])));
+    navigate("/dashboard");
     setDeleteDialogOpen(false);
   };
 
@@ -103,12 +98,13 @@ const SlidesBarComponent = ({ id, index }) => {
   };
 
   const handleDeleteClick = () => {
-    dispatch(deleteSlide(index));
-    if (index <= parseInt(location.hash.split("/")[1]) && parseInt(location.hash.split("/")[1]) !== 1) {
-      navigate(`${location.pathname}#/${parseInt(location.hash.split("/")[1]) - 1}`);
-    }
-    if (getSlides(presentations).length === 1) {
-      console.log('Prompt user to delete presentation');
+    if (getSlides(presentations).length > 1) {
+      dispatch(deleteSlide(index));
+      if (index <= parseInt(location.hash.split("/")[1]) && parseInt(location.hash.split("/")[1]) !== 1) {
+        navigate(`${location.pathname}#/${parseInt(location.hash.split("/")[1]) - 1}`);
+      }
+    } else {
+      setDeleteDialogOpen(true);
     }
   };
 
@@ -171,7 +167,7 @@ const SlidesBarComponent = ({ id, index }) => {
         <DeleteConfirmDialog
           open={deleteDialogOpen}
           onClose={() => setDeleteDialogOpen(false)}
-          onConfirm={handleDeleteSlide}
+          onConfirm={handleDeletePresentation}
           slideIndex={index}
           isLastSlide={isLastSlide}
         />
