@@ -7,7 +7,6 @@ import {
   TextField,
   Button,
   Box,
-  Slider,
   FormControlLabel,
   Typography,
   Checkbox,
@@ -86,14 +85,6 @@ export default function VideoModal({ open, handleClose, initialData, isEditing =
     }));
   };
   
-  
-  const handleSliderChange = (field) => (event, newValue) => {
-    setFormData({
-      ...formData,
-      [field]: newValue
-    });
-  };
-
   // Ensure autoplay has muted enabled (browser requirement)
   useEffect(() => {
     if (formData.autoplay && !formData.muted) {
@@ -227,32 +218,6 @@ export default function VideoModal({ open, handleClose, initialData, isEditing =
               /> 
             </Paper>
           )}
-
-          <Box>
-            <Box sx={{ mb: 1 }}>Width (relative to slide)</Box>
-            <Slider
-              value={formData.width}
-              onChange={handleSliderChange('width')}
-              min={0.1}
-              max={1}
-              step={0.1}
-              marks
-              valueLabelDisplay="auto"
-            />
-          </Box>
-          
-          <Box>
-            <Box sx={{ mb: 1 }}>Height (relative to slide)</Box>
-            <Slider
-              value={formData.height}
-              onChange={handleSliderChange('height')}
-              min={0.1}
-              max={1}
-              step={0.1}
-              marks
-              valueLabelDisplay="auto"
-            />
-          </Box>
 
           <TextField
             fullWidth

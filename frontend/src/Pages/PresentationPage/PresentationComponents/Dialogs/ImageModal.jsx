@@ -7,10 +7,7 @@ import {
   TextField,
   Button,
   Box,
-  Slider,
   Typography,
-  // Tab,
-  // Tabs,
   Paper
 } from '@mui/material';
 import { useDispatch } from 'react-redux';
@@ -48,24 +45,7 @@ export default function ImageModal({ open, handleClose, initialData, isEditing =
       setError('');
     }
   };
-  
-  const handleSliderChange = (field) => (event, newValue) => {
-    setFormData({
-      ...formData,
-      [field]: newValue
-    });
-  };
-  
-  // const handleTabChange = (event, newValue) => {
-  //   setFormData({
-  //     ...formData,
-  //     uploadMethod: newValue,
-  //     imageSource: ''
-  //   });
-  //   setPreviewUrl('');
-  //   setError('');
-  // };
-  
+    
   const handleFileUpload = useCallback((event) => {
     const file = event.target.files[0];
     if (file) {
@@ -220,32 +200,6 @@ export default function ImageModal({ open, handleClose, initialData, isEditing =
               />
             </Paper>
           )}
-
-          <Box>
-            <Box sx={{ mb: 1 }}>Width (relative to slide)</Box>
-            <Slider
-              value={formData.width}
-              onChange={handleSliderChange('width')}
-              min={0.1}
-              max={1}
-              step={0.1}
-              marks
-              valueLabelDisplay="auto"
-            />
-          </Box>
-        
-          <Box>
-            <Box sx={{ mb: 1 }}>Height (relative to slide)</Box>
-            <Slider
-              value={formData.height}
-              onChange={handleSliderChange('height')}
-              min={0.1}
-              max={1}
-              step={0.1}
-              marks
-              valueLabelDisplay="auto"
-            />
-          </Box>
 
           <TextField
             fullWidth

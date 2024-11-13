@@ -228,33 +228,6 @@ export default function CodeModal({ open, handleClose, initialData, isEditing = 
               </Typography>
             </Box>
           )}
-
-          <Box>
-            <Box sx={{ mb: 1 }}>Width (relative to slide)</Box>
-            <Slider
-              value={formData.width}
-              onChange={handleSliderChange('width')}
-              min={0.1}
-              max={1}
-              step={0.1}
-              marks
-              valueLabelDisplay="auto"
-            />
-          </Box>
-          
-          <Box>
-            <Box sx={{ mb: 1 }}>Height (relative to slide)</Box>
-            <Slider
-              value={formData.height}
-              onChange={handleSliderChange('height')}
-              min={0.1}
-              max={1}
-              step={0.1}
-              marks
-              valueLabelDisplay="auto"
-            />
-          </Box>
-
           <Box>
             <Box sx={{ mb: 1 }}>Font Size (em)</Box>
             <Slider
