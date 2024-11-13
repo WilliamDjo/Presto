@@ -204,6 +204,16 @@ const presentationsSlice = createSlice({
         (presentation) => presentation.id == location.pathname.split("/")[2]
       ).slides[parseInt(location.hash.split("/")[1]) - 1].contents = newSlideContents;
     },
+    updateCodeElement: (state, action) => {
+      const slide = getSlides(state.presentations)[parseInt(location.hash.split("/")[1]) - 1];
+      const elementIndex = action.payload.index;
+      
+      // Update the element attributes while preserving its position
+      slide.contents[elementIndex].attributes = {
+        ...slide.contents[elementIndex].attributes,
+        ...action.payload.attributes
+      };
+    },
     updateElementPosition: (state, action) => {
       state.presentations.find((presentation) => presentation.id == location.pathname.split("/")[2]).slides[parseInt(location.hash.split("/")[1]) - 1].contents[action.payload.index].position = action.payload.position;
     },
@@ -263,5 +273,5 @@ const presentationsSlice = createSlice({
   }
 });
 
-export const { addNewSlide, deleteSlide, updateSlidesBarOrder, setPresentations, createNewPresentation, addTextElement, updateElementPosition, updateElementSize, deletePresentation, updatePresentationTitle, updatePresentationThumbnail, updateTextElement, addImageElement, updateImageElement, addVideoElement, updateVideoElement, addCodeElement } = presentationsSlice.actions;
+export const { addNewSlide, deleteSlide, updateSlidesBarOrder, setPresentations, createNewPresentation, addTextElement, updateElementPosition, updateElementSize, deletePresentation, updatePresentationTitle, updatePresentationThumbnail, updateTextElement, addImageElement, updateImageElement, addVideoElement, updateVideoElement, addCodeElement, updateCodeElement } = presentationsSlice.actions;
 export default presentationsSlice.reducer;

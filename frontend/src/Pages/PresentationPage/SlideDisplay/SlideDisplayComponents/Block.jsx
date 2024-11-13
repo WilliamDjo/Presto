@@ -33,13 +33,8 @@ const Block = ({ parentHeight, parentWidth, index, interactable, slideNum }) => 
       return;
     }
     console.log('Double click');
-    if (element.type === 'text') {
-      setEditModalOpen(true);
-    } else if (element.type === 'image') {
-      setEditModalOpen(true);
-    } else if (element.type === 'video') {
-      setEditModalOpen(true);
-    }
+    
+    setEditModalOpen(true);
     setShowHandles(false);
   };
     
