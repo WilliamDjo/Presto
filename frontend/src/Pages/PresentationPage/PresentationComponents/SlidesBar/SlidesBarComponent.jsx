@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { Box, IconButton } from '@mui/material';
@@ -164,13 +164,13 @@ const SlidesBarComponent = ({ id, index }) => {
         ))}
       </Box>
 
-        <DeleteConfirmDialog
-          open={deleteDialogOpen}
-          onClose={() => setDeleteDialogOpen(false)}
-          onConfirm={handleDeletePresentation}
-          slideIndex={index}
-          isLastSlide={isLastSlide}
-        />
+      <DeleteConfirmDialog
+        open={deleteDialogOpen}
+        onClose={() => setDeleteDialogOpen(false)}
+        onConfirm={handleDeletePresentation}
+        slideIndex={index}
+        isLastSlide={isLastSlide}
+      />
     </>
   );
 };

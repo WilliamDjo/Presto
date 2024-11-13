@@ -61,7 +61,7 @@ const presentationsSlice = createSlice({
           }
         ]
       };
-
+    
       state.presentations = [...state.presentations, newPresentation];
     },
     deletePresentation: (state, action) => {
