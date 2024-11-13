@@ -21,11 +21,7 @@ const Block = ({ parentHeight, parentWidth, index }) => {
   const y = (position.y || 0) * parentHeight;
   const width = (size.x || 0.5) * parentWidth;
   const height = (size.y || 0.5) * parentHeight;
-  
-  // const handleDoubleClick = () => {
-  //   console.log('Double click');
-  // };
-    
+      
   const handleSingleClick = () => {
     setShowHandles(true);
   };
