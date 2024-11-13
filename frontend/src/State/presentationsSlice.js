@@ -263,5 +263,5 @@ const presentationsSlice = createSlice({
   }
 });
 
-export const { addNewSlide, deleteSlide, updateSlidesBarOrder, setPresentations, createNewPresentation, addTextElement, updateElementPosition, updateElementSize, deletePresentation, updatePresentationTitle, updatePresentationThumbnail, updateTextElement, addImageElement, updateImageElement, addVideoElement, addCodeElement } = presentationsSlice.actions;
+export const { addNewSlide, deleteSlide, updateSlidesBarOrder, setPresentations, createNewPresentation, addTextElement, updateElementPosition, updateElementSize, deletePresentation, updatePresentationTitle, updatePresentationThumbnail, updateTextElement, addImageElement, updateImageElement, addVideoElement, updateVideoElement, addCodeElement } = presentationsSlice.actions;
 export default presentationsSlice.reducer;

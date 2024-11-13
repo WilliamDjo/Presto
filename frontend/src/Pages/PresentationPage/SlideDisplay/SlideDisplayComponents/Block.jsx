@@ -7,6 +7,7 @@ import { getElementByIndex } from "../../../../HelperFiles/helper";
 import Prism from "prismjs";
 import TextModal from "../../PresentationComponents/Dialogs/TextModal";
 import ImageModal from "../../PresentationComponents/Dialogs/ImageModal";
+import VideoModal from "../../PresentationComponents/Dialogs/VideoModal";
 
 const Block = ({ parentHeight, parentWidth, index, interactable, slideNum }) => {
   const [showHandles, setShowHandles] = useState(false);
@@ -349,6 +350,25 @@ const Block = ({ parentHeight, parentWidth, index, interactable, slideNum }) => 
             height: element.attributes.elementSize.y,
             imageSource: element.attributes.imageSource,
             altText: element.attributes.altText,
+            index: element.index
+          }}
+          isEditing={true}
+        />
+      )}
+
+      {/* Add VideoModal for editing */}
+      {editModalOpen && element.type === 'video' && (
+        <VideoModal 
+          open={editModalOpen}
+          handleClose={handleCloseModal}
+          initialData={{
+            width: element.attributes.elementSize.x,
+            height: element.attributes.elementSize.y,
+            videoSource: element.attributes.videoSource,
+            altText: element.attributes.altText,
+            autoplay: element.attributes.autoplay,
+            muted: element.attributes.muted,
+            controls: element.attributes.controls,
             index: element.index
           }}
           isEditing={true}
