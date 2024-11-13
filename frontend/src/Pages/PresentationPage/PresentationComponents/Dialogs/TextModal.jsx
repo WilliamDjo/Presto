@@ -8,10 +8,15 @@ import {
   Button,
   Box,
   Slider,
-  InputAdornment
+  InputAdornment,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem
 } from '@mui/material';
 import { useDispatch } from 'react-redux';
 import { addTextElement, updateTextElement } from '../../../../State/presentationsSlice';
+import FONT_FAMILIES from '../../../../HelperFiles/fonts';
 
 export default function TextModal({ open, handleClose, initialData, isEditing = false }) {
   const dispatch = useDispatch();
@@ -21,7 +26,8 @@ export default function TextModal({ open, handleClose, initialData, isEditing = 
     height: 0.5,
     text: '',
     fontSize: 1,
-    color: '#000000'
+    color: '#000000',
+    fontFamily: 'Arial' // Default font
   });
   
   const handleChange = (field) => (event) => {
@@ -39,35 +45,6 @@ export default function TextModal({ open, handleClose, initialData, isEditing = 
   };
   
   const handleSubmit = () => {
-    // dispatch(addTextElement({
-    //   text: formData.text,
-    //   elementSize: {
-    //     x: formData.width,
-    //     y: formData.height
-    //   },
-    //   position: {
-    //     x: 0.1,  // 10% from left
-    //     y: 0.1   // 10% from top
-    //   },
-    //   fontSize: `${formData.fontSize}em`,
-    //   color: formData.color,
-    //   fontFamily: "Arial",
-    //   fontWeight: "normal",
-    //   fontStyle: "normal",
-    //   textDecoration: "none",
-    //   textAlign: "left"
-    // }));
-    // console.log('Text uploaded');
-    
-    // handleClose();
-    // // Reset form
-    // setFormData({
-    //   width: 0.5,
-    //   height: 0.5,
-    //   text: '',
-    //   fontSize: 1,
-    //   color: '#000000'
-    // });
     const elementData = {
       elementSize: {
         x: formData.width,
@@ -76,7 +53,7 @@ export default function TextModal({ open, handleClose, initialData, isEditing = 
       text: formData.text,
       fontSize: `${formData.fontSize}em`,
       color: formData.color,
-      fontFamily: "Arial",
+      fontFamily: formData.fontFamily || 'Arial',
       fontWeight: "normal",
       fontStyle: "normal",
       textDecoration: "none",
@@ -106,7 +83,8 @@ export default function TextModal({ open, handleClose, initialData, isEditing = 
         height: 0.5,
         text: '',
         fontSize: 1,
-        color: '#000000'
+        color: '#000000',
+        fontFamily: 'Arial'
       });
     }
   };
@@ -149,7 +127,35 @@ export default function TextModal({ open, handleClose, initialData, isEditing = 
             label="Text Content"
             value={formData.text}
             onChange={handleChange('text')}
+            sx={{
+              '& .MuiInputBase-input': {
+                fontFamily: formData.fontFamily // Apply selected font to input
+              }
+            }}
           />
+          {/* Font Family Selection */}
+          <FormControl fullWidth>
+            <InputLabel id="font-family-label">Font Family</InputLabel>
+            <Select
+              labelId="font-family-label"
+              value={formData.fontFamily}
+              onChange={handleChange('fontFamily')}
+              label="Font Family"
+            >
+              {FONT_FAMILIES.map((font) => (
+                <MenuItem 
+                  key={font.value} 
+                  value={font.value}
+                  sx={{ 
+                    fontFamily: font.value,
+                    fontSize: '16px' // Make the preview text a good size
+                  }}
+                >
+                  {font.label}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
 
           <TextField
             fullWidth

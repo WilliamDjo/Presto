@@ -330,7 +330,8 @@ const Block = ({ parentHeight, parentWidth, index, interactable, slideNum }) => 
             text: element.attributes.text,
             fontSize: parseFloat(element.attributes.fontSize),
             color: element.attributes.color || '#000000',
-            index: element.index
+            index: element.index,
+            fontFamily: element.attributes.fontFamily || 'Arial',
           }}
           isEditing={true}
         />
