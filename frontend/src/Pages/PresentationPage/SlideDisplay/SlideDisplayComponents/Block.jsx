@@ -12,7 +12,7 @@ const Block = ({ parentHeight, parentWidth, index, interactable, slideNum }) => 
   const rndRef = useRef(null);
   const dispatch = useDispatch();
   const presentations = useSelector(state => state.presentations.presentations);
-  const [setIsDragging] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
 
   const element = getElementByIndex(presentations, index, slideNum);
   // Safely access position and size with fallbacks
@@ -33,8 +33,10 @@ const Block = ({ parentHeight, parentWidth, index, interactable, slideNum }) => 
     console.log('Double click');
     if (element.type === 'text') {
       setEditModalOpen(true);
-      setShowHandles(false);
+    } else if (element.type === 'image') {
+      setEditModalOpen(true);
     }
+    setShowHandles(false);
   };
     
   const handleSingleClick = () => {

@@ -15,12 +15,12 @@ import {
 } from '@mui/material';
 import { useDispatch } from 'react-redux';
 import { CloudUpload } from '@mui/icons-material';
-import { addImageElement } from '../../../../State/presentationsSlice';
+import { addImageElement, updateImageElement } from '../../../../State/presentationsSlice';
 
-export default function ImageModal({ open, handleClose }) {
+export default function ImageModal({ open, handleClose, initialData, isEditing = false }) {
   const dispatch = useDispatch();
   
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState(initialData || {
     width: 0.5,
     height: 0.5,
     imageSource: '',
@@ -83,12 +83,28 @@ export default function ImageModal({ open, handleClose }) {
       reader.readAsDataURL(file);
     }
   }, []);
-  
+
+  const validateUrl = (url) => {
+    try {
+      new URL(url);
+      return true;
+    } catch (e) {
+      console.log('From ImageModal.jsx -> validateUrl()', e);
+      return false;
+    }
+  };
+
   const validateForm = () => {
     if (!formData.imageSource) {
       setError('Please provide an image source');
       return false;
     }
+
+    if (!validateUrl(formData.imageSource)) {
+      setError('Please enter a valid URL');
+      return false;
+    }
+
     if (!formData.altText.trim()) {
       setError('Please provide alt text for accessibility');
       return false;
@@ -99,30 +115,46 @@ export default function ImageModal({ open, handleClose }) {
   const handleSubmit = () => {
     if (!validateForm()) return;
   
-    dispatch(addImageElement({
+    const elementData = {
       elementSize: {
         x: formData.width,
         y: formData.height
       },
       imageSource: formData.imageSource,
       altText: formData.altText
-    }));
+    };
+
+    if (isEditing) {
+      dispatch(updateImageElement({
+        index: formData.index,
+        attributes: elementData
+      }));
+    } else {
+      dispatch(addImageElement({
+        ...elementData,
+        position: {
+          x: 0.1,
+          y: 0.1
+        }
+      }));
+    }
   
     handleClose();
-    // Reset form
-    setFormData({
-      width: 0.5,
-      height: 0.5,
-      imageSource: '',
-      altText: '',
-      uploadMethod: 'url'
-    });
+    // Only reset if not editing
+    if (!isEditing) {
+      setFormData({
+        width: 0.5,
+        height: 0.5,
+        imageSource: '',
+        altText: ''
+      });
+    }
     setPreviewUrl('');
     setError('');
   };
   return (
     <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
-      <DialogTitle>Add Image Element</DialogTitle>
+      <DialogTitle>{isEditing ? 'Edit Image Element' : 'Add Image Element'}</DialogTitle>
       <DialogContent>
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, mt: 2 }}>
           <Tabs
@@ -231,9 +263,9 @@ export default function ImageModal({ open, handleClose }) {
         <Button 
           onClick={handleSubmit}
           variant="contained"
-          disabled={!formData.imageSource || !formData.altText.trim()}
+          disabled={!formData.imageSource || !formData.altText.trim() || !!error}
         >
-          Add Image
+          {isEditing ? 'Save Changes' : 'Add Image'}
         </Button>
       </DialogActions>
     </Dialog>

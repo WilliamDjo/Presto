@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { fetchRequest, getSlideByPosition, getSlidePositionById } from '../HelperFiles/helper';
+import { fetchRequest, getSlidePositionById } from '../HelperFiles/helper';
 import { startSaving, finishSaving } from './saveStatusSlice';
 import { getSlides } from '../HelperFiles/helper';
 
@@ -134,6 +134,16 @@ const presentationsSlice = createSlice({
         (presentation) => presentation.id == location.pathname.split("/")[2]
       ).slides[parseInt(location.hash.split("/")[1]) - 1].contents = newSlideContents;
     },
+    updateImageElement: (state, action) => {
+      const slide = getSlides(state.presentations)[parseInt(location.hash.split("/")[1]) - 1];
+      const elementIndex = action.payload.index;
+      
+      // Update the element attributes while preserving its position
+      slide.contents[elementIndex].attributes = {
+        ...slide.contents[elementIndex].attributes,
+        ...action.payload.attributes
+      };
+    },
     addVideoElement: (state, action) => {
       const slide = getSlides(state.presentations)[parseInt(location.hash.split("/")[1]) - 1];
       
@@ -242,5 +252,5 @@ const presentationsSlice = createSlice({
   }
 });
 
-export const { addNewSlide, deleteSlide, updateSlidesBarOrder, setPresentations, createNewPresentation, addTextElement, updateElementPosition, updateElementSize, deletePresentation, updatePresentationTitle, updatePresentationThumbnail, updateTextElement, addImageElement, addVideoElement, addCodeElement } = presentationsSlice.actions;
+export const { addNewSlide, deleteSlide, updateSlidesBarOrder, setPresentations, createNewPresentation, addTextElement, updateElementPosition, updateElementSize, deletePresentation, updatePresentationTitle, updatePresentationThumbnail, updateTextElement, addImageElement, updateImageElement, addVideoElement, addCodeElement } = presentationsSlice.actions;
 export default presentationsSlice.reducer;
