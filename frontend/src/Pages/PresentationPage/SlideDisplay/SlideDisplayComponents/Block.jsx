@@ -8,6 +8,7 @@ import Prism from "prismjs";
 import TextModal from "../../PresentationComponents/Dialogs/TextModal";
 import ImageModal from "../../PresentationComponents/Dialogs/ImageModal";
 import VideoModal from "../../PresentationComponents/Dialogs/VideoModal";
+import CodeModal from "../../PresentationComponents/Dialogs/CodeModal";
 
 const Block = ({ parentHeight, parentWidth, index, interactable, slideNum }) => {
   const [showHandles, setShowHandles] = useState(false);
@@ -364,6 +365,22 @@ const Block = ({ parentHeight, parentWidth, index, interactable, slideNum }) => 
             autoplay: element.attributes.autoplay,
             muted: element.attributes.muted,
             controls: element.attributes.controls,
+            index: element.index
+          }}
+          isEditing={true}
+        />
+      )}
+
+      {/* Add CodeModal for editing */}
+      {editModalOpen && element.type === 'code' && (
+        <CodeModal 
+          open={editModalOpen}
+          handleClose={handleCloseModal}
+          initialData={{
+            width: element.attributes.elementSize.x,
+            height: element.attributes.elementSize.y,
+            textContent: element.attributes.textContent,
+            fontSize: element.attributes.fontSize,
             index: element.index
           }}
           isEditing={true}
