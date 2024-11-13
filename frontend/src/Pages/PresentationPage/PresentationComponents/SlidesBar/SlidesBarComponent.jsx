@@ -140,10 +140,11 @@ const SlidesBarComponent = ({ id, index }) => {
             justifyContent: "space-between", 
             width: "100%", 
             opacity: 0, 
-            transition: "opacity 0.3s ease"
+            transition: "opacity 0.3s ease",
+            zIndex: 999
           }}
         >
-          <IconButton id="settings-button" size="small" sx={{ color: theme.palette.primary.main }} onClick={(e) => e.stopPropagation()}>
+          <IconButton id="settings-button" size="small" sx={{ color: theme.palette.primary.main, zIndex: 1000 }} onClick={(e) => e.stopPropagation()}>
             <Settings />
           </IconButton>
           <IconButton
