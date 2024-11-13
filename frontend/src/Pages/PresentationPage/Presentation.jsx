@@ -1,6 +1,6 @@
 import { CssBaseline, Box } from '@mui/material';
 import { useEffect, useState } from 'react';
-// import { getPresentationTitle } from '../../HelperFiles/helper';
+import { getPresentationBackgroundSetting } from '../../HelperFiles/helper';
 import SlidesBar from './PresentationComponents/SlidesBar/SlidesBar';
 import DeleteDialog from './PresentationComponents/Dialogs/DeleteDialog';
 import SettingsDialog from './PresentationComponents/Dialogs/SettingsDialog';
@@ -14,12 +14,8 @@ import { useNavigate } from 'react-router-dom';
 const PresentationPage = () => {
   const presentations = useSelector((state) => state.presentations.presentations);
   const presentationId = parseInt(location.pathname.split("/")[2]);
-  const currentPresentation = presentations?.find(p => p.id == presentationId);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [showSettingsDialog, setShowSettingsDialog] = useState(false);
-  const [newTitle, setNewTitle] = useState(currentPresentation?.title || "");
-  const [previewThumbnail, setPreviewThumbnail] = useState(currentPresentation?.thumbnail || "");
-  const [error, setError] = useState('');
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -36,64 +32,9 @@ const PresentationPage = () => {
     navigate('/dashboard');
   };
 
-  const handleSave = () => {
-    // Validate inputs
-    if (!newTitle.trim()) {
-      setError("Please enter a title");
-      return;
-    }
-
-    // Update title
-    dispatch(updatePresentationTitle({
-      id: presentationId,
-      title: newTitle.trim()
-    }));
-    
-    // Update thumbnail only if changed
-    if (previewThumbnail !== currentPresentation?.thumbnail) {
-      dispatch(updatePresentationThumbnail({
-        id: presentationId,
-        thumbnail: previewThumbnail
-      }));
-    }
-    
-    setShowSettingsDialog(false);
-  };
-
-  const handleThumbnailChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      // Add file size check
-      if (file.size > 5000000) { // 5MB limit
-        setError("File is too large. Please choose an image under 5MB.");
-        return;
-      }
-
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setPreviewThumbnail(e.target.result);
-      };
-      reader.onerror = (e) => {
-        console.error("Error reading file:", e);
-        setError("Error reading file. Please try again.");
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
   // When the dialog opens, initialize with current values
   const handleSettingsClick = () => {
-    setError("");
-    setNewTitle(currentPresentation?.title || "");
-    setPreviewThumbnail(currentPresentation?.thumbnail || "");
     setShowSettingsDialog(true);
-  };
-
-  // Handle dialog close - reset states
-  const handleClose = () => {
-    setNewTitle(currentPresentation?.title || "");
-    setPreviewThumbnail(currentPresentation?.thumbnail || "");
-    setShowSettingsDialog(false);
   };
 
   return (
@@ -119,15 +60,9 @@ const PresentationPage = () => {
         onConfirm={handleDelete}
       />
 
-      <SettingsDialog 
-        error={error}
+      <SettingsDialog
         open={showSettingsDialog}
-        onClose={handleClose}
-        onSave={handleSave}
-        title={newTitle}
-        thumbnail={previewThumbnail}
-        onTitleChange={setNewTitle}
-        onThumbnailChange={handleThumbnailChange}
+        setShowSettingsDialog={setShowSettingsDialog}
       />
     </>
   );

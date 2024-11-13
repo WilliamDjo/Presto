@@ -55,8 +55,8 @@ const SlideDisplay = () => {
 
   return (
     <Box p={2} ref={slideContainerRef} sx={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100%", overflowY: 'auto', overflowX: 'auto' }}>
-      <Box ref={slideRef} height={slideHeight} width={slideWidth} border={1} sx={{ position: "relative", ...renderBackground(presentations)}}>
-        <Box sx={{height: "100%", width: "100%"}}>
+      <Box ref={slideRef} height={slideHeight} width={slideWidth} border={1} sx={{ position: "relative" }}>
+        <Box sx={{height: "100%", width: "100%", ...renderBackground(presentations)}}>
           {getSlideByPosition(presentations, parseInt(location.hash.split("/")[1]))?.contents.map((element) => (
             <Block interactable={true} parentHeight={slideHeight - 2} parentWidth={slideWidth - 2} key={element.index} index={element.index} slideNum={parseInt(location.hash.split("/")[1])} />
           ))}

@@ -7,16 +7,10 @@
             defaultBackground: {
                 type: "solid" || "gradient" || "image"
                 attributes: {
-                    color: string
-                }
-                ||
-                {
+                    color: string,
                     startingColor: string,
                     endingColor: string,
-                    angle: float
-                }
-                ||
-                {
+                    angle: float,
                     imageURL: string
                 }
             },

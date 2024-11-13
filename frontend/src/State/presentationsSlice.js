@@ -53,7 +53,11 @@ const presentationsSlice = createSlice({
         defaultBackground: {
           type: "solid",
           attributes: {
-            color: "#FFFFFF"
+            color: "#FFFFFF",
+            startingColor: "#FFFFFF",
+            endingColor: "#FFFFFF",
+            angle: 0,
+            imageURL: ""
           }
         },
         versionHistory: [],
@@ -72,6 +76,9 @@ const presentationsSlice = createSlice({
     deletePresentation: (state, action) => {
       const id = action.payload;
       state.presentations = state.presentations.filter(presentation => presentation.id != id);
+    },
+    setDefaultBackground: (state, action) => {
+      state.presentations.find((presentation) => presentation.id == location.pathname.split("/")[2]).defaultBackground = action.payload;
     },
     addNewSlide: (state) => {
       const slides = getSlides(state.presentations);
@@ -267,5 +274,5 @@ const presentationsSlice = createSlice({
   }
 });
 
-export const { addNewSlide, deleteSlide, updateSlidesBarOrder, setPresentations, createNewPresentation, addTextElement, updateElementPosition, updateElementSize, deletePresentation, updatePresentationTitle, updatePresentationThumbnail, addImageElement, addVideoElement, addCodeElement, deleteElement } = presentationsSlice.actions;
+export const { addNewSlide, deleteSlide, updateSlidesBarOrder, setPresentations, createNewPresentation, addTextElement, updateElementPosition, updateElementSize, deletePresentation, updatePresentationTitle, updatePresentationThumbnail, addImageElement, addVideoElement, addCodeElement, deleteElement, setDefaultBackground } = presentationsSlice.actions;
 export default presentationsSlice.reducer;

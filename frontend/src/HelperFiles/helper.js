@@ -191,10 +191,19 @@ export const renderBackground = (presentations) => {
       }
       break;
     case "gradient":
-      backgroundStyle = {backgroundColor: "white"};
+      backgroundStyle = {
+        background: `linear-gradient(${presentationBackground.attributes.angle}deg, ${presentationBackground.attributes.startingColor}, ${presentationBackground.attributes.endingColor})`,
+      };
       break;
     case "image":
-      backgroundStyle = {backgroundColor: "white"};
+      backgroundStyle = {
+        backgroundImage: `url(${presentationBackground.attributes.image})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+        height: '100%',
+        width: '100%',
+      };
       break;
     default:
       backgroundStyle = {backgroundColor: "white"};

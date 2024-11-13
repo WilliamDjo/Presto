@@ -59,8 +59,7 @@ const SlidesBarComponent = ({ id, index }) => {
       backgroundColor: "#f0f0f0",
       boxShadow: "0px 6px 12px rgba(0, 0, 0, 0.15)",
     },
-    border: index === parseInt(location.hash.split("/")[1]) ? "2px solid black" : "",
-    ...renderBackground(presentations)
+    border: index === parseInt(location.hash.split("/")[1]) ? "2px solid black" : ""
   };
 
   useEffect(() => {
@@ -126,42 +125,44 @@ const SlidesBarComponent = ({ id, index }) => {
           '&:hover .icon-buttons': { opacity: 1 }
         }}
       >
-        <Box 
-          className="icon-buttons" 
-          sx={{ 
-            position: "absolute",
-            top: 0, 
-            right: 0, 
-            display: "flex", 
-            justifyContent: "space-between", 
-            width: "100%", 
-            opacity: 0, 
-            transition: "opacity 0.3s ease",
-            zIndex: 999
-          }}
-        >
-          <IconButton id="settings-button" size="small" sx={{ color: theme.palette.primary.main, zIndex: 1000 }} onClick={(e) => e.stopPropagation()}>
-            <Settings />
-          </IconButton>
-          <IconButton
-            id="delete-button" 
-            size="small" 
-            sx={{ color: "red" }}
+        <Box sx={{...renderBackground(presentations), width: "100%", height: "100%"}}>
+          <Box 
+            className="icon-buttons" 
+            sx={{ 
+              position: "absolute",
+              top: 0, 
+              right: 0, 
+              display: "flex", 
+              justifyContent: "space-between", 
+              width: "100%", 
+              opacity: 0, 
+              transition: "opacity 0.3s ease",
+              zIndex: 999
+            }}
           >
-            <Delete />
-          </IconButton>
+            <IconButton id="settings-button" size="small" sx={{ color: theme.palette.primary.main, zIndex: 1000 }} onClick={(e) => e.stopPropagation()}>
+              <Settings />
+            </IconButton>
+            <IconButton
+              id="delete-button" 
+              size="small" 
+              sx={{ color: "red" }}
+            >
+              <Delete />
+            </IconButton>
+          </Box>
+          
+          {getSlideByPosition(presentations, index)?.contents.map((element) => (
+            <Block
+              interactable={false} 
+              parentHeight={parentDimensions.height} 
+              parentWidth={parentDimensions.width} 
+              key={element.index} 
+              index={element.index} 
+              slideNum={index}
+            />
+          ))}
         </Box>
-        
-        {getSlideByPosition(presentations, index)?.contents.map((element) => (
-          <Block
-            interactable={false} 
-            parentHeight={parentDimensions.height} 
-            parentWidth={parentDimensions.width} 
-            key={element.index} 
-            index={element.index} 
-            slideNum={index}
-          />
-        ))}
       </Box>
 
         <DeleteConfirmDialog
