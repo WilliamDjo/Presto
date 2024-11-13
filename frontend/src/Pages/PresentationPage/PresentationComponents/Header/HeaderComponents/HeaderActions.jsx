@@ -5,10 +5,12 @@ import PreviewButton from '../../../../../Components/PreviewButton';
 const HeaderActions = ({ onDeleteClick }) => (
   <Box sx={{ display: 'flex', gap: 1 }}>
     <Tooltip title="Preview Presentation">
-      <PreviewButton />
+      <Box>
+        <PreviewButton />
+      </Box>
     </Tooltip>
     <IconButton onClick={onDeleteClick}>
-      <Delete sx={{color: "white"}}/>
+      <Delete sx={{ color: "white" }} />
     </IconButton>
   </Box>
 );
