@@ -8,20 +8,26 @@ import {
   Button,
   Box,
   Slider,
-  InputAdornment
+  InputAdornment,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem
 } from '@mui/material';
 import { useDispatch } from 'react-redux';
-import { addTextElement } from '../../../../State/presentationsSlice';
+import { addTextElement, updateTextElement } from '../../../../State/presentationsSlice';
+import FONT_FAMILIES from '../../../../HelperFiles/fonts';
 
-export default function TextModal({ open, handleClose }) {
+export default function TextModal({ open, handleClose, initialData, isEditing = false }) {
   const dispatch = useDispatch();
   
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState(initialData || {
     width: 0.5,
     height: 0.5,
     text: '',
     fontSize: 1,
-    color: '#000000'
+    color: '#000000',
+    fontFamily: 'Arial' // Default font
   });
   
   const handleChange = (field) => (event) => {
@@ -39,40 +45,53 @@ export default function TextModal({ open, handleClose }) {
   };
   
   const handleSubmit = () => {
-    dispatch(addTextElement({
-      text: formData.text,
+    const elementData = {
       elementSize: {
         x: formData.width,
         y: formData.height
       },
-      position: {
-        x: 0.1,  // 10% from left
-        y: 0.1   // 10% from top
-      },
+      text: formData.text,
       fontSize: `${formData.fontSize}em`,
       color: formData.color,
-      fontFamily: "Arial",
+      fontFamily: formData.fontFamily || 'Arial',
       fontWeight: "normal",
       fontStyle: "normal",
       textDecoration: "none",
       textAlign: "left"
-    }));
-    console.log('Text uploaded');
-    
+    };
+
+    if (isEditing) {
+      dispatch(updateTextElement({
+        index: formData.index,
+        attributes: elementData
+      }));
+    } else {
+      dispatch(addTextElement({
+        ...elementData,
+        position: {
+          x: 0.1,
+          y: 0.1
+        }
+      }));
+    }
+
     handleClose();
-    // Reset form
-    setFormData({
-      width: 0.5,
-      height: 0.5,
-      text: '',
-      fontSize: 1,
-      color: '#000000'
-    });
+    // Only reset if not editing
+    if (!isEditing) {
+      setFormData({
+        width: 0.5,
+        height: 0.5,
+        text: '',
+        fontSize: 1,
+        color: '#000000',
+        fontFamily: 'Arial'
+      });
+    }
   };
 
   return (
     <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
-      <DialogTitle>Add Text Element</DialogTitle>
+      <DialogTitle>{isEditing ? 'Edit Text Element' : 'Add Text Element'}</DialogTitle>
       <DialogContent>
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, mt: 2 }}>
           <Box>
@@ -108,7 +127,35 @@ export default function TextModal({ open, handleClose }) {
             label="Text Content"
             value={formData.text}
             onChange={handleChange('text')}
+            sx={{
+              '& .MuiInputBase-input': {
+                fontFamily: formData.fontFamily // Apply selected font to input
+              }
+            }}
           />
+          {/* Font Family Selection */}
+          <FormControl fullWidth>
+            <InputLabel id="font-family-label">Font Family</InputLabel>
+            <Select
+              labelId="font-family-label"
+              value={formData.fontFamily}
+              onChange={handleChange('fontFamily')}
+              label="Font Family"
+            >
+              {FONT_FAMILIES.map((font) => (
+                <MenuItem 
+                  key={font.value} 
+                  value={font.value}
+                  sx={{ 
+                    fontFamily: font.value,
+                    fontSize: '16px' // Make the preview text a good size
+                  }}
+                >
+                  {font.label}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
 
           <TextField
             fullWidth
@@ -141,7 +188,7 @@ export default function TextModal({ open, handleClose }) {
           variant="contained"
           disabled={!formData.text.trim()}
         >
-          Add Text Element
+          {isEditing ? 'Save Changes' : 'Add Text Element'}
         </Button>
       </DialogActions>
     </Dialog>
