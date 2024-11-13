@@ -111,17 +111,17 @@ const SettingsDialog = ({
   
     // Reset non-relevant fields for each background type
     switch (updatedBackgroundSetting.type) {
-      case "solid":
-        updatedBackgroundSetting.attributes.color = backgroundSetting.attributes.color;
-        break;
-      case "gradient":
-        updatedBackgroundSetting.attributes.startingColor = backgroundSetting.attributes.startingColor;
-        updatedBackgroundSetting.attributes.endingColor = backgroundSetting.attributes.endingColor;
-        updatedBackgroundSetting.attributes.angle = backgroundSetting.attributes.angle;
-        break;
-      case "image":
-        updatedBackgroundSetting.attributes.image = backgroundSetting.attributes.image;
-        break;
+    case "solid":
+      updatedBackgroundSetting.attributes.color = backgroundSetting.attributes.color;
+      break;
+    case "gradient":
+      updatedBackgroundSetting.attributes.startingColor = backgroundSetting.attributes.startingColor;
+      updatedBackgroundSetting.attributes.endingColor = backgroundSetting.attributes.endingColor;
+      updatedBackgroundSetting.attributes.angle = backgroundSetting.attributes.angle;
+      break;
+    case "image":
+      updatedBackgroundSetting.attributes.image = backgroundSetting.attributes.image;
+      break;
     }
   
     // Dispatch with the updated backgroundSetting

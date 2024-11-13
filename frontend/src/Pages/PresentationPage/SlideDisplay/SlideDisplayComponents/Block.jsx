@@ -301,7 +301,7 @@ const Block = ({ parentHeight, parentWidth, index, interactable, slideNum, previ
         disableDragging={!interactable}
         onDoubleClick={handleDoubleClick}
         onContextMenu={handleRightClick}
-      onMouseDown={handleSingleClick}
+        onMouseDown={handleSingleClick}
         onDragStop={handleDragStop}
         onDrag={() => setIsDragging(true)}
         onResizeStop={handleResizeStop}
