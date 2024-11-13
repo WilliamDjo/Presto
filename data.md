@@ -95,7 +95,7 @@
                                     x: float,
                                     y: float
                                 },
-                                imageURL: string,
+                                imageSource: string,
                                 altText: string,
                             },
                             position: {
