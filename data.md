@@ -4,7 +4,22 @@
             id: int,
             title: string,
             thumbnail: null || string,
-            defaultBackground: string,
+            defaultBackground: {
+                type: "solid" || "gradient" || "image"
+                attributes: {
+                    color: string
+                }
+                ||
+                {
+                    startingColor: string,
+                    endingColor: string,
+                    angle: float
+                }
+                ||
+                {
+                    imageURL: string
+                }
+            },
             versionHistory: [
                 {
                     dateTime: dateTime,
@@ -20,7 +35,22 @@
                 {
                     slideNum: int,
                     id: int,
-                    background: null || string,
+                    background: null || {
+                        type: "solid" || "gradient" || "image"
+                        attributes: {
+                            color: string
+                        }
+                        ||
+                        {
+                            startingColor: string,
+                            endingColor: string,
+                            angle: float
+                        }
+                        ||
+                        {
+                            imageURL: string
+                        }
+                    },
                     contents: [
 
                     ]
@@ -28,7 +58,22 @@
                 {
                     slideNum: int,
                     id: int,
-                    background: null || string,
+                    background: null || {
+                        type: "solid" || "gradient" || "image"
+                        attributes: {
+                            color: string
+                        }
+                        ||
+                        {
+                            startingColor: string,
+                            endingColor: string,
+                            angle: float
+                        }
+                        ||
+                        {
+                            imageURL: string
+                        }
+                    },
                     contents: [
                         {
                             index: int,
