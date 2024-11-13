@@ -1,11 +1,21 @@
 import { useEffect, useRef, useState } from 'react';
-import { Box, IconButton, Typography } from '@mui/material';
-import { ArrowRight, ArrowLeft } from '@mui/icons-material';
+import { Box, IconButton, Typography, CssBaseline } from '@mui/material';
+import { ArrowRight, ArrowLeft, Fullscreen, FullscreenExit } from '@mui/icons-material';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { getSlides, getSlideByPosition } from '../../../HelperFiles/helper';
+import { getSlides, getSlideByPosition, renderBackground } from '../../../HelperFiles/helper';
 import Block from '../SlideDisplay/SlideDisplayComponents/Block';
+import { keyframes } from '@emotion/react';
 
+const fadeIn = keyframes`
+  from { opacity: 0; }
+  to { opacity: 1; }
+`;
+
+const fadeOut = keyframes`
+  from { opacity: 1; }
+  to { opacity: 0; }
+`;
 
 export default function PresentationPreview() {
   const presentations = useSelector((state) => state.presentations.presentations);
@@ -15,11 +25,16 @@ export default function PresentationPreview() {
   const [slideWidth, setSlideWidth] = useState(100);
   const [slideHeight, setSlideHeight] = useState(100);
   const currentSlide = parseInt(location.hash.split("/")[1]) || 1;
-  
+
+  const [showControls, setShowControls] = useState(true);
+  const [animation, setAnimation] = useState(fadeIn);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const inactivityTimeout = useRef(null);
+
   const updateDimensions = () => {
     if (slideRef.current) {
       const padding = parseFloat(window.getComputedStyle(slideContainerRef.current).padding);
-  
+
       if ((slideRef.current.offsetWidth === slideContainerRef.current.offsetWidth - padding * 2) && (slideRef.current.offsetHeight <= slideContainerRef.current.offsetHeight - padding * 2)) {
         setSlideHeight((slideContainerRef.current.offsetWidth - padding * 2) * (9/16));
         setSlideWidth(slideContainerRef.current.offsetWidth - padding * 2);
@@ -29,31 +44,40 @@ export default function PresentationPreview() {
       }
     }
   };
-  
+
   useEffect(() => {
     updateDimensions();
-  
-    window.addEventListener("resize", () => updateDimensions());
-    return () => window.removeEventListener("resize", () => updateDimensions());
+
+    window.addEventListener("resize", updateDimensions);
+    return () => window.removeEventListener("resize", updateDimensions);
   }, [slideHeight, slideWidth]);
-  
+
   useEffect(() => {
     const handleKeyboardInput = (e) => {
       if (e.key === 'ArrowLeft' && currentSlide > 1) {
         navigate(`#/${currentSlide - 1}`);
       }
-      if (e.key === 'ArrowRight' && currentSlide < getSlides(presentations)?.length) {
+      if ((e.key === 'ArrowRight' || e.code === 'Space') && currentSlide < getSlides(presentations)?.length) {
         navigate(`#/${currentSlide + 1}`);
       }
     };
-  
+    const handleClickInput = () => {
+      if (currentSlide < getSlides(presentations)?.length) {
+        navigate(`#/${currentSlide + 1}`);
+      }
+    };
+
     document.addEventListener("keydown", handleKeyboardInput);
-    return () => document.removeEventListener("keydown", handleKeyboardInput);
+    window.addEventListener("click", handleClickInput);
+    return () => {
+      document.removeEventListener("keydown", handleKeyboardInput);
+      window.removeEventListener("click", handleClickInput);
+    }
   }, [currentSlide, presentations, navigate]);
-  
+
   const renderTextContent = (element) => {
     if (!element.attributes) return null;
-      
+
     return (
       <Typography
         sx={{
@@ -71,12 +95,74 @@ export default function PresentationPreview() {
       </Typography>
     );
   };
+
+  // Hide controls and cursor after 3 seconds of inactivity
+  useEffect(() => {
+    const handleMouseMove = () => {
+      setAnimation(fadeIn); // Set fade-in animation
+      setShowControls(true); // Show controls
+      document.body.style.cursor = 'default'; // Show cursor on mouse move
+
+      clearTimeout(inactivityTimeout.current);
+      inactivityTimeout.current = setTimeout(() => {
+        setAnimation(fadeOut); // Set fade-out animation
+        setTimeout(() => {
+          setShowControls(false); // Hide controls after fade-out completes
+          document.body.style.cursor = 'none'; // Hide cursor when controls disappear
+        }, 490); // 500ms matches fade-out animation duration
+      }, 3000);
+    };
+
+    // Show controls and cursor initially
+    handleMouseMove();
+
+    document.addEventListener("mousemove", handleMouseMove);
+    return () => {
+      document.removeEventListener("mousemove", handleMouseMove);
+      clearTimeout(inactivityTimeout.current);
+    };
+  }, []);
+
+  // Toggle fullscreen mode
+  const toggleFullscreen = (e) => {
+    e.stopPropagation(); // Prevent the click event from bubbling up
   
+    if (!isFullscreen) {
+      if (slideContainerRef.current.requestFullscreen) {
+        slideContainerRef.current.requestFullscreen();
+      }
+      setIsFullscreen(true);
+    } else {
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+      }
+      setIsFullscreen(false);
+    }
+  };
+
+  // Listen for fullscreen change events to update fullscreen state and handle ESC
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      const isInFullscreen = !!document.fullscreenElement;
+      setIsFullscreen(isInFullscreen);
+
+      if (!isInFullscreen) {
+        setShowControls(true); // Show controls when exiting fullscreen
+      }
+    };
+
+    document.addEventListener("fullscreenchange", handleFullscreenChange);
+    return () => {
+      document.removeEventListener("fullscreenchange", handleFullscreenChange);
+    };
+  }, []);
+
   return (
     <>
-      <Box p={2} ref={slideContainerRef} sx={{ display: "flex", alignItems: "center", justifyContent: "center", width: '95vw', height: "95vh" , overflowY: 'hidden', overflowX: 'hidden' }}>
+      <CssBaseline />
+      <Box ref={slideContainerRef} sx={{ display: "flex", alignItems: "center", justifyContent: "center", width: '100vw', height: "100vh" , overflowY: 'hidden', overflowX: 'hidden', backgroundColor: "black" }}>
         <Box ref={slideRef} height={slideHeight} width={slideWidth} sx={{ position: "relative", backgroundColor: "white"}}>
-          <Box sx={{height: "100%", width: "100%"}}>
+          <Box sx={{height: "100%", width: "100%", ...renderBackground(presentations)}}>
             {getSlideByPosition(presentations, currentSlide)?.contents.map((element) => (
               <Block 
                 interactable={false} 
@@ -90,65 +176,47 @@ export default function PresentationPreview() {
                 {renderTextContent(element)}
               </Block>
             ))}
-  
-            <Typography m={1} sx={{
-              position: "absolute",
-              bottom: 0,
-              left: 0,
-              zIndex: 999,
-              backdropFilter: "blur(5px)",
-              backgroundColor: "rgba(0, 0, 0, 0.3)",
-              color: "white",
-              padding: "2px 5px",
-              borderRadius: "15px",
-              width: "25px",
-              height: "25px",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              boxShadow: "0px 0px 4px rgba(0, 0, 0, 0.5)",
-              textShadow: "1px 1px 2px rgba(0, 0, 0, 0.7)",
-              opacity: 0.5
-            }}>
-              {currentSlide}
-            </Typography>
+
+            {/* Navigation Controls */}
+            <Box
+              sx={{
+                position: 'absolute',
+                bottom: '20px',
+                left: '50%',
+                transform: 'translateX(-50%)',
+                display: showControls ? 'flex' : 'none',
+                alignItems: 'center',
+                gap: 2,
+                backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                padding: '8px 16px',
+                borderRadius: '20px',
+                zIndex: 1000,
+                animation: `${animation} 0.5s`, // Apply fade-in or fade-out animation
+              }}
+            >
+              <IconButton
+                disabled={currentSlide === 1}
+                onClick={() => navigate(`#/${currentSlide - 1}`)}
+                sx={{ color: 'white' }}
+              >
+                <ArrowLeft />
+              </IconButton>
+              <Box sx={{ color: 'white', fontSize: '1rem' }}>
+                {currentSlide} / {getSlides(presentations)?.length}
+              </Box>
+              <IconButton
+                disabled={currentSlide === getSlides(presentations)?.length}
+                onClick={() => navigate(`#/${currentSlide + 1}`)}
+                sx={{ color: 'white' }}
+              >
+                <ArrowRight />
+              </IconButton>
+              <IconButton onClick={toggleFullscreen} sx={{ color: 'white' }}>
+                {isFullscreen ? <FullscreenExit /> : <Fullscreen />}
+              </IconButton>
+            </Box>
           </Box>
         </Box>
-      </Box>
-  
-      {/* Navigation Controls */}
-      <Box
-        sx={{
-          position: 'absolute',
-          bottom: '20px',
-          left: '50%',
-          transform: 'translateX(-50%)',
-          display: 'flex',
-          alignItems: 'center',
-          gap: 2,
-          backgroundColor: 'rgba(0, 0, 0, 0.5)',
-          padding: '8px 16px',
-          borderRadius: '20px',
-          zIndex: 1000
-        }}
-      >
-        <IconButton
-          disabled={currentSlide === 1}
-          onClick={() => navigate(`#/${currentSlide - 1}`)}
-          sx={{ color: 'white' }}
-        >
-          <ArrowLeft />
-        </IconButton>
-        <Box sx={{ color: 'white', fontSize: '1rem' }}>
-          {currentSlide} / {getSlides(presentations)?.length}
-        </Box>
-        <IconButton
-          disabled={currentSlide === getSlides(presentations)?.length}
-          onClick={() => navigate(`#/${currentSlide + 1}`)}
-          sx={{ color: 'white' }}
-        >
-          <ArrowRight />
-        </IconButton>
       </Box>
     </>
   );

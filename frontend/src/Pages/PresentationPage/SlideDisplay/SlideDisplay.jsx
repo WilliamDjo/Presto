@@ -1,7 +1,7 @@
 import { Box, Typography } from "@mui/material";
 import Block from "./SlideDisplayComponents/Block";
 import { useRef, useState, useEffect } from "react";
-import { getPresentationBackgroundSetting, getSlideByPosition, getSlides, renderBackground } from "../../../HelperFiles/helper";
+import { getSlideByPosition, getSlides, renderBackground } from "../../../HelperFiles/helper";
 import { useSelector } from "react-redux";
 
 const SlideDisplay = () => {

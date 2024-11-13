@@ -1,6 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { fetchRequest, getSlidePositionById } from '../HelperFiles/helper';
-import { fetchRequest, getSlidePositionById } from '../HelperFiles/helper';
 import { startSaving, finishSaving } from './saveStatusSlice';
 import { getSlides } from '../HelperFiles/helper';
 
