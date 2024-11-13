@@ -15,22 +15,28 @@ import {
   Alert
 } from '@mui/material';
 import { useDispatch } from 'react-redux';
-import { addVideoElement } from '../../../../State/presentationsSlice';
+import { addVideoElement, updateVideoElement } from '../../../../State/presentationsSlice';
 
-export default function VideoModal({ open, handleClose }) {
+export default function VideoModal({ open, handleClose, initialData, isEditing = false }) {
   const dispatch = useDispatch();
   
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState(initialData || {
     width: 0.5,
     height: 0.5,
     videoSource: '',
     altText: '',
     autoplay: false,
     muted: true,
-    controls: true
   });
   
   const [error, setError] = useState('');
+
+  // Set preview video source if editing
+  useEffect(() => {
+    if (isEditing && initialData) {
+      setFormData(initialData);
+    }
+  }, [isEditing, initialData]);
   
   const getYouTubeVideoId = (url) => {
     try {
@@ -97,34 +103,39 @@ export default function VideoModal({ open, handleClose }) {
         muted: true
       }));
     }
-  }, [formData.autoplay]);
+  }, [formData.autoplay, formData.muted]);
 
   const convertToEmbedUrl = (id) => {
     return  `https://www.youtube.com/embed/${id}`;
   }
   
-  const handleSubmit = () => {
+  const validateForm = () => {
     if (!formData.videoSource) {
       setError('Please provide a video URL');
-      return;
+      return false;
     }
     
     const videoId = getYouTubeVideoId(formData.videoSource);
     if (!videoId) {
       setError('Please enter a valid YouTube URL');
-      return;
+      return false;
     }
     
-    if (!formData.altText.trim()) {
+    if (!formData.altText?.trim()) {
       setError('Please provide alt text for accessibility');
-      return;
+      return false;
     }
-  
+    return true;
+  };
+
+  const handleSubmit = () => {
+    if (!validateForm()) return;
+
     // Convert any YouTube URL to embed format
-    const embedUrl = convertToEmbedUrl(videoId);
-    console.log('embedUrl', embedUrl);
-    
-    dispatch(addVideoElement({
+    const videoId = getYouTubeVideoId(formData.videoSource);
+    const embedUrl = `https://www.youtube.com/embed/${videoId}`;
+
+    const elementData = {
       elementSize: {
         x: formData.width,
         y: formData.height
@@ -133,19 +144,34 @@ export default function VideoModal({ open, handleClose }) {
       altText: formData.altText,
       autoplay: formData.autoplay,
       muted: formData.muted,
-      controls: formData.controls
-    }));
-  
+    };
+
+    if (isEditing) {
+      dispatch(updateVideoElement({
+        index: formData.index,
+        attributes: elementData
+      }));
+    } else {
+      dispatch(addVideoElement({
+        ...elementData,
+        position: {
+          x: 0.1,
+          y: 0.1
+        }
+      }));
+    }
+
     handleClose();
-    setFormData({
-      width: 0.5,
-      height: 0.5,
-      videoSource: '',
-      altText: '',
-      autoplay: false,
-      muted: true,
-      controls: true
-    });
+    if (!isEditing) {
+      setFormData({
+        width: 0.5,
+        height: 0.5,
+        videoSource: '',
+        altText: '',
+        autoplay: false,
+        muted: true,
+      });
+    }
     setError('');
   };
 
@@ -153,7 +179,7 @@ export default function VideoModal({ open, handleClose }) {
 
   return (
     <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
-      <DialogTitle>Add Video Element</DialogTitle>
+      <DialogTitle>{isEditing ? 'Edit Video Element' : 'Add Video Element'}</DialogTitle>
       <DialogContent>
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, mt: 2 }}>
           <Alert severity="info" sx={{ mb: 2 }}>
@@ -184,22 +210,13 @@ export default function VideoModal({ open, handleClose }) {
                 overflow: 'hidden'
               }}
             >
-              {/* <Typography variant="subtitle2" sx={{ mb: 1 }}>Preview</Typography>
-              <iframe
-                src={convertToEmbedUrl(previewVideoId)}
-                style={{
-                  width: '100%',
-                  aspectRatio: '16/9',
-                  border: 'none'
-                }}
-                allowFullScreen
-              /> */}
               <Typography variant="subtitle2" color="success.main" sx={{ mb: 1 }}>
                 ✓ Valid YouTube URL
               </Typography>
               <Typography variant="body2" color="text.secondary">
                 Video ID: {previewVideoId}
               </Typography>
+              <Typography variant="subtitle2" sx={{ mb: 1 }}>Preview</Typography>
               <iframe
                 src={convertToEmbedUrl(previewVideoId)}
                 style={{
@@ -291,9 +308,9 @@ export default function VideoModal({ open, handleClose }) {
         <Button 
           onClick={handleSubmit}
           variant="contained"
-          disabled={!formData.videoSource || !formData.altText.trim()}
+          disabled={!formData.videoSource || !formData.altText?.trim() || !!error}
         >
-          Add Video
+          {isEditing ? 'Save Changes' : 'Add Video'}
         </Button>
       </DialogActions>
     </Dialog>

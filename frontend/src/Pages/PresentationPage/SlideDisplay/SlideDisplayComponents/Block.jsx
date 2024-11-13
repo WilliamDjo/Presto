@@ -36,6 +36,8 @@ const Block = ({ parentHeight, parentWidth, index, interactable, slideNum }) => 
       setEditModalOpen(true);
     } else if (element.type === 'image') {
       setEditModalOpen(true);
+    } else if (element.type === 'video') {
+      setEditModalOpen(true);
     }
     setShowHandles(false);
   };
