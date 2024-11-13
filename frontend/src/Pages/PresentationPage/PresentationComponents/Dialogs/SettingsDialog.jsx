@@ -8,24 +8,158 @@ import {
   Stack,
   TextField,
   Divider,
-  Alert
+  Alert,
+  InputLabel,
+  Select,
+  MenuItem,
+  Typography,
+  InputAdornment,
+  Card,
+  CardActionArea,
+  CardMedia
 } from '@mui/material';
 import ThumbnailUpload from '../../../../Components/ThumbnailUpload';
+import { getPresentationBackgroundSetting, getPresentationTitle } from '../../../../HelperFiles/helper';
+import { useSelector } from 'react-redux';
+import { useEffect, useState, useRef } from 'react';
+import { useDispatch } from 'react-redux';
+import { updatePresentationTitle, updatePresentationThumbnail, setDefaultBackground } from '../../../../State/presentationsSlice';
+import Image from '@mui/icons-material/Image';
 
 const SettingsDialog = ({ 
-  error,
-  open, 
-  onClose, 
-  onSave, 
-  title,
-  thumbnail,
-  onTitleChange,
-  onThumbnailChange 
+  open,
+  setShowSettingsDialog
 }) => {
+  const presentations = useSelector(state => state.presentations.presentations);
+  const presentationId = parseInt(location.pathname.split("/")[2]);
+  const currentPresentation = presentations?.find(p => p.id === presentationId);
+  
+  const [newTitle, setNewTitle] = useState("");
+  const [previewThumbnail, setPreviewThumbnail] = useState("");
+  const [backgroundSetting, setBackgroundSetting] = useState({ type: "solid", attributes: { color: "#FFFFFF" } });
+  const [showDefaultImage, setShowDefaultImage] = useState(true);
+  const [error, setError] = useState('');
+  const fileInputRef = useRef(null);
+
+  const dispatch = useDispatch();
+
+  // Set initial values when dialog opens
+  useEffect(() => {
+    if (open) {
+      setNewTitle(getPresentationTitle(presentations) || "");
+      setPreviewThumbnail(currentPresentation?.thumbnail || "");
+      const initialBackgroundSetting = getPresentationBackgroundSetting(presentations) || { type: "solid", attributes: { color: "#FFFFFF" } };
+      setBackgroundSetting(initialBackgroundSetting);
+      setShowDefaultImage(!initialBackgroundSetting.attributes.image);
+    }
+  }, [open, presentations, currentPresentation]);
+
+  const handleThumbnailChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      if (file.size > 5000000) { // 5MB limit
+        setError("File is too large. Please choose an image under 5MB.");
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setPreviewThumbnail(e.target.result);
+      };
+      reader.onerror = (e) => {
+        console.error("Error reading file:", e);
+        setError("Error reading file. Please try again.");
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleSave = () => {
+    if (!newTitle.trim()) {
+      setError("Please enter a title");
+      return;
+    }
+  
+    dispatch(updatePresentationTitle({
+      id: presentationId,
+      title: newTitle.trim()
+    }));
+  
+    if (previewThumbnail !== currentPresentation?.thumbnail) {
+      dispatch(updatePresentationThumbnail({
+        id: presentationId,
+        thumbnail: previewThumbnail
+      }));
+    }
+  
+    // Clone backgroundSetting to modify it safely
+    const updatedBackgroundSetting = JSON.parse(JSON.stringify(backgroundSetting));
+
+    const defaultBackgroundAttributesSettings = {
+      color: "#FFFFFF",
+      startingColor: "#FFFFFF",
+      endingColor: "#FFFFFF",
+      angle: 0,
+      image: ""
+    }
+    updatedBackgroundSetting.attributes = defaultBackgroundAttributesSettings;
+  
+    // Reset non-relevant fields for each background type
+    switch (updatedBackgroundSetting.type) {
+      case "solid":
+        updatedBackgroundSetting.attributes.color = backgroundSetting.attributes.color;
+        break;
+      case "gradient":
+        updatedBackgroundSetting.attributes.startingColor = backgroundSetting.attributes.startingColor;
+        updatedBackgroundSetting.attributes.endingColor = backgroundSetting.attributes.endingColor;
+        updatedBackgroundSetting.attributes.angle = backgroundSetting.attributes.angle;
+        break;
+      case "image":
+        updatedBackgroundSetting.attributes.image = backgroundSetting.attributes.image;
+        break;
+    }
+  
+    // Dispatch with the updated backgroundSetting
+    dispatch(setDefaultBackground(updatedBackgroundSetting));
+    
+    setShowSettingsDialog(false);
+  };
+
+  const handleBackgroundChange = (field, nestedField) => (event) => {
+    setBackgroundSetting((prev) => ({
+      ...prev,
+      [field]: nestedField 
+        ? { ...prev[field], [nestedField]: event.target.value }
+        : event.target.value,
+    }));
+  };
+
+  const handleCardClick = () => {
+    fileInputRef.current.click();
+  };
+
+  const onBackgroundImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setBackgroundSetting(prev => ({
+          ...prev,
+          attributes: { ...prev.attributes, image: e.target.result }
+        }));
+        setShowDefaultImage(false);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   return (
     <Dialog 
-      open={open} 
-      onClose={onClose}
+      open={open}
+      onClose={() => {
+        setShowSettingsDialog(false);
+        setError('');
+      }}
       maxWidth="sm"
       fullWidth
     >
@@ -37,29 +171,54 @@ const SettingsDialog = ({
             autoFocus
             label="Title"
             fullWidth
-            value={title}
-            onChange={(e) => onTitleChange(e.target.value)}
+            value={newTitle}
+            onChange={(e) => setNewTitle(e.target.value)}
             variant="outlined"
           />
           
           <Divider />
           
           <ThumbnailUpload 
-            thumbnail={thumbnail}
-            onThumbnailChange={onThumbnailChange}
+            thumbnail={previewThumbnail}
+            onThumbnailChange={handleThumbnailChange}
           />
 
           <Divider />
 
-          <Alert>Background</Alert>
-        </Stack>
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={onClose}>Cancel</Button>
-        <Button onClick={onSave} variant="contained">Save</Button>
-      </DialogActions>
-    </Dialog>
-  );
-};
+          <Stack spacing={1}>
+            <InputLabel>Default Background</InputLabel>
+            <Select
+              value={backgroundSetting.type}
+              onChange={handleBackgroundChange('type')}
+              fullWidth
+              variant="outlined"
+            >
+              <MenuItem value="solid">Solid</MenuItem>
+              <MenuItem value="gradient">Gradient</MenuItem>
+              <MenuItem value="image">Image</MenuItem>
+            </Select>
 
-export default SettingsDialog;
+            {backgroundSetting.type === "solid" && (
+              <TextField
+                fullWidth
+                label="Background Colour"
+                type="color"
+                value={backgroundSetting.attributes.color || "#FFFFFF"}
+                onChange={handleBackgroundChange('attributes', 'color')}
+              />
+            )}
+            {backgroundSetting.type === "gradient" && 
+              <>
+                <TextField
+                  fullWidth
+                  label="Starting Colour"
+                  type="color"
+                  value={backgroundSetting.attributes.startingColor || "#FFFFFF"}
+                  onChange={handleBackgroundChange('attributes', 'startingColor')}
+                />
+                <TextField
+                  fullWidth
+                  label="Ending Colour"
+                  type="color"
+                  value={backgroundSetting.attributes.endingColor || "#FFFFFF"}
+                  onChange={handleBackgroundChange('attributes', 'endingColor')}
