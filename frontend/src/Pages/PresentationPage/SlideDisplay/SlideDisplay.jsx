@@ -58,7 +58,9 @@ const SlideDisplay = () => {
       <Box ref={slideRef} height={slideHeight} width={slideWidth} border={1} sx={{ position: "relative" }}>
         <Box sx={{height: "100%", width: "100%", ...renderBackground(presentations)}}>
           {getSlideByPosition(presentations, parseInt(location.hash.split("/")[1]))?.contents.map((element) => (
-            <Block interactable={true} parentHeight={slideHeight - 2} parentWidth={slideWidth - 2} key={element.index} index={element.index} slideNum={parseInt(location.hash.split("/")[1])} />
+            <Block interactable={true} parentHeight={slideHeight - 2} parentWidth={slideWidth - 2} key={element.index} index={element.index} slideNum={parseInt(location.hash.split("/")[1])} >
+              {renderTextContent(element)}
+            </Block>
           ))}
 
           <Typography m={1} sx={{

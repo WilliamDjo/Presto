@@ -5,8 +5,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { updateElementPosition, updateElementSize, deleteElement } from "../../../../State/presentationsSlice";
 import { getElementByIndex } from "../../../../HelperFiles/helper";
 import Prism from "prismjs";
+import TextModal from "../../PresentationComponents/Dialogs/TextModal";
+import ImageModal from "../../PresentationComponents/Dialogs/ImageModal";
+import VideoModal from "../../PresentationComponents/Dialogs/VideoModal";
+import CodeModal from "../../PresentationComponents/Dialogs/CodeModal";
 
-const Block = ({ parentHeight, parentWidth, index, interactable, slideNum }) => {
+const Block = ({ parentHeight, parentWidth, index, interactable, slideNum, preview = false }) => {
   const [showHandles, setShowHandles] = useState(false);
   const rndRef = useRef(null);
   const dispatch = useDispatch();
@@ -22,11 +26,17 @@ const Block = ({ parentHeight, parentWidth, index, interactable, slideNum }) => 
   const width = (size.x || 0.5) * parentWidth;
   const height = (size.y || 0.5) * parentHeight;
 
+  // Add state for modal
+  const [editModalOpen, setEditModalOpen] = useState(false);
+
   const handleDoubleClick = () => {
     if (!interactable) {
       return;
     }
     console.log('Double click');
+    
+    setEditModalOpen(true);
+    setShowHandles(false);
   };
     
   const handleSingleClick = () => {
@@ -44,6 +54,10 @@ const Block = ({ parentHeight, parentWidth, index, interactable, slideNum }) => 
 
     e.preventDefault();
     dispatch(deleteElement(index));
+  };
+
+  const handleCloseModal = () => {
+    setEditModalOpen(false);
   };
 
   useEffect(() => {
@@ -266,33 +280,34 @@ const Block = ({ parentHeight, parentWidth, index, interactable, slideNum }) => 
   };
 
   return (
-    <Rnd
-      ref={rndRef}
-      position={{ x, y }}
-      size={{ width, height }}
-      minWidth="1%"
-      minHeight="1%"
-      bounds="parent"
-      enableResizing={showHandles}
-      disableDragging={!interactable}
-      onDoubleClick={handleDoubleClick}
-      onContextMenu={handleRightClick}
+    <>
+      <Rnd
+        ref={rndRef}
+        position={{ x, y }}
+        size={{ width, height }}
+        minWidth="1%"
+        minHeight="1%"
+        bounds="parent"
+        enableResizing={showHandles}
+        disableDragging={!interactable}
+        onDoubleClick={handleDoubleClick}
+        onContextMenu={handleRightClick}
       onMouseDown={handleSingleClick}
-      onDragStop={handleDragStop}
-      onDrag={() => setIsDragging(true)}
-      onResizeStop={handleResizeStop}
-      style={{
-        touchAction: "none",
-        backgroundColor: "transparent",
-        border: showHandles ? "1px #4A90E2 solid" : "1px #8f8f8f solid",
-        zIndex: index,
-        cursor: !interactable ? "inherit" : isDragging ? "move" : "auto"
-      }}
-    >
-      <Box style={{ width: "100%", height: "100%", position: "absolute" }}>
-        {renderContent()}
-
-        {showHandles &&
+        onDragStop={handleDragStop}
+        onDrag={() => setIsDragging(true)}
+        onResizeStop={handleResizeStop}
+        style={{
+          touchAction: "none",
+          backgroundColor: "transparent",
+          border: preview ? 'none' : (showHandles ? "1px #4A90E2 solid" : "1px #8f8f8f solid"),
+          zIndex: index,
+          cursor: !interactable ? "inherit" : isDragging ? "move" : "auto",
+          
+        }}
+      >
+        <Box style={{ width: "100%", height: "100%", position: "absolute" }}>
+          {renderContent()}
+          {showHandles &&
           ["top-left", "top-right", "bottom-left", "bottom-right"].map(
             (corner) => (
               <Box
@@ -313,8 +328,77 @@ const Block = ({ parentHeight, parentWidth, index, interactable, slideNum }) => 
               />
             )
           )}
-      </Box>
-    </Rnd>
+        </Box>
+      </Rnd>
+      {/* Add TextModal for editing */}
+      {editModalOpen && element.type === 'text' && (
+        <TextModal 
+          open={editModalOpen}
+          handleClose={handleCloseModal}
+          initialData={{
+            width: element.attributes.elementSize.x,
+            height: element.attributes.elementSize.y,
+            text: element.attributes.text,
+            fontSize: parseFloat(element.attributes.fontSize),
+            color: element.attributes.color || '#000000',
+            index: element.index,
+            fontFamily: element.attributes.fontFamily || 'Arial',
+          }}
+          isEditing={true}
+        />
+      )}
+
+      {/* Add ImageModal for editing */}
+      {editModalOpen && element.type === 'image' && (
+        <ImageModal 
+          open={editModalOpen}
+          handleClose={handleCloseModal}
+          initialData={{
+            width: element.attributes.elementSize.x,
+            height: element.attributes.elementSize.y,
+            imageSource: element.attributes.imageSource,
+            altText: element.attributes.altText,
+            index: element.index
+          }}
+          isEditing={true}
+        />
+      )}
+
+      {/* Add VideoModal for editing */}
+      {editModalOpen && element.type === 'video' && (
+        <VideoModal 
+          open={editModalOpen}
+          handleClose={handleCloseModal}
+          initialData={{
+            width: element.attributes.elementSize.x,
+            height: element.attributes.elementSize.y,
+            videoSource: element.attributes.videoSource,
+            altText: element.attributes.altText,
+            autoplay: element.attributes.autoplay,
+            muted: element.attributes.muted,
+            controls: element.attributes.controls,
+            index: element.index
+          }}
+          isEditing={true}
+        />
+      )}
+
+      {/* Add CodeModal for editing */}
+      {editModalOpen && element.type === 'code' && (
+        <CodeModal 
+          open={editModalOpen}
+          handleClose={handleCloseModal}
+          initialData={{
+            width: element.attributes.elementSize.x,
+            height: element.attributes.elementSize.y,
+            textContent: element.attributes.textContent,
+            fontSize: element.attributes.fontSize,
+            index: element.index
+          }}
+          isEditing={true}
+        />
+      )}
+    </>
   );
 };
 
