@@ -11,12 +11,12 @@ import {
   InputAdornment
 } from '@mui/material';
 import { useDispatch } from 'react-redux';
-import { addTextElement } from '../../../../State/presentationsSlice';
+import { addTextElement, updateTextElement } from '../../../../State/presentationsSlice';
 
-export default function TextModal({ open, handleClose }) {
+export default function TextModal({ open, handleClose, initialData, isEditing = false }) {
   const dispatch = useDispatch();
   
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState(initialData || {
     width: 0.5,
     height: 0.5,
     text: '',
@@ -39,16 +39,41 @@ export default function TextModal({ open, handleClose }) {
   };
   
   const handleSubmit = () => {
-    dispatch(addTextElement({
-      text: formData.text,
+    // dispatch(addTextElement({
+    //   text: formData.text,
+    //   elementSize: {
+    //     x: formData.width,
+    //     y: formData.height
+    //   },
+    //   position: {
+    //     x: 0.1,  // 10% from left
+    //     y: 0.1   // 10% from top
+    //   },
+    //   fontSize: `${formData.fontSize}em`,
+    //   color: formData.color,
+    //   fontFamily: "Arial",
+    //   fontWeight: "normal",
+    //   fontStyle: "normal",
+    //   textDecoration: "none",
+    //   textAlign: "left"
+    // }));
+    // console.log('Text uploaded');
+    
+    // handleClose();
+    // // Reset form
+    // setFormData({
+    //   width: 0.5,
+    //   height: 0.5,
+    //   text: '',
+    //   fontSize: 1,
+    //   color: '#000000'
+    // });
+    const elementData = {
       elementSize: {
         x: formData.width,
         y: formData.height
       },
-      position: {
-        x: 0.1,  // 10% from left
-        y: 0.1   // 10% from top
-      },
+      text: formData.text,
       fontSize: `${formData.fontSize}em`,
       color: formData.color,
       fontFamily: "Arial",
@@ -56,23 +81,39 @@ export default function TextModal({ open, handleClose }) {
       fontStyle: "normal",
       textDecoration: "none",
       textAlign: "left"
-    }));
-    console.log('Text uploaded');
-    
+    };
+
+    if (isEditing) {
+      dispatch(updateTextElement({
+        index: formData.index,
+        attributes: elementData
+      }));
+    } else {
+      dispatch(addTextElement({
+        ...elementData,
+        position: {
+          x: 0.1,
+          y: 0.1
+        }
+      }));
+    }
+
     handleClose();
-    // Reset form
-    setFormData({
-      width: 0.5,
-      height: 0.5,
-      text: '',
-      fontSize: 1,
-      color: '#000000'
-    });
+    // Only reset if not editing
+    if (!isEditing) {
+      setFormData({
+        width: 0.5,
+        height: 0.5,
+        text: '',
+        fontSize: 1,
+        color: '#000000'
+      });
+    }
   };
 
   return (
     <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
-      <DialogTitle>Add Text Element</DialogTitle>
+      <DialogTitle>{isEditing ? 'Edit Text Element' : 'Add Text Element'}</DialogTitle>
       <DialogContent>
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, mt: 2 }}>
           <Box>
@@ -141,7 +182,7 @@ export default function TextModal({ open, handleClose }) {
           variant="contained"
           disabled={!formData.text.trim()}
         >
-          Add Text Element
+          {isEditing ? 'Save Changes' : 'Add Text Element'}
         </Button>
       </DialogActions>
     </Dialog>

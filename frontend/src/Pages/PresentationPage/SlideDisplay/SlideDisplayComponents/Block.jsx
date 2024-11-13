@@ -5,13 +5,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { updateElementPosition, updateElementSize } from "../../../../State/presentationsSlice";
 import { getElementByIndex } from "../../../../HelperFiles/helper";
 import Prism from "prismjs";
+import TextModal from "../../PresentationComponents/Dialogs/TextModal";
 
 const Block = ({ parentHeight, parentWidth, index, interactable, slideNum }) => {
   const [showHandles, setShowHandles] = useState(false);
   const rndRef = useRef(null);
   const dispatch = useDispatch();
   const presentations = useSelector(state => state.presentations.presentations);
-  const [isDragging, setIsDragging] = useState(false);
+  const [setIsDragging] = useState(false);
 
   const element = getElementByIndex(presentations, index, slideNum);
   // Safely access position and size with fallbacks
@@ -22,11 +23,18 @@ const Block = ({ parentHeight, parentWidth, index, interactable, slideNum }) => 
   const width = (size.x || 0.5) * parentWidth;
   const height = (size.y || 0.5) * parentHeight;
 
+  // Add state for modal
+  const [editModalOpen, setEditModalOpen] = useState(false);
+
   const handleDoubleClick = () => {
     if (!interactable) {
       return;
     }
     console.log('Double click');
+    if (element.type === 'text') {
+      setEditModalOpen(true);
+      setShowHandles(false);
+    }
   };
     
   const handleSingleClick = () => {
@@ -35,6 +43,10 @@ const Block = ({ parentHeight, parentWidth, index, interactable, slideNum }) => 
     }
 
     setShowHandles(true);
+  };
+
+  const handleCloseModal = () => {
+    setEditModalOpen(false);
   };
 
   useEffect(() => {
@@ -257,32 +269,32 @@ const Block = ({ parentHeight, parentWidth, index, interactable, slideNum }) => 
   };
 
   return (
-    <Rnd
-      ref={rndRef}
-      position={{ x, y }}
-      size={{ width, height }}
-      minWidth="1%"
-      minHeight="1%"
-      bounds="parent"
-      enableResizing={showHandles}
-      disableDragging={!interactable}
-      onDoubleClick={handleDoubleClick}
-      onMouseDown={handleSingleClick}
-      onDragStop={handleDragStop}
-      onDrag={() => setIsDragging(true)}
-      onResizeStop={handleResizeStop}
-      style={{
-        touchAction: "none",
-        backgroundColor: "transparent",
-        border: showHandles ? "1px #4A90E2 solid" : "1px #8f8f8f solid",
-        zIndex: index,
-        cursor: !interactable ? "inherit" : isDragging ? "move" : "auto"
-      }}
-    >
-      <Box style={{ width: "100%", height: "100%", position: "absolute" }}>
-        {renderContent()}
-
-        {showHandles &&
+    <>
+      <Rnd
+        ref={rndRef}
+        position={{ x, y }}
+        size={{ width, height }}
+        minWidth="1%"
+        minHeight="1%"
+        bounds="parent"
+        enableResizing={showHandles}
+        disableDragging={!interactable}
+        onDoubleClick={handleDoubleClick}
+        onMouseDown={handleSingleClick}
+        onDragStop={handleDragStop}
+        onDrag={() => setIsDragging(true)}
+        onResizeStop={handleResizeStop}
+        style={{
+          touchAction: "none",
+          backgroundColor: "transparent",
+          border: showHandles ? "1px #4A90E2 solid" : "1px #8f8f8f solid",
+          zIndex: index,
+          cursor: !interactable ? "inherit" : isDragging ? "move" : "auto"
+        }}
+      >
+        <Box style={{ width: "100%", height: "100%", position: "absolute" }}>
+          {renderContent()}
+          {showHandles &&
           ["top-left", "top-right", "bottom-left", "bottom-right"].map(
             (corner) => (
               <Box
@@ -303,8 +315,25 @@ const Block = ({ parentHeight, parentWidth, index, interactable, slideNum }) => 
               />
             )
           )}
-      </Box>
-    </Rnd>
+        </Box>
+      </Rnd>
+      {/* Add TextModal for editing */}
+      {editModalOpen && element.type === 'text' && (
+        <TextModal 
+          open={editModalOpen}
+          handleClose={handleCloseModal}
+          initialData={{
+            width: element.attributes.elementSize.x,
+            height: element.attributes.elementSize.y,
+            text: element.attributes.text,
+            fontSize: parseFloat(element.attributes.fontSize),
+            color: element.attributes.color || '#000000',
+            index: element.index
+          }}
+          isEditing={true}
+        />
+      )}
+    </>
   );
 };
 
