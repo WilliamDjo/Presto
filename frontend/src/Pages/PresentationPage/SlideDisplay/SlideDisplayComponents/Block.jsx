@@ -10,7 +10,7 @@ import ImageModal from "../../PresentationComponents/Dialogs/ImageModal";
 import VideoModal from "../../PresentationComponents/Dialogs/VideoModal";
 import CodeModal from "../../PresentationComponents/Dialogs/CodeModal";
 
-const Block = ({ parentHeight, parentWidth, index, interactable, slideNum }) => {
+const Block = ({ parentHeight, parentWidth, index, interactable, slideNum, preview = false }) => {
   const [showHandles, setShowHandles] = useState(false);
   const rndRef = useRef(null);
   const dispatch = useDispatch();
@@ -289,9 +289,10 @@ const Block = ({ parentHeight, parentWidth, index, interactable, slideNum }) => 
         style={{
           touchAction: "none",
           backgroundColor: "transparent",
-          border: showHandles ? "1px #4A90E2 solid" : "1px #8f8f8f solid",
+          border: preview ? 'none' : (showHandles ? "1px #4A90E2 solid" : "1px #8f8f8f solid"),
           zIndex: index,
-          cursor: !interactable ? "inherit" : isDragging ? "move" : "auto"
+          cursor: !interactable ? "inherit" : isDragging ? "move" : "auto",
+          
         }}
       >
         <Box style={{ width: "100%", height: "100%", position: "absolute" }}>

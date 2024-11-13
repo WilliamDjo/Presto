@@ -7,10 +7,10 @@ export default function PreviewButton() {
 //   const presentations = useSelector((state) => state.presentations.presentations);
   
   const handlePreview = () => {
-    // const currentPath = location.pathname;
-    // const currentSlide = location.hash.split("/")[1] || "1";
-    // const previewUrl = `${currentPath}/preview#/${currentSlide}`;
-    // window.open(previewUrl, '_blank');
+    const presentationId = location.pathname.split("/")[2];
+    const currentSlide = location.hash.split("/")[1] || "1";
+    const previewUrl = `/presentation/${presentationId}/preview#/${currentSlide}`;
+    window.open(previewUrl, '_blank');
     console.log("Previewing presentation");
     
   };
