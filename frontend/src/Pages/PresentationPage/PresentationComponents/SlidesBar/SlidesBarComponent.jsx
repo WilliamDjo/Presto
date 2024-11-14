@@ -1,12 +1,12 @@
 import { useEffect, useState, useRef } from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { Box, IconButton } from '@mui/material';
-import { Settings, Delete } from '@mui/icons-material';
+import { Box, IconButton, Button, Dialog, DialogContent, DialogTitle, DialogActions, Stack, InputLabel, Select, MenuItem, TextField, Card, CardActionArea, CardMedia, Typography, Divider } from '@mui/material';
+import { Settings, Delete, Image } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from '@mui/material/styles';
 import { useDispatch, useSelector } from 'react-redux';
-import { deleteSlide, deletePresentation } from '../../../../State/presentationsSlice';
+import { deleteSlide, deletePresentation, updateSlideBackground, updateSlideTranistion } from '../../../../State/presentationsSlice';
 import { getSlides, getSlideByPosition, renderBackground } from '../../../../HelperFiles/helper';
 import Block from '../../SlideDisplay/SlideDisplayComponents/Block';
 import { DeleteConfirmDialog } from '../Dialogs/DeleteConfirmDialog';
@@ -23,6 +23,81 @@ const SlidesBarComponent = ({ id, index }) => {
   const parentRef = useRef(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const isLastSlide = getSlides(presentations).length === 1;
+  const [openComponentSettings, setOpenComponentSettings] = useState(false);
+  const [backgroundSetting, setBackgroundSetting] = useState({ type: "solid", attributes: { color: "#FFFFFF" } });
+  const [slideTransition, setSlideTransition] = useState("none");
+  const [showDefaultImage, setShowDefaultImage] = useState(true);
+  const fileInputRef = useRef(null);
+
+  useEffect(() => {
+    if (openComponentSettings) {
+      const initialBackgroundSetting = getSlideByPosition(presentations, index).background;
+      setBackgroundSetting(initialBackgroundSetting);
+      setShowDefaultImage(!initialBackgroundSetting.attributes.image);
+    }
+  }, [openComponentSettings, presentations]);
+  
+  const handleSave = () => {
+    // Clone backgroundSetting to modify it safely
+    const updatedBackgroundSetting = JSON.parse(JSON.stringify(backgroundSetting));
+
+    const defaultBackgroundAttributesSettings = {
+      color: "#FFFFFF",
+      startingColor: "#FFFFFF",
+      endingColor: "#FFFFFF",
+      angle: 0,
+      image: ""
+    }
+    updatedBackgroundSetting.attributes = defaultBackgroundAttributesSettings;
+  
+    // Reset non-relevant fields for each background type
+    switch (updatedBackgroundSetting.type) {
+      case "solid":
+        updatedBackgroundSetting.attributes.color = backgroundSetting.attributes.color;
+        break;
+      case "gradient":
+        updatedBackgroundSetting.attributes.startingColor = backgroundSetting.attributes.startingColor;
+        updatedBackgroundSetting.attributes.endingColor = backgroundSetting.attributes.endingColor;
+        updatedBackgroundSetting.attributes.angle = backgroundSetting.attributes.angle;
+        break;
+      case "image":
+        updatedBackgroundSetting.attributes.image = backgroundSetting.attributes.image;
+        break;
+    }
+  
+    dispatch(updateSlideBackground({updatedBackgroundSetting, index}));
+    dispatch(updateSlideTranistion({slideTransition, index}));
+    
+    setOpenComponentSettings(false);
+  };
+
+  const handleBackgroundChange = (field, nestedField) => (event) => {
+    setBackgroundSetting((prev) => ({
+      ...prev,
+      [field]: nestedField 
+        ? { ...prev[field], [nestedField]: event.target.value }
+        : event.target.value,
+    }));
+  };
+
+  const onBackgroundImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setBackgroundSetting(prev => ({
+          ...prev,
+          attributes: { ...prev.attributes, image: e.target.result }
+        }));
+        setShowDefaultImage(false);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleCardClick = () => {
+    fileInputRef.current.click();
+  };
 
   const handleDeletePresentation = () => {
     dispatch(deletePresentation(parseInt(location.pathname.split("/")[2])));
@@ -87,7 +162,7 @@ const SlidesBarComponent = ({ id, index }) => {
       if (e.target.closest('#delete-button')) {
         handleDeleteClick();
       } else if (e.target.closest('#settings-button')) {
-        console.log('Settings button clicked');
+        setOpenComponentSettings(true);
       } else {
         navigate(`${location.pathname}#/${index}`);
       }
@@ -125,7 +200,7 @@ const SlidesBarComponent = ({ id, index }) => {
           '&:hover .icon-buttons': { opacity: 1 }
         }}
       >
-        <Box sx={{...renderBackground(presentations), width: "100%", height: "100%"}}>
+        <Box sx={{...renderBackground(presentations, index), width: "100%", height: "100%"}}>
           <Box 
             className="icon-buttons" 
             sx={{ 
@@ -172,8 +247,46 @@ const SlidesBarComponent = ({ id, index }) => {
         slideIndex={index}
         isLastSlide={isLastSlide}
       />
-    </>
-  );
-};
 
-export default SlidesBarComponent;
+      <Dialog
+        open={openComponentSettings}
+        onClose={() => setOpenComponentSettings(false)}
+        onClick={(e) => e.stopPropagation()}
+        fullWidth
+      >
+        <DialogTitle>
+          Slide Settings
+        </DialogTitle>
+        <DialogContent>
+          <Stack spacing={1}>
+            <InputLabel>Slide Background</InputLabel>
+            <Select
+              value={backgroundSetting.type}
+              onChange={handleBackgroundChange('type')}
+              fullWidth
+              variant="outlined"
+            >
+              <MenuItem value="none">None</MenuItem>
+              <MenuItem value="solid">Solid</MenuItem>
+              <MenuItem value="gradient">Gradient</MenuItem>
+              <MenuItem value="image">Image</MenuItem>
+            </Select>
+
+            {backgroundSetting.type === "solid" && (
+              <TextField
+                fullWidth
+                label="Background Colour"
+                type="color"
+                value={backgroundSetting.attributes.color || "#FFFFFF"}
+                onChange={handleBackgroundChange('attributes', 'color')}
+              />
+            )}
+            {backgroundSetting.type === "gradient" && 
+              <>
+                <TextField
+                  fullWidth
+                  label="Starting Colour"
+                  type="color"
+                  value={backgroundSetting.attributes.startingColor || "#FFFFFF"}
+                  onChange={handleBackgroundChange('attributes', 'startingColor')}
+                />
