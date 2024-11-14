@@ -188,8 +188,8 @@ const presentationsSlice = createSlice({
           altText: action.payload.altText
         },
         position: {
-          x: 0.1,  // 10% from left
-          y: 0.1   // 10% from top
+          x: 0,  // 10% from left
+          y: 0   // 10% from top
         }
       };
       
@@ -226,8 +226,8 @@ const presentationsSlice = createSlice({
           controls: action.payload.controls
         },
         position: {
-          x: 0.1,  // 10% from left
-          y: 0.1   // 10% from top
+          x: 0,  // 10% from left
+          y: 0   // 10% from top
         }
       };
       
@@ -261,8 +261,8 @@ const presentationsSlice = createSlice({
           fontSize: action.payload.fontSize,
         },
         position: {
-          x: 0.1,  // 10% from left
-          y: 0.1   // 10% from top
+          x: 0,  // 10% from left
+          y: 0   // 10% from top
         }
       };
       
@@ -309,7 +309,6 @@ const presentationsSlice = createSlice({
       }
       state.shouldSave = true;
     },
-    
     updatePresentationThumbnail: (state, action) => {
       const { id, thumbnail } = action.payload;
       const presentation = state.presentations.find(p => p.id == id);
@@ -318,6 +317,19 @@ const presentationsSlice = createSlice({
       }
       state.shouldSave = true;
     },
+    loadVersion: (state, action) => {
+      const { version, id } = action.payload;
+      const presentation = state.presentations.find(p => p.id == id);
+      presentation.title = version.title;
+      presentation.thumbnail = version.thumbnail;
+      presentation.defaultBackground = version.defaultBackground;
+      presentation.slides = JSON.parse(JSON.stringify(version.slides));
+
+      const index = presentation.versionHistory.findIndex(ver => ver.dateTime == version.dateTime);
+      presentation.versionHistory.splice(0, index + 1);
+
+      state.shouldSave = true;
+    }
   },
   extraReducers: (builder) => {
     builder.addCase(fetchPresentations.pending, (state) => {
@@ -349,5 +361,5 @@ const presentationsSlice = createSlice({
   }
 });
 
-export const { addNewSlide, deleteSlide, updateSlidesBarOrder, setPresentations, createNewPresentation, addTextElement, updateElementPosition, updateElementSize, deletePresentation, updatePresentationTitle, updatePresentationThumbnail, addImageElement, addVideoElement, addCodeElement, deleteElement, setDefaultBackground, updateTextElement, updateImageElement, updateVideoElement, updateCodeElement } = presentationsSlice.actions;
+export const { addNewSlide, deleteSlide, updateSlidesBarOrder, setPresentations, createNewPresentation, addTextElement, updateElementPosition, updateElementSize, deletePresentation, updatePresentationTitle, updatePresentationThumbnail, addImageElement, addVideoElement, addCodeElement, deleteElement, setDefaultBackground, updateTextElement, updateImageElement, updateVideoElement, updateCodeElement, loadVersion } = presentationsSlice.actions;
 export default presentationsSlice.reducer;

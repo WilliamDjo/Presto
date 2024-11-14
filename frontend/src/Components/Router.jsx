@@ -20,7 +20,7 @@ const Router = () => {
       navigate('/');
     }
     
-    if (localStorage.getItem('token') && !['dashboard', 'presentation'].includes(location.pathname.split("/")[1])) {
+    if (localStorage.getItem('token') && !['dashboard', 'presentation', 'preview'].includes(location.pathname.split("/")[1])) {
       navigate('/dashboard');
     }
 
@@ -38,7 +38,7 @@ const Router = () => {
       <Route path="/register" element={<Register />} />
       <Route path="/dashboard" element={<DashboardPage />} />
       <Route path="/presentation/*" element={<PresentationPage />} />
-      <Route path="/presentation/:id/preview" element={<PresentationPreview />} />
+      <Route path="/preview/:id" element={<PresentationPreview />} />
     </Routes>
   );
 };

@@ -219,4 +219,38 @@ export const renderBackground = (presentations) => {
   return backgroundStyle;
 };
 
+export const renderPreviewBackground = (version) => {
+  const presentationBackground = version.defaultBackground;
+  const slide = version.slides[parseInt(location.hash.split("/")[1]) - 1];
+
+  let backgroundStyle;
+
+  switch (slide?.background ? slide.background : presentationBackground?.type) {
+    case "solid":
+      backgroundStyle = {
+        backgroundColor: presentationBackground.attributes.color
+      }
+      break;
+    case "gradient":
+      backgroundStyle = {
+        background: `linear-gradient(${presentationBackground.attributes.angle}deg, ${presentationBackground.attributes.startingColor}, ${presentationBackground.attributes.endingColor})`,
+      };
+      break;
+    case "image":
+      backgroundStyle = {
+        backgroundImage: `url(${presentationBackground.attributes.image})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+        height: '100%',
+        width: '100%',
+      };
+      break;
+    default:
+      backgroundStyle = {backgroundColor: "white"};
+  }
+
+  return backgroundStyle;
+};
+
 export default { isValidEmail, isValidName, isValidPassword, isValidConfirmPassword };

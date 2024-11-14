@@ -1,7 +1,5 @@
 import { Box, IconButton, Divider } from "@mui/material";
 import { Notes, Image, VideoLibrary, Code, KeyboardDoubleArrowLeft } from "@mui/icons-material";
-// import { useDispatch } from "react-redux";
-// import { addTextElement } from "../../../State/presentationsSlice";
 import TextModal from "../PresentationComponents/Dialogs/TextModal";
 import ImageModal from "../PresentationComponents/Dialogs/ImageModal";
 import VideoModal from "../PresentationComponents/Dialogs/VideoModal";

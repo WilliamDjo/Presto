@@ -9,7 +9,7 @@ export default function PreviewButton() {
   const handlePreview = () => {
     const presentationId = location.pathname.split("/")[2];
     const currentSlide = location.hash.split("/")[1] || "1";
-    const previewUrl = `/presentation/${presentationId}/preview#/${currentSlide}`;
+    const previewUrl = `/preview/${presentationId}#/${currentSlide}`;
     window.open(previewUrl, '_blank');
     console.log("Previewing presentation");
     

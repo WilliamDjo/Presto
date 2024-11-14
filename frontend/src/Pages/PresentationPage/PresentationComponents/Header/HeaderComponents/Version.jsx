@@ -1,7 +1,16 @@
-import { Box, Typography, Button, IconButton } from '@mui/material';
+import { Box, Typography, Button, IconButton, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@mui/material';
 import { Image, Preview } from '@mui/icons-material';
+import { useDispatch } from 'react-redux';
+import { loadVersion } from '../../../../../State/presentationsSlice';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-const Version = ({ version }) => {
+const Version = ({ version, setOpenVersionHistory }) => {
+  const presentationId = location.pathname.split("/")[2];
+  const [openConfirmRestore, setOpenConfirmRestore] = useState(false);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const formatDateTime = (timestamp) => {
     const date = new Date(timestamp);
     
@@ -56,13 +65,40 @@ const Version = ({ version }) => {
         </Box>
       </Box>
       <Box sx={{ display: 'flex', alignItems: 'center' }}>
-        <IconButton sx={{ color: 'primary.main', marginRight: '8px' }}> {/* Use primary.main for the icon color */}
+        <IconButton onClick={() => window.open(`/preview/${presentationId}#/1/${version.dateTime}`, '_blank')} sx={{ color: 'primary.main', marginRight: '8px' }}> {/* Use primary.main for the icon color */}
           <Preview />
         </IconButton>
-        <Button variant="contained" color="primary" size="small"> {/* Use primary color from theme */}
+        <Button onClick={() => setOpenConfirmRestore(true)} variant="contained" color="primary" size="small"> {/* Use primary color from theme */}
           Restore
         </Button>
       </Box>
+
+      <Dialog
+        open={openConfirmRestore}
+        onClose={() => setOpenConfirmRestore(false)}
+      >
+        <DialogTitle id="delete-dialog-title">
+          Restore Confirmation
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="delete-dialog-description">
+            Are you sure you want to restore this version?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenConfirmRestore(false)} color="primary">
+            No
+          </Button>
+          <Button onClick={() => {
+            dispatch(loadVersion({version, id: location.pathname.split("/")[2]}));
+            setOpenConfirmRestore(false);
+            setOpenVersionHistory(false);
+            navigate(`${location.pathname}#/1`);
+          }} color="error" autoFocus>
+            Yes
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };

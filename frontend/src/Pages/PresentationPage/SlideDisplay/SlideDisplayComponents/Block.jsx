@@ -3,7 +3,7 @@ import { Rnd } from "react-rnd";
 import { Box, Typography } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { updateElementPosition, updateElementSize, deleteElement } from "../../../../State/presentationsSlice";
-import { getElementByIndex } from "../../../../HelperFiles/helper";
+import { getElementByIndex, getPresentation } from "../../../../HelperFiles/helper";
 import Prism from "prismjs";
 import TextModal from "../../PresentationComponents/Dialogs/TextModal";
 import ImageModal from "../../PresentationComponents/Dialogs/ImageModal";
@@ -15,9 +15,18 @@ const Block = ({ parentHeight, parentWidth, index, interactable, slideNum, previ
   const rndRef = useRef(null);
   const dispatch = useDispatch();
   const presentations = useSelector(state => state.presentations.presentations);
+  const presentation = getPresentation(presentations);
   const [isDragging, setIsDragging] = useState(false);
 
-  const element = getElementByIndex(presentations, index, slideNum);
+  let element;
+
+  if (location.pathname.split("/")[1] === "preview" && location.hash.split("/")[2]) {
+    const version = presentation.versionHistory?.find((version) => version.dateTime == location.hash.split("/")[2]);
+    element = version.slides[slideNum - 1].contents[index];
+  } else  {
+    element = getElementByIndex(presentations, index, slideNum);
+  }
+
   // Safely access position and size with fallbacks
   const position = element?.position 
   const size = element?.attributes?.elementSize // Calculate dimensions with safety checks
@@ -132,7 +141,7 @@ const Block = ({ parentHeight, parentWidth, index, interactable, slideNum, previ
             wordWrap: "break-word"
           }}
         >
-          {element.attributes.text || ""}
+          {element.attributes.textContent || ""}
         </Typography>
       );
     } else if (element.type === "image") {
@@ -338,7 +347,7 @@ const Block = ({ parentHeight, parentWidth, index, interactable, slideNum, previ
           initialData={{
             width: element.attributes.elementSize.x,
             height: element.attributes.elementSize.y,
-            text: element.attributes.text,
+            text: element.attributes.textContent,
             fontSize: parseFloat(element.attributes.fontSize),
             color: element.attributes.color || '#000000',
             index: element.index,

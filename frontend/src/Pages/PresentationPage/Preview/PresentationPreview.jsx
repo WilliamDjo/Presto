@@ -3,7 +3,7 @@ import { Box, IconButton, Typography, CssBaseline } from '@mui/material';
 import { ArrowRight, ArrowLeft, Fullscreen, FullscreenExit } from '@mui/icons-material';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { getSlides, getSlideByPosition, renderBackground } from '../../../HelperFiles/helper';
+import { getSlides, getSlideByPosition, renderBackground, getPresentation, renderPreviewBackground } from '../../../HelperFiles/helper';
 import Block from '../SlideDisplay/SlideDisplayComponents/Block';
 import { keyframes } from '@emotion/react';
 
@@ -30,6 +30,12 @@ export default function PresentationPreview() {
   const [animation, setAnimation] = useState(fadeIn);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const inactivityTimeout = useRef(null);
+  
+  let version;
+  if (location.hash.split("/")[2]) {
+    version = getPresentation(presentations)?.versionHistory.find((version) => version.dateTime == location.hash.split("/")[2]);
+  }
+  const background = version ? renderPreviewBackground(version) : renderBackground(presentations);
 
   const updateDimensions = () => {
     if (slideRef.current) {
@@ -55,15 +61,15 @@ export default function PresentationPreview() {
   useEffect(() => {
     const handleKeyboardInput = (e) => {
       if (e.key === 'ArrowLeft' && currentSlide > 1) {
-        navigate(`#/${currentSlide - 1}`);
+        navigate(version ? `#/${currentSlide - 1}/${location.hash.split("/")[2]}` : `#/${currentSlide - 1}`);
       }
-      if ((e.key === 'ArrowRight' || e.code === 'Space') && currentSlide < getSlides(presentations)?.length) {
-        navigate(`#/${currentSlide + 1}`);
+      if ((e.key === 'ArrowRight' || e.code === 'Space') && currentSlide < (version ? version.slides.length : getSlides(presentations)?.length)) {
+        navigate(version ? `#/${currentSlide + 1}/${location.hash.split("/")[2]}` : `#/${currentSlide + 1}`);
       }
     };
     const handleClickInput = () => {
-      if (currentSlide < getSlides(presentations)?.length) {
-        navigate(`#/${currentSlide + 1}`);
+      if (currentSlide < (version ? version.slides.length : getSlides(presentations)?.length)) {
+        navigate(version ? `#/${currentSlide + 1}/${location.hash.split("/")[2]}` : `#/${currentSlide + 1}`);
       }
     };
 
@@ -162,11 +168,11 @@ export default function PresentationPreview() {
       <CssBaseline />
       <Box ref={slideContainerRef} sx={{ display: "flex", alignItems: "center", justifyContent: "center", width: '100vw', height: "100vh" , overflowY: 'hidden', overflowX: 'hidden', backgroundColor: "black" }}>
         <Box ref={slideRef} height={slideHeight} width={slideWidth} sx={{ position: "relative", backgroundColor: "white"}}>
-          <Box sx={{height: "100%", width: "100%", ...renderBackground(presentations)}}>
-            {getSlideByPosition(presentations, currentSlide)?.contents.map((element) => (
-              <Block 
-                interactable={false} 
-                parentHeight={slideHeight} 
+          <Box sx={{height: "100%", width: "100%", ...background}}>
+            {(version ? version?.slides[parseInt(location.hash.split("/")[1]) - 1] : getSlideByPosition(presentations, currentSlide))?.contents.map((element) => (
+              <Block
+                interactable={false}
+                parentHeight={slideHeight}
                 parentWidth={slideWidth} 
                 key={element.index} 
                 index={element.index} 
@@ -196,17 +202,17 @@ export default function PresentationPreview() {
             >
               <IconButton
                 disabled={currentSlide === 1}
-                onClick={(e) => {e.stopPropagation(); navigate(`#/${currentSlide - 1}`);}}
+                onClick={(e) => {e.stopPropagation(); navigate(version ? `#/${currentSlide - 1}/${location.hash.split("/")[2]}` : `#/${currentSlide - 1}`);}}
                 sx={{ color: 'white' }}
               >
                 <ArrowLeft />
               </IconButton>
               <Box sx={{ color: 'white', fontSize: '1rem' }}>
-                {currentSlide} / {getSlides(presentations)?.length}
+                {currentSlide} / {version ? version?.slides.length : getSlides(presentations)?.length}
               </Box>
               <IconButton
-                disabled={currentSlide === getSlides(presentations)?.length}
-                onClick={(e) => {e.stopPropagation(); navigate(`#/${currentSlide + 1}`);}}
+                disabled={currentSlide === (version ? version?.slides.length : getSlides(presentations)?.length)}
+                onClick={(e) => {e.stopPropagation(); navigate(version ? `#/${currentSlide + 1}/${location.hash.split("/")[2]}` : `#/${currentSlide + 1}`);}}
                 sx={{ color: 'white' }}
               >
                 <ArrowRight />

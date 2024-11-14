@@ -50,7 +50,7 @@ export default function TextModal({ open, handleClose, initialData, isEditing = 
         x: formData.width,
         y: formData.height
       },
-      text: formData.text,
+      textContent: formData.text,
       fontSize: `${formData.fontSize}em`,
       color: formData.color,
       fontFamily: formData.fontFamily || 'Arial',
@@ -69,8 +69,8 @@ export default function TextModal({ open, handleClose, initialData, isEditing = 
       dispatch(addTextElement({
         ...elementData,
         position: {
-          x: 0.1,
-          y: 0.1
+          x: 0,
+          y: 0
         }
       }));
     }
