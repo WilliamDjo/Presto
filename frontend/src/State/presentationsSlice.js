@@ -30,14 +30,14 @@ export const savePresentations = createAsyncThunk("presentations/savePresentatio
   if (presentationId) {
     const presentation = {...presentations.find((presentation) => presentation.id === presentationId)};
     const newVersionHistory = [
-      ...presentation.versionHistory,
       {
         dateTime: Date.now(),
         title: presentation.title,
         thumbnail: presentation.thumbnail,
         defaultBackground: presentation.defaultBackground,
         slides: [...presentation.slides]
-      }
+      },
+      ...presentation.versionHistory
     ];
     console.log('hi')
     presentations.find((presentation) => presentation.id === presentationId).versionHistory = newVersionHistory;

@@ -13,13 +13,12 @@ import {
   Select,
   MenuItem,
   Typography,
-  InputAdornment,
   Card,
   CardActionArea,
   CardMedia
 } from '@mui/material';
 import ThumbnailUpload from '../../../../Components/ThumbnailUpload';
-import { getPresentationBackgroundSetting, getPresentationTitle } from '../../../../HelperFiles/helper';
+import { getPresentationBackgroundSetting, getPresentationTitle, getPresentationThumbnail } from '../../../../HelperFiles/helper';
 import { useSelector } from 'react-redux';
 import { useEffect, useState, useRef } from 'react';
 import { useDispatch } from 'react-redux';
@@ -32,7 +31,6 @@ const SettingsDialog = ({
 }) => {
   const presentations = useSelector(state => state.presentations.presentations);
   const presentationId = parseInt(location.pathname.split("/")[2]);
-  const currentPresentation = presentations?.find(p => p.id === presentationId);
   
   const [newTitle, setNewTitle] = useState("");
   const [previewThumbnail, setPreviewThumbnail] = useState("");
@@ -47,12 +45,12 @@ const SettingsDialog = ({
   useEffect(() => {
     if (open) {
       setNewTitle(getPresentationTitle(presentations) || "");
-      setPreviewThumbnail(currentPresentation?.thumbnail || "");
+      setPreviewThumbnail(getPresentationThumbnail(presentations) || "");
       const initialBackgroundSetting = getPresentationBackgroundSetting(presentations) || { type: "solid", attributes: { color: "#FFFFFF" } };
       setBackgroundSetting(initialBackgroundSetting);
       setShowDefaultImage(!initialBackgroundSetting.attributes.image);
     }
-  }, [open, presentations, currentPresentation]);
+  }, [open, presentations]);
 
   const handleThumbnailChange = (event) => {
     const file = event.target.files[0];
@@ -85,7 +83,7 @@ const SettingsDialog = ({
       title: newTitle.trim()
     }));
   
-    if (previewThumbnail !== currentPresentation?.thumbnail) {
+    if (previewThumbnail !== getPresentationThumbnail(presentations)) {
       dispatch(updatePresentationThumbnail({
         id: presentationId,
         thumbnail: previewThumbnail

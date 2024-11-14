@@ -136,6 +136,9 @@ export async function logoutFetch(path, token) {
   }
 }
 
+export const getPresentation = (presentations) => {
+  return presentations?.find((presentation) => presentation.id == location.pathname.split("/")[2]);
+};
 
 export const getSlides = (presentations) => {
   return presentations?.find((presentation) => presentation.id == location.pathname.split("/")[2]).slides;
@@ -155,6 +158,10 @@ export const getElementByIndex = (presentations, elementIndex, slideNum) => {
 
 export const getPresentationTitle = (presentations) => {
   return presentations?.find((presentation) => presentation.id == location.pathname.split("/")[2]).title;
+};
+
+export const getPresentationThumbnail = (presentations) => {
+  return presentations?.find((presentation) => presentation.id == location.pathname.split("/")[2]).thumbnail;
 };
 
 export const getPresentationBackgroundSetting = (presentations) => {
