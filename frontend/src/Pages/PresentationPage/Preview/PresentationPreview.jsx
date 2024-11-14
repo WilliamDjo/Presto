@@ -30,6 +30,7 @@ export default function PresentationPreview() {
   const [animation, setAnimation] = useState(fadeIn);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const inactivityTimeout = useRef(null);
+  const [fadeOutActive, setFadeOutActive] = useState(false); // State to control fade-out
   
   let version;
   if (location.hash.split("/")[2]) {
@@ -51,6 +52,24 @@ export default function PresentationPreview() {
     }
   };
 
+  const handleAdvanceSlide = () => {
+    const currSlide = version ? version.slides[parseInt(location.hash.split("/")[1]) - 1] : getSlideByPosition(presentations, parseInt(location.hash.split("/")[1]));
+    // const nextSlide = version ? version.slides[parseInt(location.hash.split("/")[1])] : getSlideByPosition(presentations, parseInt(location.hash.split("/")[1]) + 1);
+
+    switch (currSlide.transition) {
+      case "fade":
+        setFadeOutActive(true);
+        setTimeout(() => {
+          setFadeOutActive(false);
+          navigate(version ? `#/${currentSlide + 1}/${location.hash.split("/")[2]}` : `#/${currentSlide + 1}`);
+        }, 500);
+        break;
+
+      default:
+        navigate(version ? `#/${currentSlide + 1}/${location.hash.split("/")[2]}` : `#/${currentSlide + 1}`);
+    }
+  }
+
   useEffect(() => {
     updateDimensions();
 
@@ -64,12 +83,12 @@ export default function PresentationPreview() {
         navigate(version ? `#/${currentSlide - 1}/${location.hash.split("/")[2]}` : `#/${currentSlide - 1}`);
       }
       if ((e.key === 'ArrowRight' || e.code === 'Space') && currentSlide < (version ? version.slides.length : getSlides(presentations)?.length)) {
-        navigate(version ? `#/${currentSlide + 1}/${location.hash.split("/")[2]}` : `#/${currentSlide + 1}`);
+        handleAdvanceSlide();
       }
     };
     const handleClickInput = () => {
       if (currentSlide < (version ? version.slides.length : getSlides(presentations)?.length)) {
-        navigate(version ? `#/${currentSlide + 1}/${location.hash.split("/")[2]}` : `#/${currentSlide + 1}`);
+        handleAdvanceSlide();
       }
     };
 
@@ -167,7 +186,7 @@ export default function PresentationPreview() {
     <>
       <CssBaseline />
       <Box ref={slideContainerRef} sx={{ display: "flex", alignItems: "center", justifyContent: "center", width: '100vw', height: "100vh" , overflowY: 'hidden', overflowX: 'hidden', backgroundColor: "black" }}>
-        <Box ref={slideRef} height={slideHeight} width={slideWidth} sx={{ position: "relative", backgroundColor: "white"}}>
+        <Box ref={slideRef} height={slideHeight} width={slideWidth} sx={{position: "relative", backgroundColor: "white", animation: `${fadeOutActive ? fadeOut : fadeIn} 0.5s`}}>
           <Box sx={{height: "100%", width: "100%", ...background}}>
             {(version ? version?.slides[parseInt(location.hash.split("/")[1]) - 1] : getSlideByPosition(presentations, currentSlide))?.contents.map((element) => (
               <Block
@@ -212,7 +231,7 @@ export default function PresentationPreview() {
               </Box>
               <IconButton
                 disabled={currentSlide === (version ? version?.slides.length : getSlides(presentations)?.length)}
-                onClick={(e) => {e.stopPropagation(); navigate(version ? `#/${currentSlide + 1}/${location.hash.split("/")[2]}` : `#/${currentSlide + 1}`);}}
+                onClick={(e) => {e.stopPropagation(); handleAdvanceSlide();}}
                 sx={{ color: 'white' }}
               >
                 <ArrowRight />
