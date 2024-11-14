@@ -6,7 +6,7 @@ import DeleteDialog from './PresentationComponents/Dialogs/DeleteDialog';
 import SettingsDialog from './PresentationComponents/Dialogs/SettingsDialog';
 import Header from './PresentationComponents/Header/Header';
 import { useSelector, useDispatch } from 'react-redux';
-import { savePresentations, updatePresentationTitle, updatePresentationThumbnail, deletePresentation  } from '../../State/presentationsSlice';
+import { savePresentations, deletePresentation  } from '../../State/presentationsSlice';
 import Toolbar from './Toolbar/Toolbar';
 import SlideDisplay from './SlideDisplay/SlideDisplay';
 import { useNavigate } from 'react-router-dom';
@@ -21,7 +21,7 @@ const PresentationPage = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(savePresentations());
+    dispatch(savePresentations(location.pathname.split("/")[2]));
   }, [presentations, dispatch]);
 
   const handleDelete = () => {

@@ -6,7 +6,8 @@ import { getSlides } from '../HelperFiles/helper';
 const initialState =  {
   loading: false,
   presentations: null,
-  error: ''
+  error: '',
+  shouldSave: false
 };
 
 export const fetchPresentations = createAsyncThunk("presentations/fetchPresentations", async () => {
@@ -16,23 +17,41 @@ export const fetchPresentations = createAsyncThunk("presentations/fetchPresentat
   return res.store.presentations;
 });
 
-export const savePresentations = createAsyncThunk("presentations/savePresentations", async (_, { dispatch, getState }) => {
-  const { presentations } = getState().presentations;
-  if (presentations === null) {
+export const savePresentations = createAsyncThunk("presentations/savePresentations", async (presentationId, { dispatch, getState }) => {
+  const state = getState().presentations;
+
+  if (state.presentations === null || !state.shouldSave) {
     console.log("Aborting save");
     return;
   }
-  console.log("Saving:", presentations);
-
   dispatch(startSaving());
+
+  const presentations = JSON.parse(JSON.stringify(state.presentations));
+  if (presentationId) {
+    const presentation = {...presentations.find((presentation) => presentation.id === presentationId)};
+    const newVersionHistory = [
+      ...presentation.versionHistory,
+      {
+        dateTime: Date.now(),
+        title: presentation.title,
+        thumbnail: presentation.thumbnail,
+        defaultBackground: presentation.defaultBackground,
+        slides: [...presentation.slides]
+      }
+    ];
+    console.log('hi')
+    presentations.find((presentation) => presentation.id === presentationId).versionHistory = newVersionHistory;
+  }
+
   const userStore = {
     store: {
       presentations: presentations
     }
   };
 
-  console.log('saving', userStore);
+  console.log('Saving', userStore);
   await fetchRequest('/store', 'put', userStore, localStorage.getItem('token'), null);
+  dispatch(fetchPresentations());
 
   dispatch(finishSaving());
 });
@@ -60,7 +79,29 @@ const presentationsSlice = createSlice({
             imageURL: ""
           }
         },
-        versionHistory: [],
+        versionHistory: [{
+          dateTime: Date.now(),
+          title: action.payload,
+          thumbnail: null,
+          defaultBackground: {
+            type: "solid",
+            attributes: {
+              color: "#FFFFFF",
+              startingColor: "#FFFFFF",
+              endingColor: "#FFFFFF",
+              angle: 0,
+              imageURL: ""
+            }
+          },
+          slides: [
+            {
+              slideNum: 1,
+              id: String(Date.now()),
+              background: null,
+              contents: []
+            }
+          ]
+        }],
         slides: [
           {
             slideNum: 1,
@@ -72,13 +113,16 @@ const presentationsSlice = createSlice({
       };
     
       state.presentations = [...state.presentations, newPresentation];
+      state.shouldSave = true;
     },
     deletePresentation: (state, action) => {
       const id = action.payload;
       state.presentations = state.presentations.filter(presentation => presentation.id != id);
+      state.shouldSave = true;
     },
     setDefaultBackground: (state, action) => {
       state.presentations.find((presentation) => presentation.id == location.pathname.split("/")[2]).defaultBackground = action.payload;
+      state.shouldSave = true;
     },
     addNewSlide: (state) => {
       const slides = getSlides(state.presentations);
@@ -91,12 +135,14 @@ const presentationsSlice = createSlice({
       const newSlides = [...slides, newSlide];
 
       state.presentations.find((presentation) => presentation.id === location.pathname.split("/")[2]).slides = newSlides;
+      state.shouldSave = true;
     },
 
     deleteSlide: (state, action) => {
       state.presentations.find((presentation) => presentation.id == location.pathname.split("/")[2]).slides = state.presentations.find((presentation) => presentation.id == location.pathname.split("/")[2]).slides.filter((_, index) => index !== (action.payload - 1));
       
       state.presentations.find((presentation) => presentation.id == location.pathname.split("/")[2]).slides.forEach((slide, index) => slide.slideNum = index + 1);
+      state.shouldSave = true;
     },
     addTextElement: (state, action) => {
       const slide = getSlides(state.presentations)[parseInt(location.hash.split("/")[1]) - 1];
@@ -112,10 +158,12 @@ const presentationsSlice = createSlice({
       const newSlideContents = [...slide.contents, textElement];
 
       state.presentations.find((presentation) => presentation.id == location.pathname.split("/")[2]).slides[parseInt(location.hash.split("/")[1]) - 1].contents = newSlideContents;
+      state.shouldSave = true;
     },
     deleteElement: (state, action) => {
       state.presentations.find((presentation) => presentation.id == location.pathname.split("/")[2]).slides[parseInt(location.hash.split("/")[1]) - 1].contents.splice(action.payload, 1);
       state.presentations.find((presentation) => presentation.id == location.pathname.split("/")[2]).slides[parseInt(location.hash.split("/")[1]) - 1].contents.forEach((content, index) => content.index = index);
+      state.shouldSave = true;
     },
     updateTextElement: (state, action) => {
       const slide = getSlides(state.presentations)[parseInt(location.hash.split("/")[1]) - 1];
@@ -126,8 +174,8 @@ const presentationsSlice = createSlice({
         ...slide.contents[elementIndex].attributes,
         ...action.payload.attributes
       };
-    }
-    ,
+      state.shouldSave = true;
+    },
     addImageElement: (state, action) => {
       const slide = getSlides(state.presentations)[parseInt(location.hash.split("/")[1]) - 1];
       
@@ -150,6 +198,7 @@ const presentationsSlice = createSlice({
       state.presentations.find(
         (presentation) => presentation.id == location.pathname.split("/")[2]
       ).slides[parseInt(location.hash.split("/")[1]) - 1].contents = newSlideContents;
+      state.shouldSave = true;
     },
     updateImageElement: (state, action) => {
       const slide = getSlides(state.presentations)[parseInt(location.hash.split("/")[1]) - 1];
@@ -160,6 +209,7 @@ const presentationsSlice = createSlice({
         ...slide.contents[elementIndex].attributes,
         ...action.payload.attributes
       };
+      state.shouldSave = true;
     },
     addVideoElement: (state, action) => {
       const slide = getSlides(state.presentations)[parseInt(location.hash.split("/")[1]) - 1];
@@ -186,6 +236,7 @@ const presentationsSlice = createSlice({
       state.presentations.find(
         (presentation) => presentation.id == location.pathname.split("/")[2]
       ).slides[parseInt(location.hash.split("/")[1]) - 1].contents = newSlideContents;
+      state.shouldSave = true;
     },
     updateVideoElement: (state, action) => {
       const slide = getSlides(state.presentations)[parseInt(location.hash.split("/")[1]) - 1];
@@ -196,6 +247,7 @@ const presentationsSlice = createSlice({
         ...slide.contents[elementIndex].attributes,
         ...action.payload.attributes
       };
+      state.shouldSave = true;
     },
     addCodeElement: (state, action) => {
       const slide = getSlides(state.presentations)[parseInt(location.hash.split("/")[1]) - 1];
@@ -219,6 +271,7 @@ const presentationsSlice = createSlice({
       state.presentations.find(
         (presentation) => presentation.id == location.pathname.split("/")[2]
       ).slides[parseInt(location.hash.split("/")[1]) - 1].contents = newSlideContents;
+      state.shouldSave = true;
     },
     updateCodeElement: (state, action) => {
       const slide = getSlides(state.presentations)[parseInt(location.hash.split("/")[1]) - 1];
@@ -229,12 +282,15 @@ const presentationsSlice = createSlice({
         ...slide.contents[elementIndex].attributes,
         ...action.payload.attributes
       };
+      state.shouldSave = true;
     },
     updateElementPosition: (state, action) => {
       state.presentations.find((presentation) => presentation.id == location.pathname.split("/")[2]).slides[parseInt(location.hash.split("/")[1]) - 1].contents[action.payload.index].position = action.payload.position;
+      state.shouldSave = true;
     },
     updateElementSize: (state, action) => {
       state.presentations.find((presentation) => presentation.id == location.pathname.split("/")[2]).slides[parseInt(location.hash.split("/")[1]) - 1].contents[action.payload.index].attributes.elementSize = action.payload.size;
+      state.shouldSave = true;
     },
     updateSlidesBarOrder: (state, action) => {
       const activeIndex = getSlidePositionById(state.presentations, action.payload.active) - 1;
@@ -243,6 +299,7 @@ const presentationsSlice = createSlice({
       const movingSlide = state.presentations.find((presentation) => presentation.id === location.pathname.split("/")[2]).slides.splice(activeIndex, 1)[0];
       state.presentations.find((presentation) => presentation.id === location.pathname.split("/")[2]).slides.splice(overIndex, 0, movingSlide);
       state.presentations.find((presentation) => presentation.id === location.pathname.split("/")[2]).slides.forEach((slide, index) => slide.slideNum = index + 1);
+      state.shouldSave = true;
     },
     updatePresentationTitle: (state, action) => {
       const { id, title } = action.payload;
@@ -250,6 +307,7 @@ const presentationsSlice = createSlice({
       if (presentation) {
         presentation.title = title;
       }
+      state.shouldSave = true;
     },
     
     updatePresentationThumbnail: (state, action) => {
@@ -258,6 +316,7 @@ const presentationsSlice = createSlice({
       if (presentation) {
         presentation.thumbnail = thumbnail;
       }
+      state.shouldSave = true;
     },
   },
   extraReducers: (builder) => {
@@ -281,6 +340,7 @@ const presentationsSlice = createSlice({
     builder.addCase(savePresentations.fulfilled, (state) => {
       state.loading = false;
       state.error = '';
+      state.shouldSave = false;
     })
     builder.addCase(savePresentations.rejected, (state, action) => {
       state.loading = false;

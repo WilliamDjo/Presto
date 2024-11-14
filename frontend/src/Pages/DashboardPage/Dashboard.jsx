@@ -60,7 +60,7 @@ const DashboardPage = () => {
   };
 
   useEffect(() => {
-    dispatch(savePresentations());
+    dispatch(savePresentations(null));
   }, [presentations, dispatch]);
 
   return (
