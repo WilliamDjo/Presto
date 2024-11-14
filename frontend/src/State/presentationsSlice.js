@@ -39,7 +39,6 @@ export const savePresentations = createAsyncThunk("presentations/savePresentatio
       },
       ...presentation.versionHistory
     ];
-    console.log('hi')
     presentations.find((presentation) => presentation.id === presentationId).versionHistory = newVersionHistory;
   }
 
@@ -97,7 +96,17 @@ const presentationsSlice = createSlice({
             {
               slideNum: 1,
               id: String(Date.now()),
-              background: null,
+              transition: "none",
+              background: {
+                type: "none",
+                attributes: {
+                  color: "#FFFFFF",
+                  startingColor: "#FFFFFF",
+                  endingColor: "#FFFFFF",
+                  angle: 0,
+                  imageURL: ""
+                }
+              },
               contents: []
             }
           ]
@@ -106,7 +115,17 @@ const presentationsSlice = createSlice({
           {
             slideNum: 1,
             id: String(Date.now()),
-            background: null,
+            transition: "none",
+            background: {
+              type: "none",
+              attributes: {
+                color: "#FFFFFF",
+                startingColor: "#FFFFFF",
+                endingColor: "#FFFFFF",
+                angle: 0,
+                imageURL: ""
+              }
+            },
             contents: []
           }
         ]
@@ -129,7 +148,17 @@ const presentationsSlice = createSlice({
       const newSlide = {
         slideNum: slides.length + 1,
         id: String(Date.now()),
-        background: null,
+        transition: "none",
+        background: {
+          type: "none",
+          attributes: {
+            color: "#FFFFFF",
+            startingColor: "#FFFFFF",
+            endingColor: "#FFFFFF",
+            angle: 0,
+            imageURL: ""
+          }
+        },
         contents: []
       }
       const newSlides = [...slides, newSlide];
@@ -188,8 +217,8 @@ const presentationsSlice = createSlice({
           altText: action.payload.altText
         },
         position: {
-          x: 0,  // 10% from left
-          y: 0   // 10% from top
+          x: 0,
+          y: 0
         }
       };
       
@@ -317,6 +346,22 @@ const presentationsSlice = createSlice({
       }
       state.shouldSave = true;
     },
+    updateSlideBackground: (state, action) => {
+      const { updatedBackgroundSetting, index } = action.payload;
+      const presentation = state.presentations.find((presentation) => presentation.id === location.pathname.split("/")[2]);
+      const slide = presentation.slides.find(s => s.slideNum == index);
+      slide.background = updatedBackgroundSetting;
+
+      state.shouldSave = true;
+    },
+    updateSlideTranistion: (state, action) => {
+      const { slideTransition, index } = action.payload;
+      const presentation = state.presentations.find((presentation) => presentation.id === location.pathname.split("/")[2]);
+      const slide = presentation.slides.find(s => s.slideNum == index);
+      slide.transition = slideTransition;
+
+      state.shouldSave = true;
+    },
     loadVersion: (state, action) => {
       const { version, id } = action.payload;
       const presentation = state.presentations.find(p => p.id == id);
@@ -361,5 +406,5 @@ const presentationsSlice = createSlice({
   }
 });
 
-export const { addNewSlide, deleteSlide, updateSlidesBarOrder, setPresentations, createNewPresentation, addTextElement, updateElementPosition, updateElementSize, deletePresentation, updatePresentationTitle, updatePresentationThumbnail, addImageElement, addVideoElement, addCodeElement, deleteElement, setDefaultBackground, updateTextElement, updateImageElement, updateVideoElement, updateCodeElement, loadVersion } = presentationsSlice.actions;
+export const { addNewSlide, deleteSlide, updateSlidesBarOrder, setPresentations, createNewPresentation, addTextElement, updateElementPosition, updateElementSize, deletePresentation, updatePresentationTitle, updatePresentationThumbnail, addImageElement, addVideoElement, addCodeElement, deleteElement, setDefaultBackground, updateTextElement, updateImageElement, updateVideoElement, updateCodeElement, loadVersion, updateSlideBackground, updateSlideTranistion } = presentationsSlice.actions;
 export default presentationsSlice.reducer;

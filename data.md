@@ -29,7 +29,8 @@
                 {
                     slideNum: int,
                     id: int,
-                    background: null || {
+                    transition: string,
+                    background: {
                         type: "solid" || "gradient" || "image"
                         attributes: {
                             color: string
@@ -52,8 +53,9 @@
                 {
                     slideNum: int,
                     id: int,
-                    background: null || {
-                        type: "solid" || "gradient" || "image"
+                    transition: string,
+                    background: {
+                        type: "solid" || "gradient" || "image" || "none"
                         attributes: {
                             color: string
                         }

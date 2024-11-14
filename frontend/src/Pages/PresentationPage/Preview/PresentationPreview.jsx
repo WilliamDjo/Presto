@@ -35,7 +35,7 @@ export default function PresentationPreview() {
   if (location.hash.split("/")[2]) {
     version = getPresentation(presentations)?.versionHistory.find((version) => version.dateTime == location.hash.split("/")[2]);
   }
-  const background = version ? renderPreviewBackground(version) : renderBackground(presentations);
+  const background = version ? renderPreviewBackground(version, parseInt(location.hash.split("/")[1])) : renderBackground(presentations, parseInt(location.hash.split("/")[1]));
 
   const updateDimensions = () => {
     if (slideRef.current) {

@@ -5,7 +5,6 @@ import { getSlideByPosition, getSlides, renderBackground } from "../../../Helper
 import { useSelector } from "react-redux";
 
 const SlideDisplay = () => {
-  const presentations = useSelector((state) => state.presentations.presentations);
   const slideContainerRef = useRef(null);
   const slideRef = useRef(null);
   const [slideWidth, setSlideWidth] = useState(100);
@@ -53,10 +52,12 @@ const SlideDisplay = () => {
     );
   };
 
+  const presentations = useSelector((state) => state.presentations.presentations);
+  console.log(presentations)
   return (
     <Box p={2} ref={slideContainerRef} sx={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100%", overflowY: 'auto', overflowX: 'auto' }}>
       <Box ref={slideRef} height={slideHeight} width={slideWidth} border={1} sx={{ position: "relative" }}>
-        <Box sx={{height: "100%", width: "100%", ...renderBackground(presentations)}}>
+        <Box sx={{height: "100%", width: "100%", ...renderBackground(presentations, parseInt(location.hash.split("/")[1]))}}>
           {getSlideByPosition(presentations, parseInt(location.hash.split("/")[1]))?.contents.map((element) => (
             <Block interactable={true} parentHeight={slideHeight - 2} parentWidth={slideWidth - 2} key={element.index} index={element.index} slideNum={parseInt(location.hash.split("/")[1])} >
               {renderTextContent(element)}

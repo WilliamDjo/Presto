@@ -185,26 +185,26 @@ export const usePresentation = () => {
   };
 };
 
-export const renderBackground = (presentations) => {
-  const presentationBackground = getPresentationBackgroundSetting(presentations);
-  const slide = getSlideByPosition(presentations, parseInt(location.hash.split("/")[1]));
+export const renderBackground = (presentations, index) => {
+  const slide = getSlideByPosition(presentations, index);
 
   let backgroundStyle;
+  const background = slide?.background.type === "none" ? getPresentationBackgroundSetting(presentations) : slide?.background;
 
-  switch (slide?.background ? slide.background : presentationBackground?.type) {
+  switch (background?.type) {
     case "solid":
       backgroundStyle = {
-        backgroundColor: presentationBackground.attributes.color
+        backgroundColor: background.attributes.color
       }
       break;
     case "gradient":
       backgroundStyle = {
-        background: `linear-gradient(${presentationBackground.attributes.angle}deg, ${presentationBackground.attributes.startingColor}, ${presentationBackground.attributes.endingColor})`,
+        background: `linear-gradient(${background.attributes.angle}deg, ${background.attributes.startingColor}, ${background.attributes.endingColor})`,
       };
       break;
     case "image":
       backgroundStyle = {
-        backgroundImage: `url(${presentationBackground.attributes.image})`,
+        backgroundImage: `url(${background.attributes.image})`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat',
@@ -219,26 +219,26 @@ export const renderBackground = (presentations) => {
   return backgroundStyle;
 };
 
-export const renderPreviewBackground = (version) => {
-  const presentationBackground = version.defaultBackground;
-  const slide = version.slides[parseInt(location.hash.split("/")[1]) - 1];
+export const renderPreviewBackground = (version, index) => {
+  const slide = version.slides[index - 1];
+  const background = slide?.background.type === "none" ? version.defaultBackground : slide?.background;
 
   let backgroundStyle;
 
-  switch (slide?.background ? slide.background : presentationBackground?.type) {
+  switch (background.type) {
     case "solid":
       backgroundStyle = {
-        backgroundColor: presentationBackground.attributes.color
+        backgroundColor: background.attributes.color
       }
       break;
     case "gradient":
       backgroundStyle = {
-        background: `linear-gradient(${presentationBackground.attributes.angle}deg, ${presentationBackground.attributes.startingColor}, ${presentationBackground.attributes.endingColor})`,
+        background: `linear-gradient(${background.attributes.angle}deg, ${background.attributes.startingColor}, ${background.attributes.endingColor})`,
       };
       break;
     case "image":
       backgroundStyle = {
-        backgroundImage: `url(${presentationBackground.attributes.image})`,
+        backgroundImage: `url(${background.attributes.image})`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat',
