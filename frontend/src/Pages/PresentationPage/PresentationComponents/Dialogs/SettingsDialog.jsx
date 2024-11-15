@@ -179,6 +179,7 @@ const SettingsDialog = ({
             value={newTitle}
             onChange={(e) => setNewTitle(e.target.value)}
             variant="outlined"
+            slotProps={ { input: {'data-testid': 'presentation-title-edit'} }}
           />
 
           <TextField

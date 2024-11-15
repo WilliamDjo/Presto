@@ -24,10 +24,11 @@ const ThumbnailUpload = ({ thumbnail, resetThumbnail, onThumbnailChange }) => {
         accept="image/*"
         onChange={onThumbnailChange}
         sx={{ display: 'none' }}
+        data-testid="thumbnail-upload-input"
       />
       
       <Card sx={{ width: '100%', maxWidth: 345 }}>
-        <CardActionArea onClick={handleCardClick}>
+        <CardActionArea onClick={handleCardClick} data-testid="thumbnail-upload">
           {!showDefaultImage ? (
             <CardMedia
               component="img"
@@ -46,7 +47,7 @@ const ThumbnailUpload = ({ thumbnail, resetThumbnail, onThumbnailChange }) => {
               }}
             >
               <Stack alignItems="center" spacing={1}>
-                <Image color="action" sx={{ fontSize: 40 }} />
+                <Image color="action" sx={{ fontSize: 40 }}/>
                 <Typography variant="body2" color="text.secondary">
                   Click to add thumbnail
                 </Typography>

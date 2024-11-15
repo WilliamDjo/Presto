@@ -27,7 +27,7 @@ const LandingPage = () => {
             onClick={() => navigate('/login')}
             fullWidth={false}
             sx={{ py: 1.5, px: 4 }}
-            dataTestId='button-login'
+            datatestid='button-login'
           />
 
           <CustomButton
@@ -36,7 +36,7 @@ const LandingPage = () => {
             onClick={() => navigate('/register')}
             fullWidth={false}
             sx={{ py: 1.5, px: 4 }}
-            dataTestId='button-register'
+            datatestid='button-register'
           />
         </Box>
       </CentralPanel>

@@ -96,7 +96,7 @@ const RegisterPage = () => {
             text="Register"
             onClick={handleRegisterClick}
             sx={{ mt: 2 }}
-            dataTestId='button-register'
+            datatestid='button-register'
           />
 
         </Box>
