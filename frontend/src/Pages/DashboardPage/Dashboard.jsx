@@ -120,13 +120,13 @@ const DashboardPage = () => {
       <CssBaseline />
       <Container maxWidth="lg" tabIndex={-1}>
         <Box sx={{ display: 'flex', alignItems: 'center', py: 2 }}>
-          <IconButton onClick={handleLogout} color="primary" sx={{ mr: 2 }}>
+          <IconButton title="Logout" onClick={handleLogout} color="primary" sx={{ mr: 2 }}>
             <Logout fontSize="large" sx={{ transform: 'scaleX(-1)' }} />
           </IconButton>
           <Typography variant="h4" component="h1" sx={{ flexGrow: 1, fontSize: titleFontSize }}>
             Presentations
           </Typography>
-          <IconButton variant="contained" color="primary" onClick={() => { setIsModalOpen(true); setError('') }}>
+          <IconButton title="Create New Presentation" variant="contained" color="primary" onClick={() => { setIsModalOpen(true); setError('') }}>
             <AddCircle fontSize="large"/>
           </IconButton>
         </Box>

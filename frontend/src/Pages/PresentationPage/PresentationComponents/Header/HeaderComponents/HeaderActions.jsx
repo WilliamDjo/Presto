@@ -9,7 +9,7 @@ const HeaderActions = ({ onDeleteClick }) => (
         <PreviewButton />
       </Box>
     </Tooltip>
-    <IconButton onClick={onDeleteClick}>
+    <IconButton title="Delete Presentation" onClick={onDeleteClick}>
       <Delete sx={{ color: "white" }} />
     </IconButton>
   </Box>

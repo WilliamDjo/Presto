@@ -88,7 +88,7 @@ const SlidesBar = () => {
 
   return (
     <Box sensors={sensors} ref={slidesBar} sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", backgroundColor: "primary.main", width: "100%", minHeight: 100 }}>
-      <IconButton disabled={location.hash.split("/")[1] == 1} onClick={() => { navigate(`${location.pathname}#/${parseInt(location.hash.split("/")[1]) - 1}`); }} sx={{ color: 'white' }}>
+      <IconButton disabled={location.hash.split("/")[1] == 1} title="View Previous Slide" onClick={() => { navigate(`${location.pathname}#/${parseInt(location.hash.split("/")[1]) - 1}`); }} sx={{ color: 'white' }}>
         <ArrowLeft />
       </IconButton >
 
@@ -106,7 +106,7 @@ const SlidesBar = () => {
         <AddSlidesBarComponent />
       </Box>
 
-      <IconButton disabled={location.hash.split("/")[1] == getSlides(presentations)?.length} onClick={() => { navigate(`${location.pathname}#/${parseInt(location.hash.split("/")[1]) + 1}`); }} sx={{ color: 'white' }}>
+      <IconButton disabled={location.hash.split("/")[1] == getSlides(presentations)?.length} title="View Next Slide" onClick={() => { navigate(`${location.pathname}#/${parseInt(location.hash.split("/")[1]) + 1}`); }} sx={{ color: 'white' }}>
         <ArrowRight />
       </IconButton>
     </Box>

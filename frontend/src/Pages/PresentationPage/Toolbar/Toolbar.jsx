@@ -68,11 +68,13 @@ const Toolbar = () => {
         >
           <Code />
         </IconButton>
+        
         <Divider sx={{ width: '100%', bgcolor: 'primary.main' }} />
-        {/* Toggle button for showing/hiding the toolbar */}
+
         <IconButton 
           onClick={handleHideToggle}
           sx={{ backgroundColor: 'primary.main' }}
+          title={isHidden ? "Show Toolbar" : "Hide Toolbar"}
         >
           {isHidden ? (
             <KeyboardDoubleArrowRight sx={{ color: 'white' }} />

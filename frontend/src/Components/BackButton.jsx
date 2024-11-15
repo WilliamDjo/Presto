@@ -6,6 +6,7 @@ const BackButton = ({ onClick, color="white", sx = {} }) => {
     <IconButton
       color={color}
       onClick={onClick}
+      title="Go back"
       sx={{ 
         ...sx,
         color: {color},

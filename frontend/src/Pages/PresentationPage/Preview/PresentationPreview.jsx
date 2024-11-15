@@ -221,6 +221,7 @@ export default function PresentationPreview() {
               }}
             >
               <IconButton
+                title="View Previous Slide"
                 disabled={currentSlide === 1}
                 onClick={(e) => {e.stopPropagation(); navigate(version ? `#/${currentSlide - 1}/${location.hash.split("/")[2]}` : `#/${currentSlide - 1}`);}}
                 sx={{ color: 'white' }}
@@ -231,13 +232,14 @@ export default function PresentationPreview() {
                 {currentSlide} / {version ? version?.slides.length : getSlides(presentations)?.length}
               </Box>
               <IconButton
+                title="View Next Slide"
                 disabled={currentSlide === (version ? version?.slides.length : getSlides(presentations)?.length)}
                 onClick={(e) => {e.stopPropagation(); handleAdvanceSlide();}}
                 sx={{ color: 'white' }}
               >
                 <ArrowRight />
               </IconButton>
-              <IconButton onClick={toggleFullscreen} sx={{ color: 'white' }}>
+              <IconButton title={isFullscreen ? "Exit Fullscreen" : "Enter Fullscreen"} onClick={toggleFullscreen} sx={{ color: 'white' }}>
                 {isFullscreen ? <FullscreenExit /> : <Fullscreen />}
               </IconButton>
             </Box>

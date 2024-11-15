@@ -41,7 +41,7 @@ const HeaderTitle = ({ title, saveStatus, onSettingsClick }) => {
         <Typography sx={{ fontWeight: 'bold', fontSize: titleFontSize }}>
           {title}
         </Typography>
-        <IconButton size="small" sx={{ color: "white" }} onClick={onSettingsClick}>
+        <IconButton size="small" sx={{ color: "white" }} title="Presentation Settings" onClick={onSettingsClick}>
           <Settings />
         </IconButton>
       </Box>
@@ -50,6 +50,7 @@ const HeaderTitle = ({ title, saveStatus, onSettingsClick }) => {
           onClick={() => setOpenVersionHistory(true)} 
           variant="body2" 
           sx={{ fontWeight: "semi-bold", color: "white", width: "100%", cursor: "pointer" }}
+          title="Version History"
         >
           {saveStatus}
         </Link>

@@ -20,7 +20,7 @@ const AddSlidesBarComponent = ({ sx = {
   const dispatch = useDispatch();
 
   return (
-    <Box onClick={() => {dispatch(addNewSlide())}} sx={{ ...sx, 'aspectRatio': 16/9 }}>
+    <Box onClick={() => {dispatch(addNewSlide())}} title="Add New Slide" sx={{ ...sx, 'aspectRatio': 16/9 }}>
       <Add />
     </Box>
   );
