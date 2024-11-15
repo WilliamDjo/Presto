@@ -196,4 +196,195 @@ const SlidesBarComponent = ({ id, index }) => {
         sx={{
           ...style,
           'touchAction': 'none',
-        
+          'aspectRatio': 16/9,
+          '&:hover .icon-buttons': { opacity: 1 }
+        }}
+      >
+        <Box sx={{...renderBackground(presentations, index), width: "100%", height: "100%"}}>
+          <Box 
+            className="icon-buttons" 
+            sx={{ 
+              position: "absolute",
+              top: 0, 
+              right: 0, 
+              display: "flex", 
+              justifyContent: "space-between", 
+              width: "100%", 
+              opacity: 0, 
+              transition: "opacity 0.3s ease",
+              zIndex: 999
+            }}
+          >
+            <IconButton id="settings-button" size="small" sx={{ color: theme.palette.primary.main, zIndex: 1000 }} onClick={(e) => e.stopPropagation()}>
+              <Settings />
+            </IconButton>
+            <IconButton
+              id="delete-button" 
+              size="small" 
+              sx={{ color: "red" }}
+            >
+              <Delete />
+            </IconButton>
+          </Box>
+          
+          {getSlideByPosition(presentations, index)?.contents.map((element) => (
+            <Block
+              interactable={false} 
+              parentHeight={parentDimensions.height} 
+              parentWidth={parentDimensions.width} 
+              key={element.index} 
+              index={element.index} 
+              slideNum={index}
+            />
+          ))}
+        </Box>
+      </Box>
+
+      <DeleteConfirmDialog
+        open={deleteDialogOpen}
+        onClose={() => setDeleteDialogOpen(false)}
+        onConfirm={handleDeletePresentation}
+        slideIndex={index}
+        isLastSlide={isLastSlide}
+      />
+
+      <Dialog
+        open={openComponentSettings}
+        onClose={() => setOpenComponentSettings(false)}
+        onClick={(e) => e.stopPropagation()}
+        fullWidth
+      >
+        <DialogTitle>
+          Slide Settings
+        </DialogTitle>
+        <DialogContent>
+          <Stack spacing={1}>
+            <InputLabel>Slide Background</InputLabel>
+            <Select
+              value={backgroundSetting.type}
+              onChange={handleBackgroundChange('type')}
+              fullWidth
+              variant="outlined"
+            >
+              <MenuItem value="none">None</MenuItem>
+              <MenuItem value="solid">Solid</MenuItem>
+              <MenuItem value="gradient">Gradient</MenuItem>
+              <MenuItem value="image">Image</MenuItem>
+            </Select>
+
+            {backgroundSetting.type === "solid" && (
+              <TextField
+                fullWidth
+                label="Background Colour"
+                type="color"
+                value={backgroundSetting.attributes.color || "#FFFFFF"}
+                onChange={handleBackgroundChange('attributes', 'color')}
+              />
+            )}
+            {backgroundSetting.type === "gradient" && 
+              <>
+                <TextField
+                  fullWidth
+                  label="Starting Colour"
+                  type="color"
+                  value={backgroundSetting.attributes.startingColor || "#FFFFFF"}
+                  onChange={handleBackgroundChange('attributes', 'startingColor')}
+                />
+                <TextField
+                  fullWidth
+                  label="Ending Colour"
+                  type="color"
+                  value={backgroundSetting.attributes.endingColor || "#FFFFFF"}
+                  onChange={handleBackgroundChange('attributes', 'endingColor')}
+                />
+                <TextField
+                  fullWidth
+                  label="Gradient Angle"
+                  type="number"
+                  value={backgroundSetting.attributes.angle}
+                  onChange={handleBackgroundChange('attributes', 'angle')}
+                  inputProps={{
+                    min: 0,
+                    max: 360,
+                    step: 1
+                  }}
+                />
+              </>
+            }
+            {backgroundSetting.type === "image" &&
+              <Stack spacing={1}>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  onChange={onBackgroundImageChange}
+                  style={{ display: 'none' }}
+                />
+                <Card sx={{ width: '100%', maxWidth: 345 }}>
+                  <CardActionArea onClick={handleCardClick}>
+                    {!showDefaultImage ? (
+                      <CardMedia
+                        component="img"
+                        sx={{ height: 194 }}
+                        image={backgroundSetting.attributes.image}
+                        title="Background Image"
+                      />
+                    ) : (
+                      <CardMedia
+                        sx={{
+                          height: 194,
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          bgcolor: 'grey.100'
+                        }}
+                      >
+                        <Stack alignItems="center" spacing={1}>
+                          <Image color="action" sx={{ fontSize: 40 }} />
+                          <Typography variant="body2" color="text.secondary">
+                            Click to add background image
+                          </Typography>
+                        </Stack>
+                      </CardMedia>
+                    )}
+                  </CardActionArea>
+                </Card>
+              </Stack>
+            }
+          </Stack>
+
+          <Divider sx={{ marginY: 2, backgroundColor: 'grey.300' }} />
+
+          <Stack spacing={1}>
+            <InputLabel>Slide Transition</InputLabel>
+            <Select
+              value={slideTransition}
+              onChange={(e) => setSlideTransition(e.target.value)}
+              fullWidth
+              variant="outlined"
+            >
+              <MenuItem value="none">None</MenuItem>
+              <MenuItem value="fade">Fade</MenuItem>
+            </Select>
+          </Stack>
+        </DialogContent>
+        <DialogActions>
+          <Button 
+            onClick={() => setOpenComponentSettings(false)}
+            color="primary"
+          >
+            Cancel
+          </Button>
+          <Button 
+            onClick={handleSave}
+            variant="contained"
+          >
+            Save
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </>
+  );
+};
+
+export default SlidesBarComponent;
