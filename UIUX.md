@@ -1,0 +1,11 @@
+- Consistent UI design has been used. All buttons to go back have been placed on the top left hand side of the screen
+- Well known icons have been used to convey meaning of elements to allow for more efficient use of the app
+- Interactable elements interact with the user's cursor by turning the cursor to pointer, changing style on hover, etc
+- Any irreversible and hard to reverse actions have a confirmation modal so the user doesn't make any mistakes
+- The save status is always visible when the user is editing their presentation so they know if it's save to close the window or not
+- There is a clear visual hierarchy. Buttons are coloured with primary colours consistently to indicate to the user of their functionality. Titles have a large font and bold
+- UI has a visually appealing but simple layout and colour scheme which allows the user to use the app without getting distracted by any design elements
+- Slide number is visible on the bottom left portion while editing. This number has a faded black background for better visibility
+- Elements have a light blue highlight when selected to indicate to the user that they have selected the element
+- Small boxes appear on the corners of elements so the user has an easier time to resize elements
+- The cursor updates to indicate when the user is dragging elements or slides.

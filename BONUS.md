@@ -1,0 +1,16 @@
+- The user is given an option to automatically mute videos that play
+- Preview page can go full screen
+- Mouse and navigation panel in preview page disappear if inactive for 3 seconds
+- You can preview past versions of the slide so you know what exactly you’re restoring
+- User is able to chose the gradient angle
+- User can rearrange slides without the need to open a separate screen
+- All changes to presentations are auto saved
+- An asthetically pleasing UI design has been used
+- Presentations have have descriptions. Descriptions can be edited. Descriptions are shown in the version history panel as well
+- Passwords are checked for strength on register
+- Keyboard controls can also be used to arrarange slides: select a slide from the slide bar, press and hold control, use the left and right arrow keys
+- Thumbnails can be removed from presentations
+- Slide display is fixed to 16:9 aspect ratio which is the conventional ratio for presentaitons as that is what most computers use
+- Slide display automatically resizes to fit as much of the screen as possible while maintaining aspect ratio
+- Tool bar is hidable for better view of the slide while editing. Can retrieve tool bar by hoving cursor over the area
+- Version history panel gives the time that save was made
