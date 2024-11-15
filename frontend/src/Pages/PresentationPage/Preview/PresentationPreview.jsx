@@ -196,4 +196,55 @@ export default function PresentationPreview() {
                 index={element.index} 
                 slideNum={currentSlide}
                 preview={true}
-       
+              >
+                {renderTextContent(element)}
+              </Block>
+            ))}
+
+            {/* Navigation Controls */}
+            <Box
+              sx={{
+                position: 'absolute',
+                bottom: '20px',
+                left: '50%',
+                transform: 'translateX(-50%)',
+                display: showControls ? 'flex' : 'none',
+                alignItems: 'center',
+                gap: 2,
+                backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                padding: '8px 16px',
+                borderRadius: '20px',
+                zIndex: 1000,
+                animation: `${animation} 0.5s`, // Apply fade-in or fade-out animation
+                minWidth: "235px"
+              }}
+            >
+              <IconButton
+                title="View Previous Slide"
+                disabled={currentSlide === 1}
+                onClick={(e) => {e.stopPropagation(); navigate(version ? `#/${currentSlide - 1}/${getPreviewVersion()}` : `#/${currentSlide - 1}`);}}
+                sx={{ color: 'white' }}
+              >
+                <ArrowLeft />
+              </IconButton>
+              <Box sx={{ color: 'white', fontSize: '1rem' }}>
+                {currentSlide} / {version ? version?.slides.length : getSlides(presentations)?.length}
+              </Box>
+              <IconButton
+                title="View Next Slide"
+                disabled={currentSlide === (version ? version?.slides.length : getSlides(presentations)?.length)}
+                onClick={(e) => {e.stopPropagation(); handleAdvanceSlide();}}
+                sx={{ color: 'white' }}
+              >
+                <ArrowRight />
+              </IconButton>
+              <IconButton title={isFullscreen ? "Exit Fullscreen" : "Enter Fullscreen"} onClick={toggleFullscreen} sx={{ color: 'white' }}>
+                {isFullscreen ? <FullscreenExit /> : <Fullscreen />}
+              </IconButton>
+            </Box>
+          </Box>
+        </Box>
+      </Box>
+    </>
+  );
+}
