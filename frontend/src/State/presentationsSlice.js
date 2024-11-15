@@ -370,3 +370,78 @@ const presentationsSlice = createSlice({
       const presentation = state.presentations.find((presentation) => presentation.id === getCurrentPresentationId());
       const slide = presentation.slides.find(s => s.slideNum == index);
       slide.transition = slideTransition;
+
+      state.shouldSave = true;
+    },
+    loadVersion: (state, action) => {
+      const { version, id } = action.payload;
+      const presentation = state.presentations.find(p => p.id == id);
+      presentation.title = version.title;
+      presentation.description = version.description;
+      presentation.thumbnail = version.thumbnail;
+      presentation.defaultBackground = version.defaultBackground;
+      presentation.slides = JSON.parse(JSON.stringify(version.slides));
+
+      const index = presentation.versionHistory.findIndex(ver => ver.dateTime == version.dateTime);
+      presentation.versionHistory.splice(0, index + 1);
+
+      state.shouldSave = true;
+    }
+  },
+  extraReducers: (builder) => {
+    builder.addCase(fetchPresentations.pending, (state) => {
+      state.loading = true;
+    })
+    builder.addCase(fetchPresentations.fulfilled, (state, action) => {
+      state.loading = false;
+      state.presentations = action.payload;
+      state.error = '';
+    })
+    builder.addCase(fetchPresentations.rejected, (state, action) => {
+      state.loading = false;
+      state.presentations = [];
+      state.error = action.error.message;
+    })
+
+    builder.addCase(savePresentations.pending, (state) => {
+      state.loading = true;
+    })
+    builder.addCase(savePresentations.fulfilled, (state) => {
+      state.loading = false;
+      state.error = '';
+      state.shouldSave = false;
+    })
+    builder.addCase(savePresentations.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.error.message;
+    });
+  }
+});
+
+export const {
+  addNewSlide,
+  deleteSlide,
+  updateSlidesBarOrder,
+  setPresentations,
+  createNewPresentation,
+  addTextElement,
+  updateElementPosition,
+  updateElementSize,
+  deletePresentation,
+  updatePresentationTitle,
+  updatePresentationThumbnail,
+  addImageElement,
+  addVideoElement,
+  addCodeElement,
+  deleteElement,
+  setDefaultBackground,
+  updateTextElement,
+  updateImageElement,
+  updateVideoElement,
+  updateCodeElement,
+  loadVersion,
+  updateSlideBackground,
+  updateSlideTranistion,
+  updatePresentationDescription,
+} = presentationsSlice.actions;
+export default presentationsSlice.reducer;
