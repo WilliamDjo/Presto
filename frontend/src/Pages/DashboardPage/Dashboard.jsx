@@ -157,3 +157,94 @@ const DashboardPage = () => {
                 label="Presentation Description"
                 type="text"
                 fullWidth
+                variant="filled"
+                multiline
+                minRows={4}
+                value={presentationDescription}
+                onChange={(e) => setPresentationDescription(e.target.value)}
+                sx={{ mt: 2 }}
+              />
+
+              <ThumbnailUpload
+                thumbnail={presentationThumbnail}
+                resetThumbnail={() => setPresentationThumbnail("")}
+                onThumbnailChange={handleThumbnailChange}
+              />
+            </DialogContent>
+            <DialogActions sx={{ px: 3, pb: 3 }}>
+              <CustomButton
+                onClick={handleCreateNewPresentation}
+                variant="contained"
+                disabled={!presentationTitle.trim()}
+                text="Create"
+              />
+            </DialogActions>
+            <DialogActions sx={{ px: 3, pb: 3 }}>
+              <CustomButton variant="outlined" text="Cancel" onClick={() => { setIsModalOpen(false); }} />
+            </DialogActions>
+          </Box>
+        </Dialog>
+
+        <Grid container spacing={3}>
+          {presentations?.map((presentation) => (
+            <Grid item xs={12} sm={6} md={4} key={presentation.id}>
+              <Card
+                sx={{
+                  width: '100%',
+                  minWidth: '100px',
+                  aspectRatio: '2 / 1', // Set 2:1 ratio
+                  display: 'flex',
+                  alignItems: 'center',
+                  p: 2,
+                  cursor: 'pointer',
+                  transition: 'all 0.2s',
+                  '&:hover': {
+                    transform: 'translateY(-4px)',
+                    boxShadow: 3
+                  },
+                }}
+                onClick={() => navigate(`/presentation/${presentation.id}#/1`)}
+              >
+                {presentation.thumbnail ? (
+                  <CardMedia
+                    component="img"
+                    image={presentation.thumbnail}
+                    alt={presentation.title}
+                    sx={{
+                      width: 64, // Display as an icon-sized image
+                      height: 64,
+                      borderRadius: '4px',
+                      mr: 2
+                    }}
+                  />
+                ) : (
+                  <Image
+                    sx={{
+                      width: 64,
+                      height: 64,
+                      color: 'grey.500',
+                      mr: 2,
+                    }}
+                  />
+                )}
+                <Box>
+                  <Typography variant="h6" component="h2" noWrap>
+                    {presentation.title}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary" noWrap>
+                    {presentation.description || 'No description available'}
+                  </Typography>
+                  <Typography variant="caption" color="text.secondary">
+                    {presentation.slides.length} slide{presentation.slides.length !== 1 ? 's' : ''}
+                  </Typography>
+                </Box>
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
+      </Container>
+    </>
+  );
+};
+
+export default DashboardPage;
