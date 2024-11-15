@@ -3,13 +3,13 @@ import { useNavigate } from 'react-router-dom';
 
 
 const CustomLink = ({ text, navigateTo }) => {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
-    return (
-        <Link onClick={() => navigate(navigateTo)} underline="hover" sx={{ cursor: 'pointer', ml: 1 }}>
-            {text}
-        </Link>
-    );
+  return (
+    <Link onClick={() => navigate(navigateTo)} underline="hover" sx={{ cursor: 'pointer', ml: 1 }}>
+      {text}
+    </Link>
+  );
 };
 
 export default CustomLink;
