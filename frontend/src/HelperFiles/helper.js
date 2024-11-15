@@ -140,6 +140,7 @@ export const getPresentation = (presentations) => {
   return presentations?.find((presentation) => presentation.id == getCurrentPresentationId());
 };
 
+// Add error handling and null checks to presentation getters
 export const getSlides = (presentations) => {
   return presentations?.find((presentation) => presentation.id == getCurrentPresentationId()).slides;
 };
@@ -179,13 +180,14 @@ export const usePresentation = () => {
   
   const currentPresentation = presentations?.find(p => p.id == presentationId);
   
+  // Return safe defaults if data is missing
   return {
     presentationId,
-    currentPresentation,
-    presentations,
+    currentPresentation: currentPresentation || null,
+    presentations: presentations || [],
     saveStatus,
-    title: getPresentationTitle(presentations),
-    thumbnail: currentPresentation?.thumbnail
+    title: currentPresentation?.title || "Untitled Presentation",
+    thumbnail: currentPresentation?.thumbnail || null
   };
 };
 
@@ -196,6 +198,28 @@ export const renderBackground = (presentations, index) => {
   const background = slide?.background.type === "none" ? getPresentationBackgroundSetting(presentations) : slide?.background;
 
   switch (background?.type) {
+  case "solid":
+    backgroundStyle = {
+      backgroundColor: background.attributes.color
+    }
+    break;
+  case "gradient":
+    backgroundStyle = {
+      background: `linear-gradient(${background.attributes.angle}deg, ${background.attributes.startingColor}, ${background.attributes.endingColor})`,
+    };
+    break;
+  case "image":
+    backgroundStyle = {
+      backgroundImage: `url(${background.attributes.image})`,
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      backgroundRepeat: 'no-repeat',
+      height: '100%',
+      width: '100%',
+    };
+    break;
+  default:
+    backgroundStyle = {backgroundColor: "white"};
   case "solid":
     backgroundStyle = {
       backgroundColor: background.attributes.color
@@ -230,6 +254,28 @@ export const renderPreviewBackground = (version, index) => {
   let backgroundStyle;
 
   switch (background.type) {
+  case "solid":
+    backgroundStyle = {
+      backgroundColor: background.attributes.color
+    }
+    break;
+  case "gradient":
+    backgroundStyle = {
+      background: `linear-gradient(${background.attributes.angle}deg, ${background.attributes.startingColor}, ${background.attributes.endingColor})`,
+    };
+    break;
+  case "image":
+    backgroundStyle = {
+      backgroundImage: `url(${background.attributes.image})`,
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      backgroundRepeat: 'no-repeat',
+      height: '100%',
+      width: '100%',
+    };
+    break;
+  default:
+    backgroundStyle = {backgroundColor: "white"};
   case "solid":
     backgroundStyle = {
       backgroundColor: background.attributes.color

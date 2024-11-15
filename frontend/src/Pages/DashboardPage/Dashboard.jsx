@@ -125,7 +125,8 @@ const DashboardPage = () => {
           <Typography variant="h4" component="h1" sx={{ flexGrow: 1, fontSize: titleFontSize }}>
             Presentations
           </Typography>
-          <IconButton title="Create New Presentation" variant="contained" color="primary" onClick={() => { setIsModalOpen(true); setError('') }}>
+          <IconButton title="Create New Presentation" variant="contained" color="primary" onClick={() => { setIsModalOpen(true); setError('') }}  data-testid="button-new-presentation">
+             
             <AddCircle fontSize="large"/>
           </IconButton>
         </Box>
@@ -151,6 +152,7 @@ const DashboardPage = () => {
                 value={presentationTitle}
                 onChange={(e) => setPresentationTitle(e.target.value)}
                 sx={{ mt: 2 }}
+                slotProps={ { input: {'data-testid': 'presentation-name'} }}
               />
               <TextField
                 margin="dense"
@@ -177,6 +179,7 @@ const DashboardPage = () => {
                 variant="contained"
                 disabled={!presentationTitle.trim()}
                 text="Create"
+                datatestid="button-create-presentation"
               />
             </DialogActions>
             <DialogActions sx={{ px: 3, pb: 3 }}>
@@ -186,7 +189,7 @@ const DashboardPage = () => {
         </Dialog>
 
         <Grid container spacing={3}>
-          {presentations?.map((presentation) => (
+          {presentations?.map((presentation, index) => (
             <Grid item xs={12} sm={6} md={4} key={presentation.id}>
               <Card
                 sx={{
@@ -204,6 +207,7 @@ const DashboardPage = () => {
                   },
                 }}
                 onClick={() => navigate(`/presentation/${presentation.id}#/1`)}
+                datatestid={`presentation-${index}`}
               >
                 {presentation.thumbnail ? (
                   <CardMedia
