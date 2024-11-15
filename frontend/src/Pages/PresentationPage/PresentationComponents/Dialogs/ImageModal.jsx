@@ -195,3 +195,65 @@ export default function ImageModal({ open, handleClose, initialData, isEditing =
                 textAlign: 'center',
                 bgcolor: 'grey.100'
               }}
+            >
+              <img
+                src={previewUrl}
+                alt="Preview"
+                style={{
+                  maxWidth: '100%',
+                  maxHeight: '200px',
+                  objectFit: 'contain'
+                }}
+                onError={() => setError('Unable to load image')}
+              />
+            </Paper>
+          )}
+
+          <Box>
+            <Box sx={{ mb: 1 }}>Width (relative to slide)</Box>
+            <Slider
+              value={formData.width}
+              onChange={handleSliderChange('width')}
+              min={0.1}
+              max={1}
+              step={0.1}
+              marks
+              valueLabelDisplay="auto"
+            />
+          </Box>
+        
+          <Box>
+            <Box sx={{ mb: 1 }}>Height (relative to slide)</Box>
+            <Slider
+              value={formData.height}
+              onChange={handleSliderChange('height')}
+              min={0.1}
+              max={1}
+              step={0.1}
+              marks
+              valueLabelDisplay="auto"
+            />
+          </Box>
+
+          <TextField
+            fullWidth
+            label="Alt Text"
+            value={formData.altText}
+            onChange={handleChange('altText')}
+            helperText="Describe the image for accessibility"
+          />
+        </Box>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={handleClose}>Cancel</Button>
+        <Button 
+          onClick={handleSubmit}
+          variant="contained"
+          disabled={!formData.imageSource || !formData.altText.trim() || !!error}
+        >
+          {isEditing ? 'Save Changes' : 'Add Image'}
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
+}
