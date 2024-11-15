@@ -189,3 +189,129 @@ export default function VideoModal({ open, handleClose, initialData, isEditing =
               <li>youtube.com/embed/VIDEO_ID</li>
             </ul>
           </Alert>
+          <TextField
+            fullWidth
+            label="Video URL"
+            value={formData.videoSource}
+            onChange={handleChange('videoSource')}
+            error={!!error}
+            helperText={error || "Enter YouTube embed URL or direct video URL"}
+            placeholder="https://www.youtube.com/embed/..."
+          />
+
+          {formData.videoSource && previewVideoId && (
+            <Paper 
+              elevation={2} 
+              sx={{ 
+                p: 2, 
+                textAlign: 'center',
+                bgcolor: 'grey.100',
+                overflow: 'hidden'
+              }}
+            >
+              <Typography variant="subtitle2" color="success.main" sx={{ mb: 1 }}>
+                ✓ Valid YouTube URL
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                Video ID: {previewVideoId}
+              </Typography>
+              <Typography variant="subtitle2" sx={{ mb: 1 }}>Preview</Typography>
+              <iframe
+                src={convertToEmbedUrl(previewVideoId)}
+                style={{
+                  width: '100%',
+                  aspectRatio: '16/9',
+                  border: 'none'
+                }}
+                allowFullScreen
+              /> 
+            </Paper>
+          )}
+
+          <Box>
+            <Box sx={{ mb: 1 }}>Width (relative to slide)</Box>
+            <Slider
+              value={formData.width}
+              onChange={handleSliderChange('width')}
+              min={0.1}
+              max={1}
+              step={0.1}
+              marks
+              valueLabelDisplay="auto"
+            />
+          </Box>
+          
+          <Box>
+            <Box sx={{ mb: 1 }}>Height (relative to slide)</Box>
+            <Slider
+              value={formData.height}
+              onChange={handleSliderChange('height')}
+              min={0.1}
+              max={1}
+              step={0.1}
+              marks
+              valueLabelDisplay="auto"
+            />
+          </Box>
+
+          <TextField
+            fullWidth
+            label="Alt Text"
+            value={formData.altText}
+            onChange={handleChange('altText')}
+            helperText="Describe the video for accessibility"
+          />
+
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+            <Typography variant="subtitle2" sx={{ mb: 1 }}>Video Options</Typography>
+            
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={formData.autoplay}
+                  onChange={handleChange('autoplay')}
+                />
+              }
+              label={
+                <Box>
+                  <Typography>Autoplay</Typography>
+                  <Typography variant="caption" color="text.secondary">
+                    Note: Autoplay requires muted to be enabled due to browser policies
+                  </Typography>
+                </Box>
+              }
+            />
+            
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={formData.muted}
+                  onChange={handleChange('muted')}
+                />
+              }
+              label={
+                <Box>
+                  <Typography>Muted</Typography>
+                  <Typography variant="caption" color="text.secondary">
+                    Start video without sound (can be unmuted by viewer)
+                  </Typography>
+                </Box>
+              }
+            />
+          
+          </Box>
+        </Box>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={handleClose}>Cancel</Button>
+        <Button 
+          onClick={handleSubmit}
+          variant="contained"
+          disabled={!formData.videoSource || !formData.altText?.trim() || !!error}
+        >
+          {isEditing ? 'Save Changes' : 'Add Video'}
+        </Button>
+      </DialogActions>
+    </Dialog>
+  )
+}
