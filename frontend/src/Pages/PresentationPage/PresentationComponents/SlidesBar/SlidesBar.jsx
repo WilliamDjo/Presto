@@ -92,7 +92,7 @@ const SlidesBar = () => {
         <ArrowLeft />
       </IconButton >
 
-      <Box ref={slidesContainer} sx={{ display: "flex", alignItems: "center", gap: "2%", width: "100%", height: "100%", overflowX: "auto" }}>
+      <Box ref={slidesContainer} sx={{ display: "flex", alignItems: "center", gap: 2, width: "100%", height: "100%", overflowX: "auto" }}>
         <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd} onDragMove={handleDragMove} autoScroll={dragAutoScrollable} onDragStart={handleDragStart}>
           {getSlides(presentations) && (
             <SortableContext items={getSlides(presentations)} strategy={horizontalListSortingStrategy}>

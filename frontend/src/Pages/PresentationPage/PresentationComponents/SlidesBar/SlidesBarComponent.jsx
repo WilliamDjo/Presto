@@ -123,7 +123,7 @@ const SlidesBarComponent = ({ id, index }) => {
     transition,
     cursor: isDraggingEvent ? 'grabbing' : 'pointer',
     position: 'relative',
-    minWidth: "8%",
+    minWidth: "100px",
     display: "flex", 
     justifyContent: "center", 
     alignItems: "center", 

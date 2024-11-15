@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux';
 import { addNewSlide } from '../../../../State/presentationsSlice';
 
 const AddSlidesBarComponent = ({ sx = { 
-  minWidth: "8%", 
+  minWidth: "100px", 
   backgroundColor: "white",
   display: "flex", 
   justifyContent: "center", 
