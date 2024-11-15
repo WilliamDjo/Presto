@@ -1,6 +1,6 @@
 import { CssBaseline, Box } from '@mui/material';
 import { useEffect, useState } from 'react';
-import { getPresentationBackgroundSetting } from '../../HelperFiles/helper';
+import { getCurrentPresentationId } from '../../HelperFiles/helper';
 import SlidesBar from './PresentationComponents/SlidesBar/SlidesBar';
 import DeleteDialog from './PresentationComponents/Dialogs/DeleteDialog';
 import SettingsDialog from './PresentationComponents/Dialogs/SettingsDialog';
@@ -13,7 +13,7 @@ import { useNavigate } from 'react-router-dom';
 
 const PresentationPage = () => {
   const presentations = useSelector((state) => state.presentations.presentations);
-  const presentationId = parseInt(location.pathname.split("/")[2]);
+  const presentationId = parseInt(getCurrentPresentationId());
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [showSettingsDialog, setShowSettingsDialog] = useState(false);
 
@@ -21,7 +21,7 @@ const PresentationPage = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(savePresentations(location.pathname.split("/")[2]));
+    dispatch(savePresentations(getCurrentPresentationId()));
   }, [presentations, dispatch]);
 
   const handleDelete = () => {

@@ -96,10 +96,9 @@ const DashboardPage = () => {
     dispatch(savePresentations(null));
   }, [presentations, dispatch]);
 
+  const width = window.innerWidth;
   useEffect(() => {
     const handleResize = () => {
-      const width = window.innerWidth;
-
       if (width > 1200) {
         setTitleFontSize('2.5rem');
       } else if (width > 800) {
@@ -113,7 +112,7 @@ const DashboardPage = () => {
     handleResize(); // Initial call to set font sizes
 
     return () => window.removeEventListener('resize', handleResize);
-  }, [window.innerWidth]);
+  }, [width]);
 
   return (
     <>

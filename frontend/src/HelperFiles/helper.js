@@ -137,45 +137,45 @@ export async function logoutFetch(path, token) {
 }
 
 export const getPresentation = (presentations) => {
-  return presentations?.find((presentation) => presentation.id == location.pathname.split("/")[2]);
+  return presentations?.find((presentation) => presentation.id == getCurrentPresentationId());
 };
 
 export const getSlides = (presentations) => {
-  return presentations?.find((presentation) => presentation.id == location.pathname.split("/")[2]).slides;
+  return presentations?.find((presentation) => presentation.id == getCurrentPresentationId()).slides;
 };
 
 export const getSlideByPosition = (presentations, slidePosition) => {
-  return presentations?.find((presentation) => presentation.id == location.pathname.split("/")[2]).slides.find((slide) => slide.slideNum === slidePosition);
+  return presentations?.find((presentation) => presentation.id == getCurrentPresentationId()).slides.find((slide) => slide.slideNum === slidePosition);
 }
 
 export const getSlidePositionById = (presentations, slideId) => {
-  return presentations?.find((presentation) => presentation.id == location.pathname.split("/")[2]).slides.findIndex((slide) => slide.id === slideId) + 1;
+  return presentations?.find((presentation) => presentation.id == getCurrentPresentationId()).slides.findIndex((slide) => slide.id === slideId) + 1;
 };
 
 export const getElementByIndex = (presentations, elementIndex, slideNum) => {
-  return presentations?.find((presentation) => presentation.id == location.pathname.split("/")[2]).slides[slideNum - 1].contents[elementIndex];
+  return presentations?.find((presentation) => presentation.id == getCurrentPresentationId()).slides[slideNum - 1].contents[elementIndex];
 };
 
 export const getPresentationTitle = (presentations) => {
-  return presentations?.find((presentation) => presentation.id == location.pathname.split("/")[2]).title;
+  return presentations?.find((presentation) => presentation.id == getCurrentPresentationId()).title;
 };
 
 export const getPresentationDescription = (presentations) => {
-  return presentations?.find((presentation) => presentation.id == location.pathname.split("/")[2]).description;
+  return presentations?.find((presentation) => presentation.id == getCurrentPresentationId()).description;
 };
 
 export const getPresentationThumbnail = (presentations) => {
-  return presentations?.find((presentation) => presentation.id == location.pathname.split("/")[2]).thumbnail;
+  return presentations?.find((presentation) => presentation.id == getCurrentPresentationId()).thumbnail;
 };
 
 export const getPresentationBackgroundSetting = (presentations) => {
-  return presentations?.find((presentation) => presentation.id == location.pathname.split("/")[2]).defaultBackground;
+  return presentations?.find((presentation) => presentation.id == getCurrentPresentationId()).defaultBackground;
 }
 
 export const usePresentation = () => {
   const presentations = useSelector((state) => state.presentations.presentations);
   const saveStatus = useSelector((state) => state.saveStatus) ? "Saved" : "Saving...";
-  const presentationId = parseInt(location.pathname.split("/")[2]);
+  const presentationId = parseInt(getCurrentPresentationId());
   
   const currentPresentation = presentations?.find(p => p.id == presentationId);
   
@@ -196,28 +196,28 @@ export const renderBackground = (presentations, index) => {
   const background = slide?.background.type === "none" ? getPresentationBackgroundSetting(presentations) : slide?.background;
 
   switch (background?.type) {
-    case "solid":
-      backgroundStyle = {
-        backgroundColor: background.attributes.color
-      }
-      break;
-    case "gradient":
-      backgroundStyle = {
-        background: `linear-gradient(${background.attributes.angle}deg, ${background.attributes.startingColor}, ${background.attributes.endingColor})`,
-      };
-      break;
-    case "image":
-      backgroundStyle = {
-        backgroundImage: `url(${background.attributes.image})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat',
-        height: '100%',
-        width: '100%',
-      };
-      break;
-    default:
-      backgroundStyle = {backgroundColor: "white"};
+  case "solid":
+    backgroundStyle = {
+      backgroundColor: background.attributes.color
+    }
+    break;
+  case "gradient":
+    backgroundStyle = {
+      background: `linear-gradient(${background.attributes.angle}deg, ${background.attributes.startingColor}, ${background.attributes.endingColor})`,
+    };
+    break;
+  case "image":
+    backgroundStyle = {
+      backgroundImage: `url(${background.attributes.image})`,
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      backgroundRepeat: 'no-repeat',
+      height: '100%',
+      width: '100%',
+    };
+    break;
+  default:
+    backgroundStyle = {backgroundColor: "white"};
   }
 
   return backgroundStyle;
@@ -230,31 +230,47 @@ export const renderPreviewBackground = (version, index) => {
   let backgroundStyle;
 
   switch (background.type) {
-    case "solid":
-      backgroundStyle = {
-        backgroundColor: background.attributes.color
-      }
-      break;
-    case "gradient":
-      backgroundStyle = {
-        background: `linear-gradient(${background.attributes.angle}deg, ${background.attributes.startingColor}, ${background.attributes.endingColor})`,
-      };
-      break;
-    case "image":
-      backgroundStyle = {
-        backgroundImage: `url(${background.attributes.image})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat',
-        height: '100%',
-        width: '100%',
-      };
-      break;
-    default:
-      backgroundStyle = {backgroundColor: "white"};
+  case "solid":
+    backgroundStyle = {
+      backgroundColor: background.attributes.color
+    }
+    break;
+  case "gradient":
+    backgroundStyle = {
+      background: `linear-gradient(${background.attributes.angle}deg, ${background.attributes.startingColor}, ${background.attributes.endingColor})`,
+    };
+    break;
+  case "image":
+    backgroundStyle = {
+      backgroundImage: `url(${background.attributes.image})`,
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      backgroundRepeat: 'no-repeat',
+      height: '100%',
+      width: '100%',
+    };
+    break;
+  default:
+    backgroundStyle = {backgroundColor: "white"};
   }
 
   return backgroundStyle;
+};
+
+export const getRoute = () => {
+  return location.pathname.split("/")[1];
+};
+
+export const getCurrentSlideNum = () => {
+  return location.hash.split("/")[1];
+};
+
+export const getCurrentPresentationId = () => {
+  return location.pathname.split("/")[2];
+};
+
+export const getPreviewVersion = () => {
+  return location.hash.split("/")[2];
 };
 
 export default { isValidEmail, isValidName, isValidPassword, isValidConfirmPassword };

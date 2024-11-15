@@ -9,18 +9,18 @@ import PresentationPreview from '../Pages/PresentationPage/Preview/PresentationP
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { setPresentations, fetchPresentations } from '../State/presentationsSlice';
-
+import { getRoute } from '../HelperFiles/helper';
 
 const Router = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (!localStorage.getItem('token') && !['login', 'register', ''].includes(location.pathname.split("/")[1])) {
+    if (!localStorage.getItem('token') && !['login', 'register', ''].includes(getRoute())) {
       navigate('/');
     }
     
-    if (localStorage.getItem('token') && !['dashboard', 'presentation', 'preview'].includes(location.pathname.split("/")[1])) {
+    if (localStorage.getItem('token') && !['dashboard', 'presentation', 'preview'].includes(getRoute())) {
       navigate('/dashboard');
     }
 
