@@ -373,3 +373,42 @@ const Block = ({ parentHeight, parentWidth, index, interactable, slideNum, previ
         />
       )}
 
+      {/* Add VideoModal for editing */}
+      {editModalOpen && element.type === 'video' && (
+        <VideoModal 
+          open={editModalOpen}
+          handleClose={handleCloseModal}
+          initialData={{
+            width: element.attributes.elementSize.x,
+            height: element.attributes.elementSize.y,
+            videoSource: element.attributes.videoSource,
+            altText: element.attributes.altText,
+            autoplay: element.attributes.autoplay,
+            muted: element.attributes.muted,
+            controls: element.attributes.controls,
+            index: element.index
+          }}
+          isEditing={true}
+        />
+      )}
+
+      {/* Add CodeModal for editing */}
+      {editModalOpen && element.type === 'code' && (
+        <CodeModal 
+          open={editModalOpen}
+          handleClose={handleCloseModal}
+          initialData={{
+            width: element.attributes.elementSize.x,
+            height: element.attributes.elementSize.y,
+            textContent: element.attributes.textContent,
+            fontSize: element.attributes.fontSize,
+            index: element.index
+          }}
+          isEditing={true}
+        />
+      )}
+    </>
+  );
+};
+
+export default Block;
