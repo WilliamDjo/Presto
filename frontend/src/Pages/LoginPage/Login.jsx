@@ -1,11 +1,15 @@
 // Import necessary modules
 import { useState } from 'react';
-import { TextField, Typography, Container, Box, Paper, Avatar, IconButton, Link, Alert } from '@mui/material';
+import { TextField, Typography, Box, Avatar, IconButton, Alert, CssBaseline } from '@mui/material';
 import { LockOutlined } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
-import CustomButton from '../../components/CustomButton';
-import CustomLink from '../../Components/CustomLink'
 import { authFetch } from '../../HelperFiles/helper';
+import CustomButton from '../../Components/CustomButton';
+import CustomLink from '../../Components/CustomLink'
+import CentralPanel from '../../Components/CentralPanel';
+import BackButton from '../../Components/BackButton';
+import { useDispatch } from 'react-redux';
+import { fetchPresentations } from '../../State/presentationsSlice';
 
 
 const Login = () => {
@@ -13,6 +17,7 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   // Handle form submission
   const handleLoginClick = async (e) => {  // make this async
@@ -24,6 +29,7 @@ const Login = () => {
 
       if (res.success) {
         localStorage.setItem('token', res.data.token);
+        dispatch(fetchPresentations());
         navigate('/dashboard');
       } else {
         setError(res.error);
@@ -34,8 +40,11 @@ const Login = () => {
   };
 
   return (
-    <Container maxWidth="xs" sx={{ mt: 8 }}>
-      <Paper elevation={3} sx={{ p: 4, borderRadius: 2 }}>
+    <>
+      <CssBaseline />
+      <CentralPanel>
+        <BackButton color="" onClick={() => navigate('/')} />
+
         <Box
           display="flex"
           flexDirection="column"
@@ -87,18 +96,11 @@ const Login = () => {
             sx={{ mt: 2 }}
           />
         </Box>
-        <CustomButton
-          text="Back to Home"
-          onClick={() => navigate('/')}
-          variant="outlined"
-          sx={{ mt: 2 }}
-          type="button"
-        />
         <Typography variant="body2" color="textSecondary" sx={{ mt: 3, textAlign: 'center' }}>
-          Don't have an account? <CustomLink text="Sign up" navigateTo="/register" />
+          Don&apos;t have an account? <CustomLink text="Register" navigateTo="/register" />
         </Typography>
-      </Paper>
-    </Container>
+      </CentralPanel>
+    </>
   );
 };
 

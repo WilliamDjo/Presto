@@ -1,13 +1,15 @@
-import { Container, Typography, Box, Paper } from '@mui/material';
+import { CssBaseline, Typography, Box } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import CustomButton from '../../components/CustomButton';
+import CustomButton from '../../Components/CustomButton';
+import CentralPanel from '../../Components/CentralPanel';
 
 const LandingPage = () => {
   const navigate = useNavigate();
 
   return (
-    <Container maxWidth="md" sx={{ mt: 8 }}>
-      <Paper elevation={3} sx={{ p: 4, borderRadius: 2, textAlign: 'center' }}>
+    <>
+      <CssBaseline />
+      <CentralPanel maxWidth="md" sx={{ mt: 8 }}>
         <Typography variant="h3" component="h1" fontWeight="bold" gutterBottom>
           Presto
         </Typography>
@@ -35,8 +37,8 @@ const LandingPage = () => {
             sx={{ py: 1.5, px: 4 }}
           />
         </Box>
-      </Paper>
-    </Container>
+      </CentralPanel>
+    </>
   );
 };
 
