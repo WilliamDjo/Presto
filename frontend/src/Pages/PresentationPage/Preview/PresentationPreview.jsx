@@ -217,6 +217,7 @@ export default function PresentationPreview() {
                 borderRadius: '20px',
                 zIndex: 1000,
                 animation: `${animation} 0.5s`, // Apply fade-in or fade-out animation
+                minWidth: "235px"
               }}
             >
               <IconButton

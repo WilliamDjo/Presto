@@ -90,7 +90,7 @@ export async function authFetch(userData, path) {
     );
 
     if (!response) {
-      throw new Error('Incorrect email or password');
+      throw new Error('Email already exists');
     }
 
     return {

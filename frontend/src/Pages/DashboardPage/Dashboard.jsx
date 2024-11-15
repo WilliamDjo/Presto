@@ -29,6 +29,8 @@ const DashboardPage = () => {
   const [presentationDescription, setPresentationDescription] = useState('');
   const [presentationThumbnail, setPresentationThumbnail] = useState('');
   const [error, setError] = useState('');
+  const [titleFontSize, setTitleFontSize] = useState('2rem');
+  
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const presentations = useSelector((state) => state.presentations.presentations);
@@ -94,6 +96,25 @@ const DashboardPage = () => {
     dispatch(savePresentations(null));
   }, [presentations, dispatch]);
 
+  useEffect(() => {
+    const handleResize = () => {
+      const width = window.innerWidth;
+
+      if (width > 1200) {
+        setTitleFontSize('2.5rem');
+      } else if (width > 800) {
+        setTitleFontSize('2rem');
+      } else {
+        setTitleFontSize('1.5rem');
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    handleResize(); // Initial call to set font sizes
+
+    return () => window.removeEventListener('resize', handleResize);
+  }, [window.innerWidth]);
+
   return (
     <>
       <CssBaseline />
@@ -102,17 +123,12 @@ const DashboardPage = () => {
           <IconButton onClick={handleLogout} color="primary" sx={{ mr: 2 }}>
             <Logout fontSize="large" sx={{ transform: 'scaleX(-1)' }} />
           </IconButton>
-          <Typography variant="h4" component="h1" sx={{ flexGrow: 1 }}>
+          <Typography variant="h4" component="h1" sx={{ flexGrow: 1, fontSize: titleFontSize }}>
             Presentations
           </Typography>
-          <CustomButton
-            text="New Presentation"
-            variant="contained"
-            color="primary"
-            startIcon={<AddCircle />}
-            onClick={() => { setIsModalOpen(true); setError('') }}
-            fullWidth={false}
-          />
+          <IconButton variant="contained" color="primary" onClick={() => { setIsModalOpen(true); setError('') }}>
+            <AddCircle fontSize="large"/>
+          </IconButton>
         </Box>
 
         <Dialog

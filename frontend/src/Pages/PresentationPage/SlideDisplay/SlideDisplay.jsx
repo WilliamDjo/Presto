@@ -53,7 +53,6 @@ const SlideDisplay = () => {
   };
 
   const presentations = useSelector((state) => state.presentations.presentations);
-  console.log(presentations)
   return (
     <Box p={2} ref={slideContainerRef} sx={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100%", overflowY: 'auto', overflowX: 'auto' }}>
       <Box ref={slideRef} height={slideHeight} width={slideWidth} border={1} sx={{ position: "relative" }}>
