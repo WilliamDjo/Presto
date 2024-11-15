@@ -195,3 +195,178 @@ const presentationsSlice = createSlice({
     deleteElement: (state, action) => {
       state.presentations.find((presentation) => presentation.id == getCurrentPresentationId()).slides[parseInt(getCurrentSlideNum()) - 1].contents.splice(action.payload, 1);
       state.presentations.find((presentation) => presentation.id == getCurrentPresentationId()).slides[parseInt(getCurrentSlideNum()) - 1].contents.forEach((content, index) => content.index = index);
+      state.shouldSave = true;
+    },
+    updateTextElement: (state, action) => {
+      const slide = getSlides(state.presentations)[parseInt(getCurrentSlideNum()) - 1];
+      const elementIndex = action.payload.index;
+      
+      // Update the element attributes while preserving its position
+      slide.contents[elementIndex].attributes = {
+        ...slide.contents[elementIndex].attributes,
+        ...action.payload.attributes
+      };
+      state.shouldSave = true;
+    },
+    addImageElement: (state, action) => {
+      const slide = getSlides(state.presentations)[parseInt(getCurrentSlideNum()) - 1];
+      
+      const imageElement = {
+        index: slide.contents.length,
+        type: "image",
+        attributes: {
+          elementSize: action.payload.elementSize,
+          imageSource: action.payload.imageSource,
+          altText: action.payload.altText
+        },
+        position: {
+          x: 0,
+          y: 0
+        }
+      };
+      
+      const newSlideContents = [...slide.contents, imageElement];
+      
+      state.presentations.find(
+        (presentation) => presentation.id == getCurrentPresentationId()
+      ).slides[parseInt(getCurrentSlideNum()) - 1].contents = newSlideContents;
+      state.shouldSave = true;
+    },
+    updateImageElement: (state, action) => {
+      const slide = getSlides(state.presentations)[parseInt(getCurrentSlideNum()) - 1];
+      const elementIndex = action.payload.index;
+      
+      // Update the element attributes while preserving its position
+      slide.contents[elementIndex].attributes = {
+        ...slide.contents[elementIndex].attributes,
+        ...action.payload.attributes
+      };
+      state.shouldSave = true;
+    },
+    addVideoElement: (state, action) => {
+      const slide = getSlides(state.presentations)[parseInt(getCurrentSlideNum()) - 1];
+      
+      const videoElement = {
+        index: slide.contents.length,
+        type: "video",
+        attributes: {
+          elementSize: action.payload.elementSize,
+          videoSource: action.payload.videoSource,
+          altText: action.payload.altText,
+          autoplay: action.payload.autoplay,
+          muted: action.payload.muted,
+          controls: action.payload.controls
+        },
+        position: {
+          x: 0,
+          y: 0
+        }
+      };
+      
+      const newSlideContents = [...slide.contents, videoElement];
+      
+      state.presentations.find(
+        (presentation) => presentation.id == getCurrentPresentationId()
+      ).slides[parseInt(getCurrentSlideNum()) - 1].contents = newSlideContents;
+      state.shouldSave = true;
+    },
+    updateVideoElement: (state, action) => {
+      const slide = getSlides(state.presentations)[parseInt(getCurrentSlideNum()) - 1];
+      const elementIndex = action.payload.index;
+      
+      // Update the element attributes while preserving its position
+      slide.contents[elementIndex].attributes = {
+        ...slide.contents[elementIndex].attributes,
+        ...action.payload.attributes
+      };
+      state.shouldSave = true;
+    },
+    addCodeElement: (state, action) => {
+      const slide = getSlides(state.presentations)[parseInt(getCurrentSlideNum()) - 1];
+      
+      const codeElement = {
+        index: slide.contents.length,
+        type: "code",
+        attributes: {
+          elementSize: action.payload.elementSize,
+          textContent: action.payload.textContent,
+          fontSize: action.payload.fontSize,
+        },
+        position: {
+          x: 0,
+          y: 0
+        }
+      };
+      
+      const newSlideContents = [...slide.contents, codeElement];
+      
+      state.presentations.find(
+        (presentation) => presentation.id == getCurrentPresentationId()
+      ).slides[parseInt(getCurrentSlideNum()) - 1].contents = newSlideContents;
+      state.shouldSave = true;
+    },
+    updateCodeElement: (state, action) => {
+      const slide = getSlides(state.presentations)[parseInt(getCurrentSlideNum()) - 1];
+      const elementIndex = action.payload.index;
+      
+      // Update the element attributes while preserving its position
+      slide.contents[elementIndex].attributes = {
+        ...slide.contents[elementIndex].attributes,
+        ...action.payload.attributes
+      };
+      state.shouldSave = true;
+    },
+    updateElementPosition: (state, action) => {
+      state.presentations.find((presentation) => presentation.id == getCurrentPresentationId()).slides[parseInt(getCurrentSlideNum()) - 1].contents[action.payload.index].position = action.payload.position;
+      state.shouldSave = true;
+    },
+    updateElementSize: (state, action) => {
+      state.presentations.find((presentation) => presentation.id == getCurrentPresentationId()).slides[parseInt(getCurrentSlideNum()) - 1].contents[action.payload.index].attributes.elementSize = action.payload.size;
+      state.shouldSave = true;
+    },
+    updateSlidesBarOrder: (state, action) => {
+      const activeIndex = getSlidePositionById(state.presentations, action.payload.active) - 1;
+      const overIndex = getSlidePositionById(state.presentations, action.payload.over) - 1;
+
+      const movingSlide = state.presentations.find((presentation) => presentation.id === getCurrentPresentationId()).slides.splice(activeIndex, 1)[0];
+      state.presentations.find((presentation) => presentation.id === getCurrentPresentationId()).slides.splice(overIndex, 0, movingSlide);
+      state.presentations.find((presentation) => presentation.id === getCurrentPresentationId()).slides.forEach((slide, index) => slide.slideNum = index + 1);
+      state.shouldSave = true;
+    },
+    updatePresentationTitle: (state, action) => {
+      const { id, title } = action.payload;
+      const presentation = state.presentations.find(p => p.id == id);
+      if (presentation) {
+        presentation.title = title;
+      }
+      state.shouldSave = true;
+    },
+    updatePresentationThumbnail: (state, action) => {
+      const { id, thumbnail } = action.payload;
+      const presentation = state.presentations.find(p => p.id == id);
+      if (presentation) {
+        presentation.thumbnail = thumbnail;
+      }
+      state.shouldSave = true;
+    },
+    updatePresentationDescription: (state, action) => {
+      const { id, description } = action.payload;
+      const presentation = state.presentations.find(p => p.id == id);
+      if (presentation) {
+        presentation.description = description;
+      }
+      state.shouldSave = true;
+    },
+    updateSlideBackground: (state, action) => {
+      const { updatedBackgroundSetting, index } = action.payload;
+      const presentation = state.presentations.find((presentation) => presentation.id === getCurrentPresentationId());
+      const slide = presentation.slides.find(s => s.slideNum == index);
+      slide.background = updatedBackgroundSetting;
+
+      state.shouldSave = true;
+    },
+    updateSlideTranistion: (state, action) => {
+      const { slideTransition, index } = action.payload;
+      const presentation = state.presentations.find((presentation) => presentation.id === getCurrentPresentationId());
+      const slide = presentation.slides.find(s => s.slideNum == index);
+      slide.transition = slideTransition;
