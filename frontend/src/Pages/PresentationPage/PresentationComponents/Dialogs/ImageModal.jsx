@@ -7,7 +7,6 @@ import {
   TextField,
   Button,
   Box,
-  Slider,
   Typography,
   Paper
 } from '@mui/material';
@@ -208,32 +207,6 @@ export default function ImageModal({ open, handleClose, initialData, isEditing =
               />
             </Paper>
           )}
-
-          <Box>
-            <Box sx={{ mb: 1 }}>Width (relative to slide)</Box>
-            <Slider
-              value={formData.width}
-              onChange={handleSliderChange('width')}
-              min={0.1}
-              max={1}
-              step={0.1}
-              marks
-              valueLabelDisplay="auto"
-            />
-          </Box>
-        
-          <Box>
-            <Box sx={{ mb: 1 }}>Height (relative to slide)</Box>
-            <Slider
-              value={formData.height}
-              onChange={handleSliderChange('height')}
-              min={0.1}
-              max={1}
-              step={0.1}
-              marks
-              valueLabelDisplay="auto"
-            />
-          </Box>
 
           <TextField
             fullWidth
