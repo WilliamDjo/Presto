@@ -40,7 +40,7 @@ const HeaderTitle = ({ title, saveStatus, onSettingsClick }) => {
         <Typography sx={{ fontWeight: 'bold', fontSize: titleFontSize }}>
           {title}
         </Typography>
-        <IconButton size="small" sx={{ color: "white" }} title="Presentation Settings" onClick={onSettingsClick}>
+        <IconButton size="small" sx={{ color: "white" }} title="Presentation Settings" onClick={onSettingsClick} data-testid="settings-button">
           <Settings />
         </IconButton>
       </Box>
