@@ -66,12 +66,14 @@ const RegisterPage = () => {
             fullWidth
             value={name}
             onChange={(e) => setName(e.target.value)}
+            slotProps={ { input: {'data-testid': 'register-full-name'} }}
           />
           <TextField
             label="Email"
             fullWidth
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            slotProps={ { input: {'data-testid': 'register-email'} }}
           />
           <TextField
             label="Password"
@@ -79,6 +81,7 @@ const RegisterPage = () => {
             fullWidth
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            slotProps={ { input: {'data-testid': 'register-password'} }}
           />
           <TextField
             label="Confirm Password"
@@ -86,12 +89,14 @@ const RegisterPage = () => {
             fullWidth
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
+            slotProps={ { input: {'data-testid': 'register-confirm-password'} }}
           />
 
           <CustomButton
             text="Register"
             onClick={handleRegisterClick}
             sx={{ mt: 2 }}
+            dataTestId='button-register'
           />
 
         </Box>

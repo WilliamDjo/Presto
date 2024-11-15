@@ -126,7 +126,8 @@ const DashboardPage = () => {
           <Typography variant="h4" component="h1" sx={{ flexGrow: 1, fontSize: titleFontSize }}>
             Presentations
           </Typography>
-          <IconButton title="Create New Presentation" variant="contained" color="primary" onClick={() => { setIsModalOpen(true); setError('') }}>
+          <IconButton title="Create New Presentation" variant="contained" color="primary" onClick={() => { setIsModalOpen(true); setError('') }}  dataTestId="button-new-presentation">
+             
             <AddCircle fontSize="large"/>
           </IconButton>
         </Box>
@@ -152,6 +153,7 @@ const DashboardPage = () => {
                 value={presentationTitle}
                 onChange={(e) => setPresentationTitle(e.target.value)}
                 sx={{ mt: 2 }}
+                slotProps={ { input: {'data-testid': 'presentation-name'} }}
               />
               <TextField
                 margin="dense"
@@ -178,6 +180,7 @@ const DashboardPage = () => {
                 variant="contained"
                 disabled={!presentationTitle.trim()}
                 text="Create"
+                dataTestId="button-create-presentation"
               />
             </DialogActions>
             <DialogActions sx={{ px: 3, pb: 3 }}>
