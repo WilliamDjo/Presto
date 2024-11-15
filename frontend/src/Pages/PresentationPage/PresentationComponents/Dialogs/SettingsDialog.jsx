@@ -199,6 +199,7 @@ const SettingsDialog = ({
           
           <ThumbnailUpload 
             thumbnail={previewThumbnail}
+            resetThumbnail={() => setPreviewThumbnail("")}
             onThumbnailChange={handleThumbnailChange}
           />
 

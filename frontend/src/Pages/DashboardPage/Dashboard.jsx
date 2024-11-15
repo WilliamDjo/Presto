@@ -156,6 +156,7 @@ const DashboardPage = () => {
 
                 <ThumbnailUpload 
                   thumbnail={presentationThumbnail}
+                  resetThumbnail={() => setPresentationThumbnail("")}
                   onThumbnailChange={handleThumbnailChange}
                 />
 

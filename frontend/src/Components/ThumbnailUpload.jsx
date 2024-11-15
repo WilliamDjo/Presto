@@ -1,8 +1,8 @@
-import { Stack, InputLabel, Card, CardActionArea, CardMedia, Typography, Input } from '@mui/material';
+import { Stack, InputLabel, Card, CardActionArea, CardMedia, Typography, Input, Button } from '@mui/material';
 import { Image } from '@mui/icons-material';
 import { useRef } from 'react';
 
-const ThumbnailUpload = ({ thumbnail, onThumbnailChange }) => {
+const ThumbnailUpload = ({ thumbnail, resetThumbnail, onThumbnailChange }) => {
   const fileInputRef = useRef(null);
 
   const handleCardClick = () => {
@@ -55,6 +55,10 @@ const ThumbnailUpload = ({ thumbnail, onThumbnailChange }) => {
           )}
         </CardActionArea>
       </Card>
+      
+      <Button onClick={resetThumbnail} variant="outlined" color="primary" sx={{ mt: 1 }}>
+        Reset
+      </Button>
     </Stack>
   );
 };
