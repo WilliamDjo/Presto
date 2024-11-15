@@ -160,6 +160,10 @@ export const getPresentationTitle = (presentations) => {
   return presentations?.find((presentation) => presentation.id == location.pathname.split("/")[2]).title;
 };
 
+export const getPresentationDescription = (presentations) => {
+  return presentations?.find((presentation) => presentation.id == location.pathname.split("/")[2]).description;
+};
+
 export const getPresentationThumbnail = (presentations) => {
   return presentations?.find((presentation) => presentation.id == location.pathname.split("/")[2]).thumbnail;
 };

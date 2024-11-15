@@ -3,6 +3,7 @@
         {
             id: int,
             title: string,
+            description,
             thumbnail: null || string,
             defaultBackground: {
                 type: "solid" || "gradient" || "image"

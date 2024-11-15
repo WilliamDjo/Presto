@@ -18,11 +18,11 @@ import {
   CardMedia
 } from '@mui/material';
 import ThumbnailUpload from '../../../../Components/ThumbnailUpload';
-import { getPresentationBackgroundSetting, getPresentationTitle, getPresentationThumbnail } from '../../../../HelperFiles/helper';
+import { getPresentationBackgroundSetting, getPresentationTitle, getPresentationThumbnail, getPresentationDescription } from '../../../../HelperFiles/helper';
 import { useSelector } from 'react-redux';
 import { useEffect, useState, useRef } from 'react';
 import { useDispatch } from 'react-redux';
-import { updatePresentationTitle, updatePresentationThumbnail, setDefaultBackground } from '../../../../State/presentationsSlice';
+import { updatePresentationTitle, updatePresentationThumbnail, setDefaultBackground, updatePresentationDescription } from '../../../../State/presentationsSlice';
 import Image from '@mui/icons-material/Image';
 
 const SettingsDialog = ({ 
@@ -34,6 +34,7 @@ const SettingsDialog = ({
   
   const [newTitle, setNewTitle] = useState("");
   const [previewThumbnail, setPreviewThumbnail] = useState("");
+  const [previewDescription, setPreviewDescription] = useState("");
   const [backgroundSetting, setBackgroundSetting] = useState({ type: "solid", attributes: { color: "#FFFFFF" } });
   const [showDefaultImage, setShowDefaultImage] = useState(true);
   const [error, setError] = useState('');
@@ -45,6 +46,7 @@ const SettingsDialog = ({
   useEffect(() => {
     if (open) {
       setNewTitle(getPresentationTitle(presentations) || "");
+      setPreviewDescription(getPresentationDescription(presentations) || "");
       setPreviewThumbnail(getPresentationThumbnail(presentations) || "");
       const initialBackgroundSetting = getPresentationBackgroundSetting(presentations) || { type: "solid", attributes: { color: "#FFFFFF" } };
       setBackgroundSetting(initialBackgroundSetting);
@@ -83,6 +85,11 @@ const SettingsDialog = ({
       title: newTitle.trim()
     }));
   
+    dispatch(updatePresentationDescription({
+      id: presentationId,
+      description: previewDescription
+    }))
+
     if (previewThumbnail !== getPresentationThumbnail(presentations)) {
       dispatch(updatePresentationThumbnail({
         id: presentationId,
@@ -172,6 +179,20 @@ const SettingsDialog = ({
             value={newTitle}
             onChange={(e) => setNewTitle(e.target.value)}
             variant="outlined"
+          />
+
+          <TextField
+            autoFocus
+            margin="dense"
+            label="Presentation Description"
+            type="text"
+            fullWidth
+            variant="filled" // or "standard"
+            multiline
+            minRows={4} // Adjust the number of rows as needed
+            value={previewDescription}
+            onChange={(e) => setPreviewDescription(e.target.value)}
+            sx={{ mt: 2 }}
           />
           
           <Divider />

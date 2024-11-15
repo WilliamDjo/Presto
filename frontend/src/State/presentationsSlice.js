@@ -33,6 +33,7 @@ export const savePresentations = createAsyncThunk("presentations/savePresentatio
       {
         dateTime: Date.now(),
         title: presentation.title,
+        description: presentation.description,
         thumbnail: presentation.thumbnail,
         defaultBackground: presentation.defaultBackground,
         slides: [...presentation.slides]
@@ -66,8 +67,9 @@ const presentationsSlice = createSlice({
     createNewPresentation: (state, action) => {
       const newPresentation = {
         id: String(Date.now()),
-        title: action.payload,
-        thumbnail: null,
+        title: action.payload.presentationTitle,
+        description: action.payload.presentationDescription,
+        thumbnail: action.payload.presentationThumbnail ? action.payload.presentationThumbnail : null,
         defaultBackground: {
           type: "solid",
           attributes: {
@@ -80,8 +82,9 @@ const presentationsSlice = createSlice({
         },
         versionHistory: [{
           dateTime: Date.now(),
-          title: action.payload,
-          thumbnail: null,
+          title: action.payload.presentationTitle,
+          description: action.payload.presentationDescription,
+          thumbnail: action.payload.presentationThumbnail ? action.payload.presentationThumbnail : null,
           defaultBackground: {
             type: "solid",
             attributes: {
@@ -346,6 +349,14 @@ const presentationsSlice = createSlice({
       }
       state.shouldSave = true;
     },
+    updatePresentationDescription: (state, action) => {
+      const { id, description } = action.payload;
+      const presentation = state.presentations.find(p => p.id == id);
+      if (presentation) {
+        presentation.description = description;
+      }
+      state.shouldSave = true;
+    },
     updateSlideBackground: (state, action) => {
       const { updatedBackgroundSetting, index } = action.payload;
       const presentation = state.presentations.find((presentation) => presentation.id === location.pathname.split("/")[2]);
@@ -366,6 +377,7 @@ const presentationsSlice = createSlice({
       const { version, id } = action.payload;
       const presentation = state.presentations.find(p => p.id == id);
       presentation.title = version.title;
+      presentation.description = version.description;
       presentation.thumbnail = version.thumbnail;
       presentation.defaultBackground = version.defaultBackground;
       presentation.slides = JSON.parse(JSON.stringify(version.slides));
@@ -406,5 +418,5 @@ const presentationsSlice = createSlice({
   }
 });
 
-export const { addNewSlide, deleteSlide, updateSlidesBarOrder, setPresentations, createNewPresentation, addTextElement, updateElementPosition, updateElementSize, deletePresentation, updatePresentationTitle, updatePresentationThumbnail, addImageElement, addVideoElement, addCodeElement, deleteElement, setDefaultBackground, updateTextElement, updateImageElement, updateVideoElement, updateCodeElement, loadVersion, updateSlideBackground, updateSlideTranistion } = presentationsSlice.actions;
+export const { addNewSlide, deleteSlide, updateSlidesBarOrder, setPresentations, createNewPresentation, addTextElement, updateElementPosition, updateElementSize, deletePresentation, updatePresentationTitle, updatePresentationThumbnail, addImageElement, addVideoElement, addCodeElement, deleteElement, setDefaultBackground, updateTextElement, updateImageElement, updateVideoElement, updateCodeElement, loadVersion, updateSlideBackground, updateSlideTranistion, updatePresentationDescription } = presentationsSlice.actions;
 export default presentationsSlice.reducer;

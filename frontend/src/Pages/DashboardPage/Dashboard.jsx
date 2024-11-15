@@ -20,22 +20,52 @@ import {
 } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { setPresentations, savePresentations, createNewPresentation } from '../../State/presentationsSlice';
+import ThumbnailUpload from '../../Components/ThumbnailUpload';
 
 const DashboardPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [presentationTitle, setPresentationTitle] = useState('');
+  const [presentationDescription, setPresentationDescription] = useState('');
+  const [presentationThumbnail, setPresentationThumbnail] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const presentations = useSelector((state) => state.presentations.presentations);
+
+  useEffect(() => {
+    if (isModalOpen) {
+      setPresentationTitle("");
+      setPresentationDescription("");
+      setPresentationThumbnail("");
+    }
+  }, [isModalOpen]);
+
+  const handleThumbnailChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      if (file.size > 5000000) { // 5MB limit
+        setError("File is too large. Please choose an image under 5MB.");
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setPresentationThumbnail(e.target.result);
+      };
+      reader.onerror = (e) => {
+        console.error("Error reading file:", e);
+        setError("Error reading file. Please try again.");
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   const handleCreateNewPresentation = (e) => {
     e.preventDefault();
     setError('');
 
     if (presentationTitle.trim()) {
-      dispatch(createNewPresentation(presentationTitle));
-      setPresentationTitle('');
+      dispatch(createNewPresentation({presentationTitle, presentationDescription, presentationThumbnail}));
       setIsModalOpen(false);
     } else {
       setError('Please enter valid a name');
@@ -110,6 +140,25 @@ const DashboardPage = () => {
                   onChange={(e) => setPresentationTitle(e.target.value)}
                   sx={{ mt: 2 }}
                 />
+                <TextField
+                  autoFocus
+                  margin="dense"
+                  label="Presentation Description"
+                  type="text"
+                  fullWidth
+                  variant="filled" // or "standard"
+                  multiline
+                  minRows={4} // Adjust the number of rows as needed
+                  value={presentationDescription}
+                  onChange={(e) => setPresentationDescription(e.target.value)}
+                  sx={{ mt: 2 }}
+                />
+
+                <ThumbnailUpload 
+                  thumbnail={presentationThumbnail}
+                  onThumbnailChange={handleThumbnailChange}
+                />
+
               </DialogContent>
               <DialogActions sx={{ px: 3, pb: 3 }}>
                 <CustomButton
@@ -124,6 +173,7 @@ const DashboardPage = () => {
               <CustomButton variant="outlined" text="Cancel" onClick={() => { setIsModalOpen(false); }} />
             </DialogActions>
           </Dialog>
+
           <Grid container spacing={3}>
             {presentations?.map((presentation) => (
               <Grid xs={12} sm={6} md={4} key={presentation.id} sx={{ cursor: 'pointer' }} onClick={() => {navigate(`/presentation/${presentation.id}#/1`)}}>
