@@ -1,4 +1,5 @@
 import config from '../../backend.config.json'
+import { useSelector } from 'react-redux';
 
 const genQueryString = (queryJSON) => {
   let queryString = '';
@@ -8,20 +9,16 @@ const genQueryString = (queryJSON) => {
   return queryString.slice(1);
 }
 
-const fetchRequest = async (path, method, body, token, queryJSON) => {
+export const fetchRequest = async (path, method, body, token, queryJSON) => {
   const url = `http://localhost:${config.BACKEND_PORT}${path}` + (queryJSON ? ('?' + genQueryString(queryJSON)) : '');
   const headers = token ? {'Content-type': 'application/json', 'Authorization': `Bearer ${token}`} : {'Content-type': 'application/json'};
   const request = body ? {'method': method, 'headers': headers, 'body': JSON.stringify(body)} : {'method': method, 'headers': headers};
-
-  console.log(url);
-  console.log(request);
 
   try {
     const response = await fetch(url, request);
 
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
-      // return response;
     }
 
     const data = await response.json();
@@ -74,6 +71,13 @@ export async function authFetch(userData, path) {
         error: 'Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character'
       };
     }
+
+    if (!isValidConfirmPassword(userData.password, userData.confirmPassword)) {
+      return {
+        success: false,
+        error: 'Passwords do not match'
+      };
+    }
   }
 
   try {
@@ -86,7 +90,7 @@ export async function authFetch(userData, path) {
     );
 
     if (!response) {
-      throw new Error('Incorrect email or password');
+      throw new Error(userData.confirmPassword ? 'Email already exists' : "Invalid email or password");
     }
 
     return {
@@ -132,4 +136,141 @@ export async function logoutFetch(path, token) {
   }
 }
 
-export default {fetchRequest, isValidEmail, isValidName, isValidPassword, isValidConfirmPassword};
+export const getPresentation = (presentations) => {
+  return presentations?.find((presentation) => presentation.id == getCurrentPresentationId());
+};
+
+export const getSlides = (presentations) => {
+  return presentations?.find((presentation) => presentation.id == getCurrentPresentationId()).slides;
+};
+
+export const getSlideByPosition = (presentations, slidePosition) => {
+  return presentations?.find((presentation) => presentation.id == getCurrentPresentationId()).slides.find((slide) => slide.slideNum === slidePosition);
+}
+
+export const getSlidePositionById = (presentations, slideId) => {
+  return presentations?.find((presentation) => presentation.id == getCurrentPresentationId()).slides.findIndex((slide) => slide.id === slideId) + 1;
+};
+
+export const getElementByIndex = (presentations, elementIndex, slideNum) => {
+  return presentations?.find((presentation) => presentation.id == getCurrentPresentationId()).slides[slideNum - 1].contents[elementIndex];
+};
+
+export const getPresentationTitle = (presentations) => {
+  return presentations?.find((presentation) => presentation.id == getCurrentPresentationId()).title;
+};
+
+export const getPresentationDescription = (presentations) => {
+  return presentations?.find((presentation) => presentation.id == getCurrentPresentationId()).description;
+};
+
+export const getPresentationThumbnail = (presentations) => {
+  return presentations?.find((presentation) => presentation.id == getCurrentPresentationId()).thumbnail;
+};
+
+export const getPresentationBackgroundSetting = (presentations) => {
+  return presentations?.find((presentation) => presentation.id == getCurrentPresentationId()).defaultBackground;
+}
+
+export const usePresentation = () => {
+  const presentations = useSelector((state) => state.presentations.presentations);
+  const saveStatus = useSelector((state) => state.saveStatus) ? "Saved" : "Saving...";
+  const presentationId = parseInt(getCurrentPresentationId());
+  
+  const currentPresentation = presentations?.find(p => p.id == presentationId);
+  
+  return {
+    presentationId,
+    currentPresentation,
+    presentations,
+    saveStatus,
+    title: getPresentationTitle(presentations),
+    thumbnail: currentPresentation?.thumbnail
+  };
+};
+
+export const renderBackground = (presentations, index) => {
+  const slide = getSlideByPosition(presentations, index);
+
+  let backgroundStyle;
+  const background = slide?.background.type === "none" ? getPresentationBackgroundSetting(presentations) : slide?.background;
+
+  switch (background?.type) {
+  case "solid":
+    backgroundStyle = {
+      backgroundColor: background.attributes.color
+    }
+    break;
+  case "gradient":
+    backgroundStyle = {
+      background: `linear-gradient(${background.attributes.angle}deg, ${background.attributes.startingColor}, ${background.attributes.endingColor})`,
+    };
+    break;
+  case "image":
+    backgroundStyle = {
+      backgroundImage: `url(${background.attributes.image})`,
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      backgroundRepeat: 'no-repeat',
+      height: '100%',
+      width: '100%',
+    };
+    break;
+  default:
+    backgroundStyle = {backgroundColor: "white"};
+  }
+
+  return backgroundStyle;
+};
+
+export const renderPreviewBackground = (version, index) => {
+  const slide = version.slides[index - 1];
+  const background = slide?.background.type === "none" ? version.defaultBackground : slide?.background;
+
+  let backgroundStyle;
+
+  switch (background.type) {
+  case "solid":
+    backgroundStyle = {
+      backgroundColor: background.attributes.color
+    }
+    break;
+  case "gradient":
+    backgroundStyle = {
+      background: `linear-gradient(${background.attributes.angle}deg, ${background.attributes.startingColor}, ${background.attributes.endingColor})`,
+    };
+    break;
+  case "image":
+    backgroundStyle = {
+      backgroundImage: `url(${background.attributes.image})`,
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      backgroundRepeat: 'no-repeat',
+      height: '100%',
+      width: '100%',
+    };
+    break;
+  default:
+    backgroundStyle = {backgroundColor: "white"};
+  }
+
+  return backgroundStyle;
+};
+
+export const getRoute = () => {
+  return location.pathname.split("/")[1];
+};
+
+export const getCurrentSlideNum = () => {
+  return location.hash.split("/")[1];
+};
+
+export const getCurrentPresentationId = () => {
+  return location.pathname.split("/")[2];
+};
+
+export const getPreviewVersion = () => {
+  return location.hash.split("/")[2];
+};
+
+export default { isValidEmail, isValidName, isValidPassword, isValidConfirmPassword };
