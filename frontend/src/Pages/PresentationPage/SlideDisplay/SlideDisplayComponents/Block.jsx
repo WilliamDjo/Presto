@@ -185,7 +185,7 @@ const Block = ({ parentHeight, parentWidth, index, interactable, slideNum, previ
           style={{
             width: "100%",
             height: "100%",
-            pointerEvents: showHandles ? "none" : "auto", // Allow video controls when not dragging
+            pointerEvents: interactable ? "auto" : "none", // Allow video controls when not dragging
             userSelect: "none"
           }}
         >
@@ -195,7 +195,7 @@ const Block = ({ parentHeight, parentWidth, index, interactable, slideNum, previ
               width: "100%",
               height: "100%",
               border: "none",
-              pointerEvents: showHandles ? "none" : "auto",
+              pointerEvents: interactable ? "none" : "auto",
             }}
             allow={`accelerometer; ${element.attributes.autoplay ? 'autoplay; ' : ''}clipboard-write; encrypted-media; gyroscope; picture-in-picture`}
             allowFullScreen
