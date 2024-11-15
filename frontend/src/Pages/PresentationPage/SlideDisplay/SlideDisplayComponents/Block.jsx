@@ -196,3 +196,180 @@ const Block = ({ parentHeight, parentWidth, index, interactable, slideNum, previ
               height: "100%",
               border: "none",
               pointerEvents: interactable ? "none" : "auto",
+            }}
+            allow={`accelerometer; ${element.attributes.autoplay ? 'autoplay; ' : ''}clipboard-write; encrypted-media; gyroscope; picture-in-picture`}
+            allowFullScreen
+          />
+        </Box>
+      );
+    } else if (element.type == 'code') {
+      // Detect the language
+      const detectLanguage = (code) => {
+        const indicators = {
+          python: {
+            keywords: ['def ', 'import ', 'class ', 'print(', '__init__', 'if __name__'],
+            syntax: [':', '    ', '#'],
+          },
+          javascript: {
+            keywords: ['function', 'const ', 'let ', 'var ', '=>', 'console.log'],
+            syntax: [';', '===', '}}'],
+          },
+          c: {
+            keywords: ['#include', 'int main', 'void', 'printf', 'scanf'],
+            syntax: ['{', '};', '#define'],
+          }
+        };
+      
+        let scores = {
+          python: 0,
+          javascript: 0,
+          c: 0
+        };
+      
+        Object.entries(indicators).forEach(([lang, { keywords, syntax }]) => {
+          keywords.forEach(keyword => {
+            if (code.includes(keyword)) scores[lang] += 2;
+          });
+          syntax.forEach(symbol => {
+            if (code.includes(symbol)) scores[lang] += 1;
+          });
+        });
+      
+        const maxScore = Math.max(...Object.values(scores));
+        if (maxScore === 0) return 'javascript'; // default to javascript if no matches
+          
+        return Object.entries(scores).find(([, score]) => score === maxScore)[0];
+      };
+
+      // Detect language and highlight the code
+      const language = detectLanguage(element.attributes.textContent);
+      const highlighted = Prism.highlight(
+        element.attributes.textContent,
+        Prism.languages[language],
+        language
+      );
+
+      return (
+        <Box
+          style={{
+            width: "100%",
+            height: "100%",
+            overflow: "auto",
+            backgroundColor: "#ffffff",
+            fontFamily: "monospace",
+            fontSize: (element.attributes.fontSize || 1) + "em",
+            position: "relative"
+          }}
+        >
+          <pre
+            style={{
+              margin: 0,
+              padding: "8px",
+              backgroundColor: "#f8f9fa",
+              borderRadius: "4px",
+              overflow: "visible",
+              whiteSpace: "pre-wrap",
+              wordBreak: "keep-all",
+              height: "100%"
+            }}
+          >
+            <code
+              dangerouslySetInnerHTML={{ __html: highlighted }}
+              style={{ 
+                fontFamily: "monospace",
+                position: "relative",
+                pointerEvents: "none"
+              }}
+            />
+          </pre>
+        </Box>
+      );
+
+    }
+  };
+
+  return (
+    <>
+      <Rnd
+        ref={rndRef}
+        position={{ x, y }}
+        size={{ width, height }}
+        minWidth="1%"
+        minHeight="1%"
+        bounds="parent"
+        enableResizing={showHandles}
+        disableDragging={!interactable}
+        onDoubleClick={handleDoubleClick}
+        onContextMenu={handleRightClick}
+        onMouseDown={handleSingleClick}
+        onDragStop={handleDragStop}
+        onDrag={() => setIsDragging(true)}
+        onResizeStop={handleResizeStop}
+        style={{
+          touchAction: "none",
+          backgroundColor: "transparent",
+          border: preview ? 'none' : (showHandles ? "1px #4A90E2 solid" : "1px #8f8f8f solid"),
+          zIndex: index,
+          cursor: !interactable ? "inherit" : isDragging ? "move" : "auto",
+          
+        }}
+      >
+        <Box style={{ width: "100%", height: "100%", position: "absolute" }}>
+          {renderContent()}
+          {showHandles &&
+          ["top-left", "top-right", "bottom-left", "bottom-right"].map(
+            (corner) => (
+              <Box
+                key={corner}
+                style={{
+                  width: "5px",
+                  height: "5px",
+                  backgroundColor: "#4A90E2",
+                  position: "absolute",
+                  cursor: "pointer",
+                  ...(corner.includes("top")
+                    ? { top: "-3px" }
+                    : { bottom: "-3px" }),
+                  ...(corner.includes("left")
+                    ? { left: "-3px" }
+                    : { right: "-3px" }),
+                }}
+              />
+            )
+          )}
+        </Box>
+      </Rnd>
+      {/* Add TextModal for editing */}
+      {editModalOpen && element.type === 'text' && (
+        <TextModal 
+          open={editModalOpen}
+          handleClose={handleCloseModal}
+          initialData={{
+            width: element.attributes.elementSize.x,
+            height: element.attributes.elementSize.y,
+            text: element.attributes.textContent,
+            fontSize: parseFloat(element.attributes.fontSize),
+            color: element.attributes.color || '#000000',
+            index: element.index,
+            fontFamily: element.attributes.fontFamily || 'Arial',
+          }}
+          isEditing={true}
+        />
+      )}
+
+      {/* Add ImageModal for editing */}
+      {editModalOpen && element.type === 'image' && (
+        <ImageModal 
+          open={editModalOpen}
+          handleClose={handleCloseModal}
+          initialData={{
+            width: element.attributes.elementSize.x,
+            height: element.attributes.elementSize.y,
+            imageSource: element.attributes.imageSource,
+            altText: element.attributes.altText,
+            index: element.index
+          }}
+          isEditing={true}
+        />
+      )}
+
