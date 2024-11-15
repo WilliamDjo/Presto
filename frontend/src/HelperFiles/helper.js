@@ -220,28 +220,6 @@ export const renderBackground = (presentations, index) => {
     break;
   default:
     backgroundStyle = {backgroundColor: "white"};
-  case "solid":
-    backgroundStyle = {
-      backgroundColor: background.attributes.color
-    }
-    break;
-  case "gradient":
-    backgroundStyle = {
-      background: `linear-gradient(${background.attributes.angle}deg, ${background.attributes.startingColor}, ${background.attributes.endingColor})`,
-    };
-    break;
-  case "image":
-    backgroundStyle = {
-      backgroundImage: `url(${background.attributes.image})`,
-      backgroundSize: 'cover',
-      backgroundPosition: 'center',
-      backgroundRepeat: 'no-repeat',
-      height: '100%',
-      width: '100%',
-    };
-    break;
-  default:
-    backgroundStyle = {backgroundColor: "white"};
   }
 
   return backgroundStyle;
@@ -254,28 +232,6 @@ export const renderPreviewBackground = (version, index) => {
   let backgroundStyle;
 
   switch (background.type) {
-  case "solid":
-    backgroundStyle = {
-      backgroundColor: background.attributes.color
-    }
-    break;
-  case "gradient":
-    backgroundStyle = {
-      background: `linear-gradient(${background.attributes.angle}deg, ${background.attributes.startingColor}, ${background.attributes.endingColor})`,
-    };
-    break;
-  case "image":
-    backgroundStyle = {
-      backgroundImage: `url(${background.attributes.image})`,
-      backgroundSize: 'cover',
-      backgroundPosition: 'center',
-      backgroundRepeat: 'no-repeat',
-      height: '100%',
-      width: '100%',
-    };
-    break;
-  default:
-    backgroundStyle = {backgroundColor: "white"};
   case "solid":
     backgroundStyle = {
       backgroundColor: background.attributes.color
