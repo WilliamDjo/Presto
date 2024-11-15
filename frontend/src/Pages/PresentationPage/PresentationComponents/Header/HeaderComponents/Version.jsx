@@ -4,9 +4,10 @@ import { useDispatch } from 'react-redux';
 import { loadVersion } from '../../../../../State/presentationsSlice';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { getCurrentPresentationId } from '../../../../../HelperFiles/helper';
 
 const Version = ({ version, setOpenVersionHistory }) => {
-  const presentationId = location.pathname.split("/")[2];
+  const presentationId = getCurrentPresentationId();
   const [openConfirmRestore, setOpenConfirmRestore] = useState(false);
   const [expanded, setExpanded] = useState(false); // State to manage expansion
   const dispatch = useDispatch();
@@ -106,7 +107,7 @@ const Version = ({ version, setOpenVersionHistory }) => {
             No
           </Button>
           <Button onClick={() => {
-            dispatch(loadVersion({ version, id: location.pathname.split("/")[2] }));
+            dispatch(loadVersion({ version, id: getCurrentPresentationId() }));
             setOpenConfirmRestore(false);
             setOpenVersionHistory(false);
             navigate(`${location.pathname}#/1`);

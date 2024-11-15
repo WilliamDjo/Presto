@@ -3,7 +3,7 @@ import { Rnd } from "react-rnd";
 import { Box, Typography } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { updateElementPosition, updateElementSize, deleteElement } from "../../../../State/presentationsSlice";
-import { getElementByIndex, getPresentation } from "../../../../HelperFiles/helper";
+import { getElementByIndex, getPresentation, getRoute, getPreviewVersion } from "../../../../HelperFiles/helper";
 import Prism from "prismjs";
 import TextModal from "../../PresentationComponents/Dialogs/TextModal";
 import ImageModal from "../../PresentationComponents/Dialogs/ImageModal";
@@ -20,8 +20,8 @@ const Block = ({ parentHeight, parentWidth, index, interactable, slideNum, previ
 
   let element;
 
-  if (location.pathname.split("/")[1] === "preview" && location.hash.split("/")[2]) {
-    const version = presentation.versionHistory?.find((version) => version.dateTime == location.hash.split("/")[2]);
+  if (getRoute() === "preview" && getPreviewVersion()) {
+    const version = presentation.versionHistory?.find((version) => version.dateTime == getPreviewVersion());
     element = version.slides[slideNum - 1].contents[index];
   } else  {
     element = getElementByIndex(presentations, index, slideNum);
@@ -301,7 +301,7 @@ const Block = ({ parentHeight, parentWidth, index, interactable, slideNum, previ
         disableDragging={!interactable}
         onDoubleClick={handleDoubleClick}
         onContextMenu={handleRightClick}
-      onMouseDown={handleSingleClick}
+        onMouseDown={handleSingleClick}
         onDragStop={handleDragStop}
         onDrag={() => setIsDragging(true)}
         onResizeStop={handleResizeStop}

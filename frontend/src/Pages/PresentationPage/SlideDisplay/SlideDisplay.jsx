@@ -1,7 +1,7 @@
 import { Box, Typography } from "@mui/material";
 import Block from "./SlideDisplayComponents/Block";
 import { useRef, useState, useEffect } from "react";
-import { getSlideByPosition, getSlides, renderBackground } from "../../../HelperFiles/helper";
+import { getSlideByPosition, getSlides, renderBackground, getCurrentSlideNum } from "../../../HelperFiles/helper";
 import { useSelector } from "react-redux";
 
 const SlideDisplay = () => {
@@ -56,9 +56,9 @@ const SlideDisplay = () => {
   return (
     <Box p={2} ref={slideContainerRef} sx={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100%", overflowY: 'auto', overflowX: 'auto' }}>
       <Box ref={slideRef} height={slideHeight} width={slideWidth} border={1} sx={{ position: "relative" }}>
-        <Box sx={{height: "100%", width: "100%", ...renderBackground(presentations, parseInt(location.hash.split("/")[1]))}}>
-          {getSlideByPosition(presentations, parseInt(location.hash.split("/")[1]))?.contents.map((element) => (
-            <Block interactable={true} parentHeight={slideHeight - 2} parentWidth={slideWidth - 2} key={element.index} index={element.index} slideNum={parseInt(location.hash.split("/")[1])} >
+        <Box sx={{height: "100%", width: "100%", ...renderBackground(presentations, parseInt(getCurrentSlideNum()))}}>
+          {getSlideByPosition(presentations, parseInt(getCurrentSlideNum()))?.contents.map((element) => (
+            <Block interactable={true} parentHeight={slideHeight - 2} parentWidth={slideWidth - 2} key={element.index} index={element.index} slideNum={parseInt(getCurrentSlideNum())} >
               {renderTextContent(element)}
             </Block>
           ))}
@@ -83,7 +83,7 @@ const SlideDisplay = () => {
             opacity: 0.5,
             fontSize: "1em"
           }}>
-            {parseInt(location.hash.split("/")[1]) >= 1 && parseInt(location.hash.split("/")[1]) <= getSlides(presentations)?.length ? parseInt(location.hash.split("/")[1]) : ""}
+            {parseInt(getCurrentSlideNum()) >= 1 && parseInt(getCurrentSlideNum()) <= getSlides(presentations)?.length ? parseInt(getCurrentSlideNum()) : ""}
           </Typography>
         </Box>
       </Box>

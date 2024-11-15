@@ -1,9 +1,9 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import { Box, IconButton, Typography, CssBaseline } from '@mui/material';
 import { ArrowRight, ArrowLeft, Fullscreen, FullscreenExit } from '@mui/icons-material';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { getSlides, getSlideByPosition, renderBackground, getPresentation, renderPreviewBackground } from '../../../HelperFiles/helper';
+import { getSlides, getSlideByPosition, renderBackground, getPresentation, renderPreviewBackground, getCurrentSlideNum, getPreviewVersion } from '../../../HelperFiles/helper';
 import Block from '../SlideDisplay/SlideDisplayComponents/Block';
 import { keyframes } from '@emotion/react';
 
@@ -24,7 +24,7 @@ export default function PresentationPreview() {
   const slideRef = useRef(null);
   const [slideWidth, setSlideWidth] = useState(100);
   const [slideHeight, setSlideHeight] = useState(100);
-  const currentSlide = parseInt(location.hash.split("/")[1]) || 1;
+  const currentSlide = parseInt(getCurrentSlideNum()) || 1;
 
   const [showControls, setShowControls] = useState(true);
   const [animation, setAnimation] = useState(fadeIn);
@@ -33,10 +33,10 @@ export default function PresentationPreview() {
   const [fadeOutActive, setFadeOutActive] = useState(false); // State to control fade-out
   
   let version;
-  if (location.hash.split("/")[2]) {
-    version = getPresentation(presentations)?.versionHistory.find((version) => version.dateTime == location.hash.split("/")[2]);
+  if (getPreviewVersion()) {
+    version = getPresentation(presentations)?.versionHistory.find((version) => version.dateTime == getPreviewVersion());
   }
-  const background = version ? renderPreviewBackground(version, parseInt(location.hash.split("/")[1])) : renderBackground(presentations, parseInt(location.hash.split("/")[1]));
+  const background = version ? renderPreviewBackground(version, parseInt(getCurrentSlideNum())) : renderBackground(presentations, parseInt(getCurrentSlideNum()));
 
   const updateDimensions = () => {
     if (slideRef.current) {
@@ -52,23 +52,22 @@ export default function PresentationPreview() {
     }
   };
 
-  const handleAdvanceSlide = () => {
-    const currSlide = version ? version.slides[parseInt(location.hash.split("/")[1]) - 1] : getSlideByPosition(presentations, parseInt(location.hash.split("/")[1]));
-    // const nextSlide = version ? version.slides[parseInt(location.hash.split("/")[1])] : getSlideByPosition(presentations, parseInt(location.hash.split("/")[1]) + 1);
+  const handleAdvanceSlide = useCallback(() => {
+    const currSlide = version ? version.slides[parseInt(getCurrentSlideNum()) - 1] : getSlideByPosition(presentations, parseInt(getCurrentSlideNum()));
 
     switch (currSlide.transition) {
-      case "fade":
-        setFadeOutActive(true);
-        setTimeout(() => {
-          setFadeOutActive(false);
-          navigate(version ? `#/${currentSlide + 1}/${location.hash.split("/")[2]}` : `#/${currentSlide + 1}`);
-        }, 500);
-        break;
+    case "fade":
+      setFadeOutActive(true);
+      setTimeout(() => {
+        setFadeOutActive(false);
+        navigate(version ? `#/${currentSlide + 1}/${getPreviewVersion()}` : `#/${currentSlide + 1}`);
+      }, 500);
+      break;
 
-      default:
-        navigate(version ? `#/${currentSlide + 1}/${location.hash.split("/")[2]}` : `#/${currentSlide + 1}`);
+    default:
+      navigate(version ? `#/${currentSlide + 1}/${getPreviewVersion()}` : `#/${currentSlide + 1}`);
     }
-  }
+  }, [currentSlide, navigate, presentations, version]);
 
   useEffect(() => {
     updateDimensions();
@@ -80,7 +79,7 @@ export default function PresentationPreview() {
   useEffect(() => {
     const handleKeyboardInput = (e) => {
       if (e.key === 'ArrowLeft' && currentSlide > 1) {
-        navigate(version ? `#/${currentSlide - 1}/${location.hash.split("/")[2]}` : `#/${currentSlide - 1}`);
+        navigate(version ? `#/${currentSlide - 1}/${getPreviewVersion()}` : `#/${currentSlide - 1}`);
       }
       if ((e.key === 'ArrowRight' || e.code === 'Space') && currentSlide < (version ? version.slides.length : getSlides(presentations)?.length)) {
         handleAdvanceSlide();
@@ -98,7 +97,7 @@ export default function PresentationPreview() {
       document.removeEventListener("keydown", handleKeyboardInput);
       window.removeEventListener("click", handleClickInput);
     }
-  }, [currentSlide, presentations, navigate]);
+  }, [currentSlide, presentations, navigate, handleAdvanceSlide, version]);
 
   const renderTextContent = (element) => {
     if (!element.attributes) return null;
@@ -188,7 +187,7 @@ export default function PresentationPreview() {
       <Box ref={slideContainerRef} sx={{ display: "flex", alignItems: "center", justifyContent: "center", width: '100vw', height: "100vh" , overflowY: 'hidden', overflowX: 'hidden', backgroundColor: "black" }}>
         <Box ref={slideRef} height={slideHeight} width={slideWidth} sx={{position: "relative", backgroundColor: "white", animation: `${fadeOutActive ? fadeOut : fadeIn} 0.5s`}}>
           <Box sx={{height: "100%", width: "100%", ...background}}>
-            {(version ? version?.slides[parseInt(location.hash.split("/")[1]) - 1] : getSlideByPosition(presentations, currentSlide))?.contents.map((element) => (
+            {(version ? version?.slides[parseInt(getCurrentSlideNum()) - 1] : getSlideByPosition(presentations, currentSlide))?.contents.map((element) => (
               <Block
                 interactable={false}
                 parentHeight={slideHeight}
@@ -223,7 +222,7 @@ export default function PresentationPreview() {
               <IconButton
                 title="View Previous Slide"
                 disabled={currentSlide === 1}
-                onClick={(e) => {e.stopPropagation(); navigate(version ? `#/${currentSlide - 1}/${location.hash.split("/")[2]}` : `#/${currentSlide - 1}`);}}
+                onClick={(e) => {e.stopPropagation(); navigate(version ? `#/${currentSlide - 1}/${getPreviewVersion()}` : `#/${currentSlide - 1}`);}}
                 sx={{ color: 'white' }}
               >
                 <ArrowLeft />

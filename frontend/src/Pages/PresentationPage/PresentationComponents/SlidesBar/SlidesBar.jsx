@@ -3,7 +3,7 @@ import { ArrowRight, ArrowLeft } from '@mui/icons-material';
 import SlidesBarComponent from "./SlidesBarComponent";
 import AddSlidesBarComponent from "./AddSlidesBarComponent";
 import { useSelector } from 'react-redux';
-import { getSlidePositionById, getSlides } from "../../../../HelperFiles/helper";
+import { getSlidePositionById, getSlides, getCurrentSlideNum } from "../../../../HelperFiles/helper";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import { DndContext, KeyboardSensor, PointerSensor, TouchSensor, closestCenter, useSensor } from "@dnd-kit/core";
@@ -22,11 +22,11 @@ const SlidesBar = () => {
 
   useEffect(() => {
     const handleKeyboardInput = (e) => {
-      if (e.key === 'ArrowLeft' && parseInt(location.hash.split("/")[1]) > 1) {
-        navigate(`${location.pathname}#/${parseInt(location.hash.split("/")[1]) - 1}`);
+      if (e.key === 'ArrowLeft' && parseInt(getCurrentSlideNum()) > 1) {
+        navigate(`${location.pathname}#/${parseInt(getCurrentSlideNum()) - 1}`);
       }
-      if (e.key === 'ArrowRight' && parseInt(location.hash.split("/")[1]) < getSlides(presentations).length) {
-        navigate(`${location.pathname}#/${parseInt(location.hash.split("/")[1]) + 1}`);
+      if (e.key === 'ArrowRight' && parseInt(getCurrentSlideNum()) < getSlides(presentations).length) {
+        navigate(`${location.pathname}#/${parseInt(getCurrentSlideNum()) + 1}`);
       }
     };
 
@@ -43,15 +43,15 @@ const SlidesBar = () => {
     const overIndex = getSlidePositionById(presentations, e.over.id) - 1;
     arrayMove(getSlides(presentations), activeIndex, overIndex);
 
-    if (activeIndex === parseInt(location.hash.split("/")[1]) - 1) {
+    if (activeIndex === parseInt(getCurrentSlideNum()) - 1) {
       navigate(`${location.pathname}#/${overIndex + 1}`);
-    } else if (activeIndex < parseInt(location.hash.split("/")[1]) - 1 && overIndex >= parseInt(location.hash.split("/")[1]) - 1) {
-      navigate(`${location.pathname}#/${parseInt(location.hash.split("/")[1]) - 1}`);
-    } else if (activeIndex > parseInt(location.hash.split("/")[1]) - 1 && overIndex <= parseInt(location.hash.split("/")[1]) - 1) {
-      navigate(`${location.pathname}#/${parseInt(location.hash.split("/")[1]) + 1}`);
+    } else if (activeIndex < parseInt(getCurrentSlideNum()) - 1 && overIndex >= parseInt(getCurrentSlideNum()) - 1) {
+      navigate(`${location.pathname}#/${parseInt(getCurrentSlideNum()) - 1}`);
+    } else if (activeIndex > parseInt(getCurrentSlideNum()) - 1 && overIndex <= parseInt(getCurrentSlideNum()) - 1) {
+      navigate(`${location.pathname}#/${parseInt(getCurrentSlideNum()) + 1}`);
     }
     
-    console.log(activeIndex, parseInt(location.hash.split("/")[1]) - 1, overIndex);
+    console.log(activeIndex, parseInt(getCurrentSlideNum()) - 1, overIndex);
 
     dispatch(updateSlidesBarOrder({ active: e.active.id, over: e.over.id }));
   };
@@ -88,7 +88,7 @@ const SlidesBar = () => {
 
   return (
     <Box sensors={sensors} ref={slidesBar} sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", backgroundColor: "primary.main", width: "100%", minHeight: 100 }}>
-      <IconButton disabled={location.hash.split("/")[1] == 1} title="View Previous Slide" onClick={() => { navigate(`${location.pathname}#/${parseInt(location.hash.split("/")[1]) - 1}`); }} sx={{ color: 'white' }}>
+      <IconButton disabled={getCurrentSlideNum() == 1} title="View Previous Slide" onClick={() => { navigate(`${location.pathname}#/${parseInt(getCurrentSlideNum()) - 1}`); }} sx={{ color: 'white' }}>
         <ArrowLeft />
       </IconButton >
 
@@ -106,7 +106,7 @@ const SlidesBar = () => {
         <AddSlidesBarComponent />
       </Box>
 
-      <IconButton disabled={location.hash.split("/")[1] == getSlides(presentations)?.length} title="View Next Slide" onClick={() => { navigate(`${location.pathname}#/${parseInt(location.hash.split("/")[1]) + 1}`); }} sx={{ color: 'white' }}>
+      <IconButton disabled={getCurrentSlideNum() == getSlides(presentations)?.length} title="View Next Slide" onClick={() => { navigate(`${location.pathname}#/${parseInt(getCurrentSlideNum()) + 1}`); }} sx={{ color: 'white' }}>
         <ArrowRight />
       </IconButton>
     </Box>

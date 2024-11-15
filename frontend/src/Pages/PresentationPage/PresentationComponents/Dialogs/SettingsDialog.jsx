@@ -18,7 +18,7 @@ import {
   CardMedia
 } from '@mui/material';
 import ThumbnailUpload from '../../../../Components/ThumbnailUpload';
-import { getPresentationBackgroundSetting, getPresentationTitle, getPresentationThumbnail, getPresentationDescription } from '../../../../HelperFiles/helper';
+import { getPresentationBackgroundSetting, getPresentationTitle, getPresentationThumbnail, getPresentationDescription, getCurrentPresentationId } from '../../../../HelperFiles/helper';
 import { useSelector } from 'react-redux';
 import { useEffect, useState, useRef } from 'react';
 import { useDispatch } from 'react-redux';
@@ -30,7 +30,7 @@ const SettingsDialog = ({
   setShowSettingsDialog
 }) => {
   const presentations = useSelector(state => state.presentations.presentations);
-  const presentationId = parseInt(location.pathname.split("/")[2]);
+  const presentationId = parseInt(getCurrentPresentationId());
   
   const [newTitle, setNewTitle] = useState("");
   const [previewThumbnail, setPreviewThumbnail] = useState("");
@@ -111,17 +111,17 @@ const SettingsDialog = ({
   
     // Reset non-relevant fields for each background type
     switch (updatedBackgroundSetting.type) {
-      case "solid":
-        updatedBackgroundSetting.attributes.color = backgroundSetting.attributes.color;
-        break;
-      case "gradient":
-        updatedBackgroundSetting.attributes.startingColor = backgroundSetting.attributes.startingColor;
-        updatedBackgroundSetting.attributes.endingColor = backgroundSetting.attributes.endingColor;
-        updatedBackgroundSetting.attributes.angle = backgroundSetting.attributes.angle;
-        break;
-      case "image":
-        updatedBackgroundSetting.attributes.image = backgroundSetting.attributes.image;
-        break;
+    case "solid":
+      updatedBackgroundSetting.attributes.color = backgroundSetting.attributes.color;
+      break;
+    case "gradient":
+      updatedBackgroundSetting.attributes.startingColor = backgroundSetting.attributes.startingColor;
+      updatedBackgroundSetting.attributes.endingColor = backgroundSetting.attributes.endingColor;
+      updatedBackgroundSetting.attributes.angle = backgroundSetting.attributes.angle;
+      break;
+    case "image":
+      updatedBackgroundSetting.attributes.image = backgroundSetting.attributes.image;
+      break;
     }
   
     // Dispatch with the updated backgroundSetting

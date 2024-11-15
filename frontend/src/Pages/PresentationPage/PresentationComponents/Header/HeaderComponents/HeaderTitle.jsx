@@ -12,10 +12,9 @@ const HeaderTitle = ({ title, saveStatus, onSettingsClick }) => {
   const [titleFontSize, setTitleFontSize] = useState('2rem'); // Default font size for title
   const [statusFontSize, setStatusFontSize] = useState('1rem'); // Default font size for save status
 
+  const width = window.innerWidth
   useEffect(() => {
     const handleResize = () => {
-      const width = window.innerWidth;
-      
       // Dynamically adjust title font size
       if (width > 1200) {
         setTitleFontSize('2.5rem');
@@ -33,7 +32,7 @@ const HeaderTitle = ({ title, saveStatus, onSettingsClick }) => {
     handleResize();
 
     return () => window.removeEventListener('resize', handleResize);
-  }, [window.innerWidth]);
+  }, [width]);
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column" }}>

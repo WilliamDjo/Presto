@@ -9,8 +9,6 @@ import {
   Box,
   Slider,
   Typography,
-  // Tab,
-  // Tabs,
   Paper
 } from '@mui/material';
 import { useDispatch } from 'react-redux';
@@ -55,16 +53,6 @@ export default function ImageModal({ open, handleClose, initialData, isEditing =
       [field]: newValue
     });
   };
-  
-  // const handleTabChange = (event, newValue) => {
-  //   setFormData({
-  //     ...formData,
-  //     uploadMethod: newValue,
-  //     imageSource: ''
-  //   });
-  //   setPreviewUrl('');
-  //   setError('');
-  // };
   
   const handleFileUpload = useCallback((event) => {
     const file = event.target.files[0];

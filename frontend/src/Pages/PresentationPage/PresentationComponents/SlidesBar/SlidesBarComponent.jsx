@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTheme } from '@mui/material/styles';
 import { useDispatch, useSelector } from 'react-redux';
 import { deleteSlide, deletePresentation, updateSlideBackground, updateSlideTranistion } from '../../../../State/presentationsSlice';
-import { getSlides, getSlideByPosition, renderBackground } from '../../../../HelperFiles/helper';
+import { getSlides, getSlideByPosition, renderBackground, getCurrentSlideNum, getCurrentPresentationId } from '../../../../HelperFiles/helper';
 import Block from '../../SlideDisplay/SlideDisplayComponents/Block';
 import { DeleteConfirmDialog } from '../Dialogs/DeleteConfirmDialog';
 
@@ -35,7 +35,7 @@ const SlidesBarComponent = ({ id, index }) => {
       setBackgroundSetting(initialBackgroundSetting);
       setShowDefaultImage(!initialBackgroundSetting.attributes.image);
     }
-  }, [openComponentSettings, presentations]);
+  }, [openComponentSettings, presentations, index]);
   
   const handleSave = () => {
     // Clone backgroundSetting to modify it safely
@@ -52,17 +52,17 @@ const SlidesBarComponent = ({ id, index }) => {
   
     // Reset non-relevant fields for each background type
     switch (updatedBackgroundSetting.type) {
-      case "solid":
-        updatedBackgroundSetting.attributes.color = backgroundSetting.attributes.color;
-        break;
-      case "gradient":
-        updatedBackgroundSetting.attributes.startingColor = backgroundSetting.attributes.startingColor;
-        updatedBackgroundSetting.attributes.endingColor = backgroundSetting.attributes.endingColor;
-        updatedBackgroundSetting.attributes.angle = backgroundSetting.attributes.angle;
-        break;
-      case "image":
-        updatedBackgroundSetting.attributes.image = backgroundSetting.attributes.image;
-        break;
+    case "solid":
+      updatedBackgroundSetting.attributes.color = backgroundSetting.attributes.color;
+      break;
+    case "gradient":
+      updatedBackgroundSetting.attributes.startingColor = backgroundSetting.attributes.startingColor;
+      updatedBackgroundSetting.attributes.endingColor = backgroundSetting.attributes.endingColor;
+      updatedBackgroundSetting.attributes.angle = backgroundSetting.attributes.angle;
+      break;
+    case "image":
+      updatedBackgroundSetting.attributes.image = backgroundSetting.attributes.image;
+      break;
     }
   
     dispatch(updateSlideBackground({updatedBackgroundSetting, index}));
@@ -100,7 +100,7 @@ const SlidesBarComponent = ({ id, index }) => {
   };
 
   const handleDeletePresentation = () => {
-    dispatch(deletePresentation(parseInt(location.pathname.split("/")[2])));
+    dispatch(deletePresentation(parseInt(getCurrentPresentationId())));
     navigate("/dashboard");
     setDeleteDialogOpen(false);
   };
@@ -134,7 +134,7 @@ const SlidesBarComponent = ({ id, index }) => {
       backgroundColor: "#f0f0f0",
       boxShadow: "0px 6px 12px rgba(0, 0, 0, 0.15)",
     },
-    border: index === parseInt(location.hash.split("/")[1]) ? "2px solid black" : ""
+    border: index === parseInt(getCurrentSlideNum()) ? "2px solid black" : ""
   };
 
   useEffect(() => {
@@ -174,8 +174,8 @@ const SlidesBarComponent = ({ id, index }) => {
   const handleDeleteClick = () => {
     if (getSlides(presentations).length > 1) {
       dispatch(deleteSlide(index));
-      if (index <= parseInt(location.hash.split("/")[1]) && parseInt(location.hash.split("/")[1]) !== 1) {
-        navigate(`${location.pathname}#/${parseInt(location.hash.split("/")[1]) - 1}`);
+      if (index <= parseInt(getCurrentSlideNum()) && parseInt(getCurrentSlideNum()) !== 1) {
+        navigate(`${location.pathname}#/${parseInt(getCurrentSlideNum()) - 1}`);
       }
     } else {
       setDeleteDialogOpen(true);
